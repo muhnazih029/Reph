@@ -1,0 +1,24 @@
+# Dependencies & build
+node_modules/
+dist/
+*.tsbuildinfo
+
+# Env
+.env
+.env.*
+!.env.example
+
+# Data (runtime)
+data/
+*.local
+
+# Tooling caches
+.bun/
+.vite/
+.DS_Store
+
+# Shipped app bundles (not source — keep out of the repo)
+*.apk
+*.apkm
+*.apks
+*.aab

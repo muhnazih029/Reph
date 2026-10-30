@@ -13,7 +13,36 @@
     "confirm": "Konfirmasi",
     "save": "Simpan",
     "delete": "Hapus",
-    "offline": "Offline — data mungkin basi"
+    "offline": "Offline — data mungkin basi",
+    "minutesShort": "mnt",
+    "set": "set"
+  },
+  "muscleGroups": {
+    "chest": "Dada",
+    "back": "Punggung",
+    "shoulders": "Bahu",
+    "upper_arms": "Lengan atas",
+    "forearms": "Lengan bawah",
+    "hips": "Pinggul",
+    "thighs": "Paha",
+    "calves": "Betis",
+    "waist": "Perut",
+    "cardio": "Kardio"
+  },
+  "equipment": {
+    "barbell": "Barbel",
+    "dumbbell": "Dumbel",
+    "machine": "Mesin",
+    "cable": "Kabel",
+    "kettlebell": "Ketelbel",
+    "bodyweight": "Berat badan",
+    "band": "Karet",
+    "other": "Lainnya"
+  },
+  "exerciseType": {
+    "title": "Jenis",
+    "strength": "Kekuatan",
+    "cardio": "Kardio"
   },
   "today": {
     "title": "Hari ini",
@@ -26,7 +55,21 @@
   },
   "exercises": {
     "title": "Latihan",
-    "empty": "Tidak ada latihan"
+    "search": "Cari latihan",
+    "filter": "Filter",
+    "all": "Semua",
+    "empty": "Tidak ada latihan",
+    "create": "Latihan baru",
+    "name": "Nama",
+    "nameRequired": "Nama wajib diisi",
+    "muscleGroup": "Kelompok otot",
+    "equipment": "Peralatan",
+    "custom": "Kustom",
+    "prTitle": "Rekor pribadi",
+    "noPr": "Belum ada set tercatat",
+    "last": "Terakhir dilakukan",
+    "sessions": "Sesi",
+    "noSessions": "Belum pernah dilakukan dalam latihan"
   },
   "settings": {
     "title": "Pengaturan"

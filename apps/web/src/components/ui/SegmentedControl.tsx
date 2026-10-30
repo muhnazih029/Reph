@@ -1,21 +1,23 @@
-// 2–4 exclusive options — settings (units, theme, language) (DESIGN.md §3).
+// 2–N exclusive options — settings (units, theme, language) and filters.
 
 export function SegmentedControl<T extends string>({
   options,
   value,
   onChange,
   label,
+  className = "",
 }: {
   options: Array<{ value: T; label: string }>;
   value: T;
   onChange: (value: T) => void;
   label: string;
+  className?: string;
 }) {
   return (
     <div
       role="radiogroup"
       aria-label={label}
-      className="flex rounded-radius border border-border bg-surface-2 p-0.5"
+      className={`flex rounded-radius border border-border bg-surface-2 p-0.5 ${className}`}
     >
       {options.map((option) => {
         const selected = option.value === value;

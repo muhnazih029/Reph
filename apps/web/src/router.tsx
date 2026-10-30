@@ -1,5 +1,6 @@
-import { createRootRoute, createRoute, createRouter } from "@tanstack/react-router";
+import { createRootRoute, createRoute, createRouter, useParams } from "@tanstack/react-router";
 import { AppShell } from "./components/layout/AppShell";
+import { ExerciseDetailScreen } from "./screens/ExerciseDetailScreen";
 import { ExercisesScreen } from "./screens/ExercisesScreen";
 import { HistoryScreen } from "./screens/HistoryScreen";
 import { SettingsScreen } from "./screens/SettingsScreen";
@@ -28,6 +29,16 @@ const exercisesRoute = createRoute({
   component: ExercisesScreen,
 });
 
+const exerciseDetailRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/exercises/$id",
+  component: function ExerciseDetailRoute() {
+    const { id } = useParams({ strict: false });
+    if (!id) throw new Error("missing :id route param");
+    return <ExerciseDetailScreen id={id} />;
+  },
+});
+
 const settingsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/settings",
@@ -35,7 +46,13 @@ const settingsRoute = createRoute({
 });
 
 export const router = createRouter({
-  routeTree: rootRoute.addChildren([todayRoute, historyRoute, exercisesRoute, settingsRoute]),
+  routeTree: rootRoute.addChildren([
+    todayRoute,
+    historyRoute,
+    exercisesRoute,
+    exerciseDetailRoute,
+    settingsRoute,
+  ]),
 });
 
 declare module "@tanstack/react-router" {

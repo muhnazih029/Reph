@@ -3,3 +3,8 @@
 # live in a bunfig.toml next to that package's package.json.
 
 [install]
+
+[test]
+# happy-dom must be registered before react-dom evaluates any module —
+# see apps/web/src/test/dom.ts.
+preload = ["./apps/web/src/test/dom.ts"]

@@ -13,7 +13,36 @@
     "confirm": "Confirm",
     "save": "Save",
     "delete": "Delete",
-    "offline": "Offline — data may be stale"
+    "offline": "Offline — data may be stale",
+    "minutesShort": "min",
+    "set": "set"
+  },
+  "muscleGroups": {
+    "chest": "Chest",
+    "back": "Back",
+    "shoulders": "Shoulders",
+    "upper_arms": "Upper arms",
+    "forearms": "Forearms",
+    "hips": "Hips",
+    "thighs": "Thighs",
+    "calves": "Calves",
+    "waist": "Waist",
+    "cardio": "Cardio"
+  },
+  "equipment": {
+    "barbell": "Barbell",
+    "dumbbell": "Dumbbell",
+    "machine": "Machine",
+    "cable": "Cable",
+    "kettlebell": "Kettlebell",
+    "bodyweight": "Bodyweight",
+    "band": "Band",
+    "other": "Other"
+  },
+  "exerciseType": {
+    "title": "Type",
+    "strength": "Strength",
+    "cardio": "Cardio"
   },
   "today": {
     "title": "Today",
@@ -26,7 +55,21 @@
   },
   "exercises": {
     "title": "Exercises",
-    "empty": "No exercises found"
+    "search": "Search exercises",
+    "filter": "Filter",
+    "all": "All",
+    "empty": "No exercises found",
+    "create": "New exercise",
+    "name": "Name",
+    "nameRequired": "Name is required",
+    "muscleGroup": "Muscle group",
+    "equipment": "Equipment",
+    "custom": "Custom",
+    "prTitle": "Personal record",
+    "noPr": "No sets logged yet",
+    "last": "Last performed",
+    "sessions": "Sessions",
+    "noSessions": "Not performed in any workout yet"
   },
   "settings": {
     "title": "Settings"

@@ -7,7 +7,9 @@ import {
   updateWorkoutRequestSchema,
   workoutSchema,
   type CreateExerciseInput,
+  type Equipment,
   type Exercise,
+  type MuscleGroup,
   type Settings,
   type UpdateWorkoutInput,
   type Workout,
@@ -27,7 +29,7 @@ import type { ApiError } from "./client";
 // (docs/guides/DEVELOPMENT.md §5.1). Keys are stable and documented.
 
 export const queryKeys = {
-  exercises: ["exercises"] as const,
+  exercises: (filters?: ExerciseFilters) => ["exercises", filters ?? null] as const,
   exercise: (id: string) => ["exercise", id] as const,
   workouts: (limit?: number) => ["workouts", limit ?? 0] as const,
   workout: (id: string) => ["workout", id] as const,
@@ -35,10 +37,28 @@ export const queryKeys = {
   settings: ["settings"] as const,
 };
 
-export function useExercises(): UseQueryResult<Exercise[], ApiError> {
+/** Query-string filters supported by GET /exercises (PRD-API §3). */
+export type ExerciseFilters = {
+  q?: string;
+  muscleGroup?: MuscleGroup;
+  equipment?: Equipment;
+};
+
+/** Invalidates every query whose key starts with `prefix[0]` — used because
+ * functional keys (exercises(filters), workouts(limit)) carry parameters. */
+function invalidatePrefix(client: ReturnType<typeof useQueryClient>, prefix: string): void {
+  void client.invalidateQueries({ predicate: (query) => query.queryKey[0] === prefix });
+}
+
+export function useExercises(filters?: ExerciseFilters): UseQueryResult<Exercise[], ApiError> {
+  const params = new URLSearchParams();
+  if (filters?.q) params.set("q", filters.q);
+  if (filters?.muscleGroup) params.set("muscleGroup", filters.muscleGroup);
+  if (filters?.equipment) params.set("equipment", filters.equipment);
+  const qs = params.toString();
   return useQuery({
-    queryKey: queryKeys.exercises,
-    queryFn: () => apiGet("/exercises", z.array(exerciseSchema)),
+    queryKey: queryKeys.exercises(filters),
+    queryFn: () => apiGet(`/exercises${qs ? `?${qs}` : ""}`, z.array(exerciseSchema)),
   });
 }
 
@@ -53,7 +73,10 @@ export function useCreateExercise(): UseMutationResult<Exercise, ApiError, Creat
   const client = useQueryClient();
   return useMutation({
     mutationFn: (input) => apiSend("POST", "/exercises", input, exerciseSchema),
-    onSuccess: () => void client.invalidateQueries({ queryKey: queryKeys.exercises }),
+    onSuccess: (exercise) => {
+      invalidatePrefix(client, "exercises");
+      void client.invalidateQueries({ queryKey: queryKeys.exercise(exercise.id) });
+    },
   });
 }
 
@@ -85,7 +108,7 @@ export function useCreateWorkout(): UseMutationResult<Workout, ApiError, { title
       apiSend("POST", "/workouts", createWorkoutRequestSchema.parse(input), workoutSchema),
     onSuccess: (workout) => {
       void client.invalidateQueries({ queryKey: queryKeys.workoutActive });
-      void client.invalidateQueries({ queryKey: queryKeys.workouts() });
+      invalidatePrefix(client, "workouts");
       void client.invalidateQueries({ queryKey: queryKeys.workout(workout.id) });
     },
   });
@@ -101,7 +124,7 @@ export function useUpdateWorkout(
     onSuccess: (workout) => {
       void client.invalidateQueries({ queryKey: queryKeys.workout(workout.id) });
       void client.invalidateQueries({ queryKey: queryKeys.workoutActive });
-      void client.invalidateQueries({ queryKey: queryKeys.workouts() });
+      invalidatePrefix(client, "workouts");
     },
   });
 }
@@ -123,7 +146,7 @@ export function useFinishWorkout(): UseMutationResult<Workout, ApiError, string>
     onSuccess: (workout) => {
       void client.invalidateQueries({ queryKey: queryKeys.workoutActive });
       void client.invalidateQueries({ queryKey: queryKeys.workout(workout.id) });
-      void client.invalidateQueries({ queryKey: queryKeys.workouts() });
+      invalidatePrefix(client, "workouts");
     },
   });
 }
@@ -134,7 +157,7 @@ export function useDeleteWorkout(): UseMutationResult<void, ApiError, string> {
     mutationFn: (id) => apiSend("DELETE", `/workouts/${id}`, undefined, z.void()),
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: queryKeys.workoutActive });
-      void client.invalidateQueries({ queryKey: queryKeys.workouts() });
+      invalidatePrefix(client, "workouts");
     },
   });
 }

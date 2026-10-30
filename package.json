@@ -1,0 +1,29 @@
+{
+  "name": "reph",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "bun run --filter \"@reph/*\" dev",
+    "build": "bun run --filter \"@reph/*\" build",
+    "test": "bun run --filter \"@reph/*\" test",
+    "typecheck": "bun run --filter \"@reph/*\" typecheck",
+    "lint": "oxlint .",
+    "lint:fix": "oxlint --fix .",
+    "format": "oxfmt .",
+    "format:check": "oxfmt --check .",
+    "db:generate": "bun run --filter @reph/api db:generate",
+    "db:migrate": "bun --env-file=.env run --filter @reph/api db:migrate",
+    "db:seed": "bun --env-file=.env run --filter @reph/api db:seed",
+    "db:studio": "bun --env-file=.env run --filter @reph/api db:studio"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.4.4",
+    "oxfmt": "^0.75.0",
+    "oxlint": "^1.90.0",
+    "typescript": "^7.0.2"
+  },
+  "packageManager": "bun@1.4.2"
+}

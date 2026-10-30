@@ -12,6 +12,9 @@ dist/
 data/
 *.local
 
+# Machine-local compose tweaks (e.g. host port overrides)
+docker-compose.override.yml
+
 # Tooling caches
 .bun/
 .vite/

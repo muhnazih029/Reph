@@ -6,7 +6,7 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "bun run --filter \"@reph/*\" dev",
+    "dev": "bun --env-file=.env run --filter \"@reph/*\" dev",
     "build": "bun run --filter \"@reph/*\" build",
     "test": "bun run --filter \"@reph/*\" test",
     "typecheck": "bun run --filter \"@reph/*\" typecheck",

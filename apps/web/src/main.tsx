@@ -1,7 +1,27 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import { RouterProvider } from "@tanstack/react-router";
+import { registerSW } from "virtual:pwa-register";
+import { router } from "./router";
+import "./i18n";
+import "./app.css";
 
-// Placeholder boot — the app shell, router, and i18n land in Phase 1 Task 5.
-const el = document.getElementById("root");
-if (!el) throw new Error("missing #root element");
+registerSW({ immediate: true });
 
-createRoot(el).render(<main style={{ fontFamily: "system-ui", padding: "2rem" }}>Reph</main>);
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: { retry: false, staleTime: 30_000 }, // offline-first read cache (ADR-004)
+  },
+});
+
+const root = document.getElementById("root");
+if (!root) throw new Error("missing #root element");
+
+createRoot(root).render(
+  <StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
+  </StrictMode>,
+);

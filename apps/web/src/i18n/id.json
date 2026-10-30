@@ -1,0 +1,34 @@
+{
+  "app": { "name": "Reph" },
+  "tabs": {
+    "today": "Hari ini",
+    "history": "Riwayat",
+    "exercises": "Latihan",
+    "settings": "Pengaturan"
+  },
+  "common": {
+    "loading": "Memuat…",
+    "retry": "Coba lagi",
+    "cancel": "Batal",
+    "confirm": "Konfirmasi",
+    "save": "Simpan",
+    "delete": "Hapus",
+    "offline": "Offline — data mungkin basi"
+  },
+  "today": {
+    "title": "Hari ini",
+    "startWorkout": "Mulai latihan",
+    "resume": "Lanjutkan latihan"
+  },
+  "history": {
+    "title": "Riwayat",
+    "empty": "Belum ada latihan"
+  },
+  "exercises": {
+    "title": "Latihan",
+    "empty": "Tidak ada latihan"
+  },
+  "settings": {
+    "title": "Pengaturan"
+  }
+}

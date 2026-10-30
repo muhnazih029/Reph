@@ -1,0 +1,34 @@
+{
+  "app": { "name": "Reph" },
+  "tabs": {
+    "today": "Today",
+    "history": "History",
+    "exercises": "Exercises",
+    "settings": "Settings"
+  },
+  "common": {
+    "loading": "Loading…",
+    "retry": "Retry",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "delete": "Delete",
+    "offline": "Offline — data may be stale"
+  },
+  "today": {
+    "title": "Today",
+    "startWorkout": "Start workout",
+    "resume": "Resume workout"
+  },
+  "history": {
+    "title": "History",
+    "empty": "No workouts yet"
+  },
+  "exercises": {
+    "title": "Exercises",
+    "empty": "No exercises found"
+  },
+  "settings": {
+    "title": "Settings"
+  }
+}

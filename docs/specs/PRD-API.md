@@ -72,29 +72,29 @@ Status: ⬜ planned · 🟩 implemented.
 
 | Method | Path      | Description                                       | Status |
 | ------ | --------- | ------------------------------------------------- | ------ |
-| GET    | `/health` | `{ status, db: 'up'\|'down', version }` — no auth | ⬜     |
+| GET    | `/health` | `{ status, db: 'up'\|'down', version }` — no auth | 🟩     |
 
 ### Exercises
 
 | Method | Path                                           | Description                                              | Status |
 | ------ | ---------------------------------------------- | -------------------------------------------------------- | ------ |
-| GET    | `/api/v1/exercises?q=&muscleGroup=&equipment=` | List library (global + own), filter/search               | ⬜     |
-| POST   | `/api/v1/exercises`                            | Create custom exercise → `201`                           | ⬜     |
-| GET    | `/api/v1/exercises/:id`                        | Single exercise                                          | ⬜     |
-| PATCH  | `/api/v1/exercises/:id`                        | Edit custom exercise (global library → `409`)            | ⬜     |
-| DELETE | `/api/v1/exercises/:id`                        | Delete custom (global → `409`; used by workouts → `409`) | ⬜     |
+| GET    | `/api/v1/exercises?q=&muscleGroup=&equipment=` | List library (global + own), filter/search               | 🟩     |
+| POST   | `/api/v1/exercises`                            | Create custom exercise → `201`                           | 🟩     |
+| GET    | `/api/v1/exercises/:id`                        | Single exercise                                          | 🟩     |
+| PATCH  | `/api/v1/exercises/:id`                        | Edit custom exercise (global library → `409`)            | 🟩     |
+| DELETE | `/api/v1/exercises/:id`                        | Delete custom (global → `409`; used by workouts → `409`) | 🟩     |
 
 ### Workouts
 
 | Method | Path                              | Description                                                                             | Status |
 | ------ | --------------------------------- | --------------------------------------------------------------------------------------- | ------ |
-| GET    | `/api/v1/workouts?limit=&before=` | History, desc by `start_time`                                                           | ⬜     |
-| GET    | `/api/v1/workouts/active`         | Current `status='active'` workout or `null`                                             | ⬜     |
-| POST   | `/api/v1/workouts`                | Create workout (`status='active'`) → `201`; `409` if one is already active              | ⬜     |
-| GET    | `/api/v1/workouts/:id`            | Full workout with entries + sets                                                        | ⬜     |
-| PATCH  | `/api/v1/workouts/:id`            | Update fields, nested entries/sets (replace-entries semantics), title/notes/body weight | ⬜     |
-| POST   | `/api/v1/workouts/:id/finish`     | Set `status='completed'`, `end_time=now()`                                              | ⬜     |
-| DELETE | `/api/v1/workouts/:id`            | Delete workout (cascade entries/sets)                                                   | ⬜     |
+| GET    | `/api/v1/workouts?limit=&before=` | History, desc by `start_time`                                                           | 🟩     |
+| GET    | `/api/v1/workouts/active`         | Current `status='active'` workout or `null`                                             | 🟩     |
+| POST   | `/api/v1/workouts`                | Create workout (`status='active'`) → `201`; `409` if one is already active              | 🟩     |
+| GET    | `/api/v1/workouts/:id`            | Full workout with entries + sets                                                        | 🟩     |
+| PATCH  | `/api/v1/workouts/:id`            | Update fields, nested entries/sets (replace-entries semantics), title/notes/body weight | 🟩     |
+| POST   | `/api/v1/workouts/:id/finish`     | Set `status='completed'`, `end_time=now()`                                              | 🟩     |
+| DELETE | `/api/v1/workouts/:id`            | Delete workout (cascade entries/sets)                                                   | 🟩     |
 
 **Nested write semantics:** `PATCH /workouts/:id` accepts the complete
 `entries` array (each with complete `sets`). The server replaces the
@@ -106,8 +106,8 @@ keep their client-generated UUIDs so idempotent retries are safe.
 
 | Method | Path               | Description                                              | Status |
 | ------ | ------------------ | -------------------------------------------------------- | ------ |
-| GET    | `/api/v1/settings` | Row for current user (defaults seeded on first read)     | ⬜     |
-| PUT    | `/api/v1/settings` | Full replace of updatable fields (partial body accepted) | ⬜     |
+| GET    | `/api/v1/settings` | Row for current user (defaults seeded on first read)     | 🟩     |
+| PUT    | `/api/v1/settings` | Full replace of updatable fields (partial body accepted) | 🟩     |
 
 ## 4. Data shapes
 

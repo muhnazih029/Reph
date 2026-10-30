@@ -8,6 +8,7 @@ tags:
 status: draft
 updated: 2026-10-29
 ---
+
 # Design Guide
 
 **Status:** Draft
@@ -36,13 +37,13 @@ values that the code defines.
 
 Defined once in `app.css` as CSS variables + Tailwind v4 `@theme`:
 
-| Group | Tokens |
-|-------|--------|
-| Color | `background`, `surface`, `surface-2`, `border`, `text`, `text-muted`, `accent` (single brand hue), `success`, `danger`, `warning` — light/dark values on `:root` / `.dark` |
-| Space | 4-pt scale (`--space-1 … --space-12`), used via Tailwind spacing utilities only |
-| Radius | `--radius-sm` (inputs), `--radius` (cards), `--radius-lg` (sheets/modals) |
-| Type | system-first stack with `Inter` variable first; sizes `xs–3xl`; **weights 400/500/650 only** |
-| Motion | `--duration-fast: 120ms`, `--duration: 200ms`; easing `cubic-bezier(.2,.8,.2,1)`; respects `prefers-reduced-motion` |
+| Group  | Tokens                                                                                                                                                                     |
+| ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Color  | `background`, `surface`, `surface-2`, `border`, `text`, `text-muted`, `accent` (single brand hue), `success`, `danger`, `warning` — light/dark values on `:root` / `.dark` |
+| Space  | 4-pt scale (`--space-1 … --space-12`), used via Tailwind spacing utilities only                                                                                            |
+| Radius | `--radius-sm` (inputs), `--radius` (cards), `--radius-lg` (sheets/modals)                                                                                                  |
+| Type   | system-first stack with `Inter` variable first; sizes `xs–3xl`; **weights 400/500/650 only**                                                                               |
+| Motion | `--duration-fast: 120ms`, `--duration: 200ms`; easing `cubic-bezier(.2,.8,.2,1)`; respects `prefers-reduced-motion`                                                        |
 
 Rules:
 
@@ -55,16 +56,16 @@ Rules:
 
 ## 3. Components (`src/components/ui`)
 
-| Component | Intent | Notes |
-|-----------|--------|-------|
-| `Button` | `primary` (accent, one per view), `secondary`, `ghost`, `danger` | loading state = spinner in place, width preserved |
-| `Input` | text/numeric fields | numeric variant sets `inputMode`, shows `numeric` class |
-| `Sheet` | bottom sheet (pickers, filters) | portal, drag handle, backdrop dismiss, focus trap |
-| `SegmentedControl` | 2–4 exclusive options | settings (units, theme, language) |
-| `NumberStepper` | ± around a numeric value | rest-timer duration, quick adjustments |
-| `Card` | list/stat container | flat with border; used everywhere stats appear |
-| `EmptyState` | first-run / no results | title + body + at most one action |
-| `ErrorState` | query/mutation failure | message + Retry |
+| Component          | Intent                                                           | Notes                                                   |
+| ------------------ | ---------------------------------------------------------------- | ------------------------------------------------------- |
+| `Button`           | `primary` (accent, one per view), `secondary`, `ghost`, `danger` | loading state = spinner in place, width preserved       |
+| `Input`            | text/numeric fields                                              | numeric variant sets `inputMode`, shows `numeric` class |
+| `Sheet`            | bottom sheet (pickers, filters)                                  | portal, drag handle, backdrop dismiss, focus trap       |
+| `SegmentedControl` | 2–4 exclusive options                                            | settings (units, theme, language)                       |
+| `NumberStepper`    | ± around a numeric value                                         | rest-timer duration, quick adjustments                  |
+| `Card`             | list/stat container                                              | flat with border; used everywhere stats appear          |
+| `EmptyState`       | first-run / no results                                           | title + body + at most one action                       |
+| `ErrorState`       | query/mutation failure                                           | message + Retry                                         |
 
 Domain components (`workout/`, `exercise/`) compose only these — no
 ad-hoc buttons or inputs inside screens.

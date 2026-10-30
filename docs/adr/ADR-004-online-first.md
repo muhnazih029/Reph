@@ -7,6 +7,7 @@ tags:
 status: accepted
 updated: 2026-10-29
 ---
+
 # ADR-004: Online-First Operation (API as Single Source of Truth)
 
 **Status:** Accepted
@@ -43,7 +44,7 @@ capability for implementation and debugging simplicity.
   so a closed tab, crashed browser, or phone restart resumes the session
   after reconnect — resilience without offline writes.
 - The client keeps a **TanStack Query read cache** and shows a
-  persistent *offline / stale* banner when `navigator.onLine` is false or
+  persistent _offline / stale_ banner when `navigator.onLine` is false or
   a health probe fails; reads serve last-known data, writes are blocked
   with an inline explanation ([PRD-FE §4](../specs/PRD-FE.md)).
 - The PWA service worker caches the **app shell only** (instant loads),

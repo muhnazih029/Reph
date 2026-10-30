@@ -8,6 +8,7 @@ tags:
 status: draft
 updated: 2026-10-29
 ---
+
 # PRD-FE: Web App (`apps/web`)
 
 **Version:** 0.1-draft (2026-10-29)
@@ -19,19 +20,19 @@ updated: 2026-10-29
 
 ## 1. Routes
 
-| Route | Screen | Purpose | Phase |
-|-------|--------|---------|-------|
-| `/` | Today | Start/resume CTA, week summary, recent PRs, recent workouts | 1 |
-| `/workout/active` | ActiveWorkout | Logging surface for the current session | 1 |
-| `/history` | History | Month-grouped list of completed workouts | 1 |
-| `/workouts/:id` | WorkoutDetail | Read view + inline edit + delete | 1 |
-| `/exercises` | Exercises | Library: search, filters, custom creation | 1 |
-| `/exercises/:id` | ExerciseDetail | History, 1RM PR, previous performance | 1 |
-| `/settings` | Settings | Units, rest timer, theme, language | 1 |
-| `/progress` | Progress | Photo gallery, add photo, compare view | 2 |
-| `/routines` | Routines | Templates/folders list, start from template | 2 |
-| `/calendar` | Calendar | Month heatmap + streak | 2 |
-| `/stats` | Stats | Volume/muscle/body-weight dashboards | 3 |
+| Route             | Screen         | Purpose                                                     | Phase |
+| ----------------- | -------------- | ----------------------------------------------------------- | ----- |
+| `/`               | Today          | Start/resume CTA, week summary, recent PRs, recent workouts | 1     |
+| `/workout/active` | ActiveWorkout  | Logging surface for the current session                     | 1     |
+| `/history`        | History        | Month-grouped list of completed workouts                    | 1     |
+| `/workouts/:id`   | WorkoutDetail  | Read view + inline edit + delete                            | 1     |
+| `/exercises`      | Exercises      | Library: search, filters, custom creation                   | 1     |
+| `/exercises/:id`  | ExerciseDetail | History, 1RM PR, previous performance                       | 1     |
+| `/settings`       | Settings       | Units, rest timer, theme, language                          | 1     |
+| `/progress`       | Progress       | Photo gallery, add photo, compare view                      | 2     |
+| `/routines`       | Routines       | Templates/folders list, start from template                 | 2     |
+| `/calendar`       | Calendar       | Month heatmap + streak                                      | 2     |
+| `/stats`          | Stats          | Volume/muscle/body-weight dashboards                        | 3     |
 
 Router: TanStack Router (code-based route tree, typed params). The
 bottom `TabBar` shows: **Today · History · Exercises · Settings** (Phase 2
@@ -49,7 +50,7 @@ screens  ──useQuery──▶  api client (typed fetch)  ──HTTP──▶ 
   `['exercises']`, `['workouts', cursor]`, `['workout', id]`,
   `['workout-active']`, `['settings']`. Mutations invalidate the
   relevant keys; no manual cache surgery.
-- **Zustand** owns two *client* concerns only:
+- **Zustand** owns two _client_ concerns only:
   - `activeWorkout` — optimistic mirror of the server row while logging
     (every mutation PATCHes the server, then refreshes the mirror);
   - `restTimer` — countdown, audio, vibration (never server state).
@@ -107,10 +108,10 @@ vibration). Default duration from settings.
 
 ## 4. Offline & error behavior ([ADR-004](../adr/ADR-004-online-first.md))
 
-- App shell + assets cache via service worker → the UI always *loads*.
+- App shell + assets cache via service worker → the UI always _loads_.
 - Server data: TanStack Query serves the last-known cache for reads, with
   a persistent **"Offline — data may be stale"** banner (`navigator.onLine`
-  + failed-health probe).
+  - failed-health probe).
 - Writes while offline: blocked with an inline explanation (no queued
   writes in v1); the logging screen disables Finish but never loses typed
   input in the mirror store — retry is one tap after reconnect.

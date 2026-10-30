@@ -7,6 +7,7 @@ tags:
 status: draft
 updated: 2026-10-29
 ---
+
 # PRD: Reph — Self-Hosted Workout Tracker
 
 **Version:** 0.1-draft (2026-10-29)
@@ -19,7 +20,7 @@ updated: 2026-10-29
 
 ## 0. Product Name: Reph
 
-**Reph** derives from *"reps"* — the repetitions that are the fundamental
+**Reph** derives from _"reps"_ — the repetitions that are the fundamental
 unit of resistance training. Every set in the app is a rep counted, and the
 name keeps the product visibly tied to what it actually measures.
 
@@ -86,31 +87,31 @@ compared deliberately.
 - Answer "how am I doing?" — PRs (1RM estimates), weekly volume, workout
   streaks, body-weight trend, before/after photo comparison.
 - Keep all data self-hosted and private, with a clean path to syncing
-  across devices (the server *is* the sync).
+  across devices (the server _is_ the sync).
 - Stay maintainable by one person: small surface area, typed contracts,
   documented decisions.
 
 ### 1.3 Non-functional requirements
 
-| Area | Requirement |
-|------|-------------|
-| Performance | Logging interactions feel instant on a mid-range phone; API p95 < 100 ms on LAN for typical queries. |
-| Availability | While the server is unreachable the app shows a clear, non-destructive offline state ([ADR-004](../adr/ADR-004-online-first.md)). |
-| Device support | Installable PWA; usable at 360 px width; iOS Safari + Android Chrome first. |
-| i18n | English (default) and Indonesian; no hardcoded user-facing strings. |
-| Units | Stored canonically in **kg / meters / seconds**; display conversion to lb / mi via settings. |
-| Theme | Dark-first with light theme; both meet WCAG AA contrast for text. |
+| Area           | Requirement                                                                                                                                              |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Performance    | Logging interactions feel instant on a mid-range phone; API p95 < 100 ms on LAN for typical queries.                                                     |
+| Availability   | While the server is unreachable the app shows a clear, non-destructive offline state ([ADR-004](../adr/ADR-004-online-first.md)).                        |
+| Device support | Installable PWA; usable at 360 px width; iOS Safari + Android Chrome first.                                                                              |
+| i18n           | English (default) and Indonesian; no hardcoded user-facing strings.                                                                                      |
+| Units          | Stored canonically in **kg / meters / seconds**; display conversion to lb / mi via settings.                                                             |
+| Theme          | Dark-first with light theme; both meet WCAG AA contrast for text.                                                                                        |
 | Data integrity | All writes validated by shared Zod contracts; DB constraints back them up; soft rules (cascade deletes) documented in [db-schema](../data/db-schema.md). |
-| Portability | Runs from a fresh clone with Bun + Docker: `bun install && bun run dev`. |
+| Portability    | Runs from a fresh clone with Bun + Docker: `bun install && bun run dev`.                                                                                 |
 
 ---
 
 ## 2. Users
 
-| Persona | Description |
-|---------|-------------|
-| **Owner (primary)** | One person training several times per week, logging on a phone in the gym, reviewing on laptop. The entire v1 scope. |
-| **Future accounts** | Additional users are *not* in v1 scope, but every table carries `user_id` and the API authenticates via bearer token, so multi-user support is a schema- and auth-layer addition, not a redesign. |
+| Persona             | Description                                                                                                                                                                                       |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Owner (primary)** | One person training several times per week, logging on a phone in the gym, reviewing on laptop. The entire v1 scope.                                                                              |
+| **Future accounts** | Additional users are _not_ in v1 scope, but every table carries `user_id` and the API authenticates via bearer token, so multi-user support is a schema- and auth-layer addition, not a redesign. |
 
 ---
 
@@ -194,18 +195,18 @@ Not designed now beyond `user_id` columns and bearer-token auth.
 
 ## 4. Roadmap
 
-| Phase | Scope | Exit criteria |
-|-------|-------|---------------|
+| Phase                                         | Scope                                                              | Exit criteria                                                            |
+| --------------------------------------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------ |
 | **1 — MVP** ([plan](../plans/phase-1-mvp.md)) | §3.1–§3.4: logging, library, history, stats, settings, PWA install | Owner logs a real workout end-to-end on a phone; tests + typecheck green |
-| **2 — Photos & routines** | §3.5, §3.6 | Photo compare usable; workout starts from a template |
-| **3 — Metrics & insights** | §3.7 | Trend charts + CSV round-trip |
-| **4 — Accounts** | §3.8, only if needed | — |
+| **2 — Photos & routines**                     | §3.5, §3.6                                                         | Photo compare usable; workout starts from a template                     |
+| **3 — Metrics & insights**                    | §3.7                                                               | Trend charts + CSV round-trip                                            |
+| **4 — Accounts**                              | §3.8, only if needed                                               | —                                                                        |
 
 ---
 
 ## 5. Scope boundaries
 
-v1 scope is defined positively by §3.1–§3.4. Deliberately *not* part of
+v1 scope is defined positively by §3.1–§3.4. Deliberately _not_ part of
 the product direction: multi-tenant SaaS concerns (billing, quotas),
 public/community surfaces, and native mobile apps (the PWA is the client).
 The roadmap above is the complete intent; anything not listed is out

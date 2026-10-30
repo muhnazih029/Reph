@@ -29,22 +29,22 @@ source; PRD sections stay at overview level and link here.
 
 ## Status table
 
-| Feature | Spec | Phase | Status | File |
-|---------|------|-------|--------|------|
-| Workout logging (active session, sets, supersets) | [PRD §3.1](../specs/PRD.md) | 1 | planned | — |
-| Rest timer | [PRD §3.1](../specs/PRD.md) | 1 | planned | — |
-| Exercise library + custom exercises | [PRD §3.2](../specs/PRD.md) | 1 | planned | — |
-| History & workout detail (edit/delete) | [PRD §3.3](../specs/PRD.md) | 1 | planned | — |
-| Stats primitives (1RM Epley, volume, weekly series) | [PRD §3.3](../specs/PRD.md) | 1 | planned | — |
-| Today / home | [PRD §3.3](../specs/PRD.md) | 1 | planned | — |
-| Settings (units, timer, theme, language) | [PRD §3.4](../specs/PRD.md) | 1 | planned | — |
-| PWA install + offline banner | [PRD-FE §4–§6](../specs/PRD-FE.md) | 1 | planned | — |
-| Progress photos + compare | [PRD §3.5](../specs/PRD.md) | 2 | planned | — |
-| Routines/templates + folders | [PRD §3.6](../specs/PRD.md) | 2 | planned | — |
-| Calendar + streak | [PRD §3.6](../specs/PRD.md) | 2 | planned | — |
-| Programs | [PRD §3.6](../specs/PRD.md) | 2 | planned | — |
-| Body metrics + trends | [PRD §3.7](../specs/PRD.md) | 3 | planned | — |
-| Stats dashboard | [PRD §3.7](../specs/PRD.md) | 3 | planned | — |
-| Year in Review | [PRD §3.7](../specs/PRD.md) | 3 | planned | — |
-| CSV import/export | [PRD §3.7](../specs/PRD.md) | 3 | planned | — |
-| Accounts & multi-user | [PRD §3.8](../specs/PRD.md) | 4 | conditional | — |
+| Feature                                             | Spec                               | Phase | Status      | File |
+| --------------------------------------------------- | ---------------------------------- | ----- | ----------- | ---- |
+| Workout logging (active session, sets, supersets)   | [PRD §3.1](../specs/PRD.md)        | 1     | planned     | —    |
+| Rest timer                                          | [PRD §3.1](../specs/PRD.md)        | 1     | planned     | —    |
+| Exercise library + custom exercises                 | [PRD §3.2](../specs/PRD.md)        | 1     | planned     | —    |
+| History & workout detail (edit/delete)              | [PRD §3.3](../specs/PRD.md)        | 1     | planned     | —    |
+| Stats primitives (1RM Epley, volume, weekly series) | [PRD §3.3](../specs/PRD.md)        | 1     | planned     | —    |
+| Today / home                                        | [PRD §3.3](../specs/PRD.md)        | 1     | planned     | —    |
+| Settings (units, timer, theme, language)            | [PRD §3.4](../specs/PRD.md)        | 1     | planned     | —    |
+| PWA install + offline banner                        | [PRD-FE §4–§6](../specs/PRD-FE.md) | 1     | planned     | —    |
+| Progress photos + compare                           | [PRD §3.5](../specs/PRD.md)        | 2     | planned     | —    |
+| Routines/templates + folders                        | [PRD §3.6](../specs/PRD.md)        | 2     | planned     | —    |
+| Calendar + streak                                   | [PRD §3.6](../specs/PRD.md)        | 2     | planned     | —    |
+| Programs                                            | [PRD §3.6](../specs/PRD.md)        | 2     | planned     | —    |
+| Body metrics + trends                               | [PRD §3.7](../specs/PRD.md)        | 3     | planned     | —    |
+| Stats dashboard                                     | [PRD §3.7](../specs/PRD.md)        | 3     | planned     | —    |
+| Year in Review                                      | [PRD §3.7](../specs/PRD.md)        | 3     | planned     | —    |
+| CSV import/export                                   | [PRD §3.7](../specs/PRD.md)        | 3     | planned     | —    |
+| Accounts & multi-user                               | [PRD §3.8](../specs/PRD.md)        | 4     | conditional | —    |

@@ -7,6 +7,7 @@ tags:
 status: accepted
 updated: 2026-10-29
 ---
+
 # ADR-001: Monorepo Layout
 
 **Status:** Accepted

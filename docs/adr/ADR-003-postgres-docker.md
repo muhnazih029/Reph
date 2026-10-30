@@ -7,6 +7,7 @@ tags:
 status: accepted
 updated: 2026-10-29
 ---
+
 # ADR-003: PostgreSQL 16 in Docker + Drizzle ORM
 
 **Status:** Accepted

@@ -7,6 +7,7 @@ tags:
 status: accepted
 updated: 2026-10-29
 ---
+
 # ADR-005: Self-Hosted Target — Home STB (1 GB RAM / 4 GB Storage)
 
 **Status:** Accepted (with open items §4)
@@ -25,15 +26,15 @@ home network) and run continuously. The available hardware is a
 **set-top box (STB)** on the owner's tailnet (`azdastudio`,
 `ssh azda@azdastudio`). Verified in place on 2026-10-29:
 
-| Fact | Observed |
-|------|----------|
-| Architecture | `aarch64` — **Bun-compatible** ✅ |
-| OS | Armbian 26.5.1 (Ubuntu 26.04 base), kernel 6.18 |
-| RAM | 784 MB total (~300 MB available + 355 MB reclaimable cache) |
-| Root disk | 6.5 GB, **1.4 GB free (80 % used)** |
-| Container runtime | Docker 29.8.1 **and** Podman 5.7.0 installed, 4 containers up 4 weeks ✅ |
-| Existing images | `postgres:16-alpine` (411 MB) **already on disk** — Reph's DB adds zero image weight |
-| Tailscale | running (`100.113.250.36`), SSH access confirmed |
+| Fact              | Observed                                                                             |
+| ----------------- | ------------------------------------------------------------------------------------ |
+| Architecture      | `aarch64` — **Bun-compatible** ✅                                                    |
+| OS                | Armbian 26.5.1 (Ubuntu 26.04 base), kernel 6.18                                      |
+| RAM               | 784 MB total (~300 MB available + 355 MB reclaimable cache)                          |
+| Root disk         | 6.5 GB, **1.4 GB free (80 % used)**                                                  |
+| Container runtime | Docker 29.8.1 **and** Podman 5.7.0 installed, 4 containers up 4 weeks ✅             |
+| Existing images   | `postgres:16-alpine` (411 MB) **already on disk** — Reph's DB adds zero image weight |
+| Tailscale         | running (`100.113.250.36`), SSH access confirmed                                     |
 
 The box is a proven little server (monitoring, a second Postgres-backed
 app, Syncthing, PM2 already run on it) — but RAM and free disk are the
@@ -44,15 +45,15 @@ real constraints, and photo files (Phase 2) compete for the same disk.
 The STB is the **primary deployment target**, with the stack sized for
 it:
 
-| Concern | Choice |
-|---------|--------|
-| OS | Armbian/Ubuntu 26.04 — **verified running** ✅ |
-| DB | `postgres:16-alpine` container (image already on device) with tuned-down config (`shared_buffers` ≤ 64 MB, `max_connections` low); nightly `pg_dump` to a file (cheap, restorable) |
-| API | Bun **aarch64** release binary (no toolchain on device), single process ≈ 60–100 MB RSS |
-| Web | Static build (`vite build`) served by the API — no build tooling running in prod |
+| Concern          | Choice                                                                                                                                                                                                   |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| OS               | Armbian/Ubuntu 26.04 — **verified running** ✅                                                                                                                                                           |
+| DB               | `postgres:16-alpine` container (image already on device) with tuned-down config (`shared_buffers` ≤ 64 MB, `max_connections` low); nightly `pg_dump` to a file (cheap, restorable)                       |
+| API              | Bun **aarch64** release binary (no toolchain on device), single process ≈ 60–100 MB RSS                                                                                                                  |
+| Web              | Static build (`vite build`) served by the API — no build tooling running in prod                                                                                                                         |
 | Photos (Phase 2) | Files under `REPH_DATA_DIR/photos/`, never in Postgres; photos are the main disk risk — enforce the 1600 px downscale cap (~200–400 KB/file), document a cleanup path, and watch the 1.4 GB free ceiling |
-| Remote access | Tailscale (already installed and SSH-proven; API exposed via `tailscale serve` — no open ports). **Open item** §4.3: confirm serve/funnel setup at deploy time |
-| Backups | nightly `pg_dump` → `/home/azda/backups/` (Syncthing already syncs `/home` off-box) — **Open item** §4.4: define cadence + restore drill |
+| Remote access    | Tailscale (already installed and SSH-proven; API exposed via `tailscale serve` — no open ports). **Open item** §4.3: confirm serve/funnel setup at deploy time                                           |
+| Backups          | nightly `pg_dump` → `/home/azda/backups/` (Syncthing already syncs `/home` off-box) — **Open item** §4.4: define cadence + restore drill                                                                 |
 
 RAM budget check: ~300 MB available today; Reph adds Bun API
 (60–100 MB) + a tuned Postgres (60–90 MB) → fits, with the page cache

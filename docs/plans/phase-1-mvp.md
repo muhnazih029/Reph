@@ -7,6 +7,7 @@ tags:
 status: draft
 updated: 2026-10-29
 ---
+
 # Phase 1 — MVP Implementation Plan
 
 > **For agentic workers:** implement task-by-task in order. Steps use
@@ -157,8 +158,10 @@ export function useWorkouts(limit?: number): UseQueryResult<Workout[]>;
 export function useWorkout(id: string): UseQueryResult<Workout>;
 export function useActiveWorkout(): UseQueryResult<Workout | null>;
 export function useCreateWorkout(): UseMutationResult<Workout, ApiError, { title?: string }>;
-export function useUpdateWorkout(id: string): UseMutationResult<Workout, ApiError, UpdateWorkoutInput>;
-export function useFinishWorkout(): UseMutationResult<Workout, ApiError, string>;   // arg: workout id
+export function useUpdateWorkout(
+  id: string,
+): UseMutationResult<Workout, ApiError, UpdateWorkoutInput>;
+export function useFinishWorkout(): UseMutationResult<Workout, ApiError, string>; // arg: workout id
 export function useDeleteWorkout(): UseMutationResult<void, ApiError, string>;
 export function useSettings(): UseQueryResult<Settings>;
 export function useUpdateSettings(): UseMutationResult<Settings, ApiError, Partial<Settings>>;
@@ -174,9 +177,9 @@ server's `updatedAt`:
 ```ts
 export interface ActiveWorkoutState {
   workout: Workout | null;
-  hydrate(): Promise<void>;                    // GET /workouts/active → mirror (boot)
+  hydrate(): Promise<void>; // GET /workouts/active → mirror (boot)
   startWorkout(title?: string): Promise<void>; // POST /workouts (409 if exists → hydrate)
-  addExercise(exerciseId: string): Promise<void>;   // appends entry + 1 empty normal set
+  addExercise(exerciseId: string): Promise<void>; // appends entry + 1 empty normal set
   removeEntry(entryId: string): Promise<void>;
   addSet(entryId: string, type?: SetType): Promise<void>;
   updateSet(entryId: string, setId: string, patch: Partial<WorkoutSet>): Promise<void>;
@@ -186,8 +189,8 @@ export interface ActiveWorkoutState {
   toggleSuperset(entryId: string, otherEntryId: string): Promise<void>;
   setTitle(title: string): Promise<void>;
   setBodyWeight(kg: number | null): Promise<void>;
-  finishWorkout(): Promise<string>;            // POST /workouts/:id/finish → invalidate
-  discardWorkout(): Promise<void>;             // DELETE /workouts/:id → clear
+  finishWorkout(): Promise<string>; // POST /workouts/:id/finish → invalidate
+  discardWorkout(): Promise<void>; // DELETE /workouts/:id → clear
 }
 ```
 
@@ -195,22 +198,37 @@ export interface ActiveWorkoutState {
 
 ```ts
 export interface RestTimerState {
-  totalSeconds: number; remainingSeconds: number; isRunning: boolean;
-  start(totalSeconds?: number): void;  // default: settings.restTimerSeconds
-  pause(): void; resume(): void; cancel(): void; addSeconds(n: number): void;
+  totalSeconds: number;
+  remainingSeconds: number;
+  isRunning: boolean;
+  start(totalSeconds?: number): void; // default: settings.restTimerSeconds
+  pause(): void;
+  resume(): void;
+  cancel(): void;
+  addSeconds(n: number): void;
 }
 ```
 
 **Stats/units** (`apps/web/src/lib/`):
 
 ```ts
-export function estimate1RM(weightKg: number, reps: number): number;  // Epley: w * (1 + reps/30)
-export function bestSetByEpley(sets: WorkoutSet[]): { weightKg: number; reps: number; oneRM: number } | null;
-export function workoutVolumeKg(w: Workout): number;                 // done strength sets, warmups excluded
-export function weeklyVolumeSeries(workouts: Workout[], weeks: number): { weekStart: number; volumeKg: number }[];
-export function previousPerformance(workouts: Workout[], exerciseId: string): { weightKg: number; reps: number; rpe: number | null } | null;
-export function kgToLb(kg: number): number; export function lbToKg(lb: number): number;
-export function kmToMi(km: number): number; export function miToKm(mi: number): number;
+export function estimate1RM(weightKg: number, reps: number): number; // Epley: w * (1 + reps/30)
+export function bestSetByEpley(
+  sets: WorkoutSet[],
+): { weightKg: number; reps: number; oneRM: number } | null;
+export function workoutVolumeKg(w: Workout): number; // done strength sets, warmups excluded
+export function weeklyVolumeSeries(
+  workouts: Workout[],
+  weeks: number,
+): { weekStart: number; volumeKg: number }[];
+export function previousPerformance(
+  workouts: Workout[],
+  exerciseId: string,
+): { weightKg: number; reps: number; rpe: number | null } | null;
+export function kgToLb(kg: number): number;
+export function lbToKg(lb: number): number;
+export function kmToMi(km: number): number;
+export function miToKm(mi: number): number;
 export function displayWeight(kg: number | null, unit: "kg" | "lbs"): string;
 ```
 
@@ -240,34 +258,34 @@ export function displayWeight(kg: number | null, unit: "kg" | "lbs"): string;
     "db:generate": "bun run --filter @reph/api db:generate",
     "db:migrate": "bun --env-file=.env run --filter @reph/api db:migrate",
     "db:seed": "bun --env-file=.env run --filter @reph/api db:seed",
-    "db:studio": "bun --env-file=.env run --filter @reph/api db:studio"
+    "db:studio": "bun --env-file=.env run --filter @reph/api db:studio",
   },
-  "packageManager": "bun@1.4.2"
+  "packageManager": "bun@1.4.2",
 }
 ```
 
 - [ ] `git init` in `/mnt/d/Project/Reph`; write `.gitignore`
-  (`node_modules/`, `.env`, `dist/`, `*.local`, `data/`, `.bun/`).
+      (`node_modules/`, `.env`, `dist/`, `*.local`, `data/`, `.bun/`).
 - [ ] Write root config files: workspaces as above;
-  `docker-compose.yml` → service `postgres:16-alpine`, port `5432:5432`,
-  env `POSTGRES_USER=reph`, `POSTGRES_PASSWORD=reph`,
-  `POSTGRES_DB=reph`, volume `reph_pgdata:/var/lib/postgresql/data`;
-  `.env.example` → `DATABASE_URL=postgres://reph:reph@localhost:5432/reph`,
-  `REPH_API_TOKEN=`, `PORT=3001`.
+      `docker-compose.yml` → service `postgres:16-alpine`, port `5432:5432`,
+      env `POSTGRES_USER=reph`, `POSTGRES_PASSWORD=reph`,
+      `POSTGRES_DB=reph`, volume `reph_pgdata:/var/lib/postgresql/data`;
+      `.env.example` → `DATABASE_URL=postgres://reph:reph@localhost:5432/reph`,
+      `REPH_API_TOKEN=`, `PORT=3001`.
 - [ ] `tsconfig.base.json`: `strict: true`, `target: "ES2022"`,
-  `module: "ESNext"`, `moduleResolution: "bundler"`,
-  `verbatimModuleSyntax: true`, `noUncheckedIndexedAccess: true`.
-  Each workspace tsconfig extends it with `composite` + `noEmit`.
+      `module: "ESNext"`, `moduleResolution: "bundler"`,
+      `verbatimModuleSyntax: true`, `noUncheckedIndexedAccess: true`.
+      Each workspace tsconfig extends it with `composite` + `noEmit`.
 - [ ] Scaffold the three workspace `package.json` files with names
-  `@reph/api`, `@reph/web`, `@reph/contracts`, their scripts
-  (`dev`/`build`/`test`/`typecheck` per app; api adds `db:*`), and
-  placeholder `src/index.ts` / `src/index.ts` that exports nothing yet —
-  so `bun install` and the script filters resolve.
+      `@reph/api`, `@reph/web`, `@reph/contracts`, their scripts
+      (`dev`/`build`/`test`/`typecheck` per app; api adds `db:*`), and
+      placeholder `src/index.ts` / `src/index.ts` that exports nothing yet —
+      so `bun install` and the script filters resolve.
 - [ ] `bunfig.toml`: `[test] preload = []` at root; web adds its own
-  preload for happy-dom (`happy-dom/preload`) when Task 5 lands.
+      preload for happy-dom (`happy-dom/preload`) when Task 5 lands.
 - [ ] Verify: `bun install` succeeds;
-  `docker compose up -d && docker compose ps` shows healthy postgres;
-  `bun run typecheck && bun test && bun run lint` pass (trivially).
+      `docker compose up -d && docker compose ps` shows healthy postgres;
+      `bun run typecheck && bun test && bun run lint` pass (trivially).
 - [ ] Commit: `chore: scaffold bun monorepo with postgres compose`
 
 ### Task 2: Contracts package
@@ -279,16 +297,16 @@ export function displayWeight(kg: number | null, unit: "kg" | "lbs"): string;
 Contracts**. No runtime deps except `zod`.
 
 - [ ] Write failing tests (`bun test` in `packages/contracts`):
-  parse a valid `Exercise` / `Workout` fixture (full nesting, 2 sets);
-  reject `rpe: 11`; reject `weightKg: -1`; reject non-UUID id;
-  `updateWorkoutRequestSchema` accepts partial body **with**
-  `expectedUpdatedAt` and rejects without it; `apiErrorSchema` accepts
-  the documented envelope.
+      parse a valid `Exercise` / `Workout` fixture (full nesting, 2 sets);
+      reject `rpe: 11`; reject `weightKg: -1`; reject non-UUID id;
+      `updateWorkoutRequestSchema` accepts partial body **with**
+      `expectedUpdatedAt` and rejects without it; `apiErrorSchema` accepts
+      the documented envelope.
 - [ ] Run `bun test --filter @reph/contracts` → FAIL (imports missing).
 - [ ] Implement `enums.ts`, `entities.ts`, `requests.ts`, `errors.ts`
-  exactly per [contracts §1–§4](../specs/contracts.md); `index.ts`
-  re-exports all. Add `.toISOString()`-independent epoch-ms numbers
-  everywhere (no `z.date()`).
+      exactly per [contracts §1–§4](../specs/contracts.md); `index.ts`
+      re-exports all. Add `.toISOString()`-independent epoch-ms numbers
+      everywhere (no `z.date()`).
 - [ ] Run `bun test` → PASS; `bun run typecheck && bun run lint`.
 - [ ] Commit: `feat(contracts): zod schemas for all wire shapes`
 
@@ -307,28 +325,28 @@ tables now: `exercises`, `workouts`, `workout_entries`, `workout_sets`,
 (idempotent upsert of global library, returns inserted count).
 
 - [ ] Write failing test (PGlite): create in-memory PGlite →
-  `drizzle(pglite)` → apply schema via `pushSchema`/SQL → insert an
-  exercise + workout with nested entries/sets through a transaction →
-  read back in order; assert cascade: deleting workout removes
-  entries+sets; assert restrict: deleting a referenced exercise throws;
-  assert partial-unique one-active-workout rule
-  (second active insert for same user fails).
+      `drizzle(pglite)` → apply schema via `pushSchema`/SQL → insert an
+      exercise + workout with nested entries/sets through a transaction →
+      read back in order; assert cascade: deleting workout removes
+      entries+sets; assert restrict: deleting a referenced exercise throws;
+      assert partial-unique one-active-workout rule
+      (second active insert for same user fails).
 - [ ] Run → FAIL.
 - [ ] Implement `schema.ts`: pgEnums per [db-schema §2](../data/db-schema.md),
-  tables per §1 with columns/indexes per §3 (kg `numeric(6,2)`,
-  timestamps `timestamptz`, `superset_id uuid null` without FK),
-  `workouts` partial unique index `(user_id) where status = 'active'`.
+      tables per §1 with columns/indexes per §3 (kg `numeric(6,2)`,
+      timestamps `timestamptz`, `superset_id uuid null` without FK),
+      `workouts` partial unique index `(user_id) where status = 'active'`.
 - [ ] `bun run db:generate` → produces first migration in
-  `apps/api/drizzle/`; `db:migrate` script runs it against
-  `DATABASE_URL`.
+      `apps/api/drizzle/`; `db:migrate` script runs it against
+      `DATABASE_URL`.
 - [ ] Implement `seed.ts`: ≥ 120 curated exercises (coverage rule:
-  every `muscle_group` present; ≥ 10 `type='cardio'`; equipment
-  correct per exercise) upserted by name where `user_id is null`;
-  `seed.test.ts` asserts count and coverage (same assertions as the
-  DB test above, on PGlite).
+      every `muscle_group` present; ≥ 10 `type='cardio'`; equipment
+      correct per exercise) upserted by name where `user_id is null`;
+      `seed.test.ts` asserts count and coverage (same assertions as the
+      DB test above, on PGlite).
 - [ ] Run tests + typecheck; against real DB:
-  `docker compose up -d && bun run db:migrate && bun run db:seed`
-  (idempotent: run seed twice, count unchanged).
+      `docker compose up -d && bun run db:migrate && bun run db:seed`
+      (idempotent: run seed twice, count unchanged).
 - [ ] Commit: `feat(api): drizzle schema, migration, exercise seed`
 
 ### Task 4: Hono API modules
@@ -346,33 +364,33 @@ co-located `*.test.ts`. Modify: `apps/api/package.json` (`dev`:
 [envelope](../specs/contracts.md) §4.
 
 - [ ] Write failing tests first — one describe per module, PGlite-backed
-  `createApp`, using `app.request()` (no TCP):
-  health returns `db:'up'`; bearer middleware rejects missing/wrong
-  token with 401 and passes with `REPH_API_TOKEN` set (inject env via
-  deps, not `process.env` mutation); exercises list filters by
-  `muscleGroup` + `q`; custom create → 201 + `isCustom:true`, global
-  delete → 409; workouts: create → 201, second create → 409,
-  `GET /active` → row, PATCH with wrong `expectedUpdatedAt` → 409,
-  PATCH replaces entries atomically (old child rows gone), finish sets
-  `endTime` + `status:'completed'`, finish twice → 409, limit/before
-  pagination ordered desc; settings GET seeds defaults
-  (`kg`, `90s`, `dark`, `en`), PUT merges partial.
+      `createApp`, using `app.request()` (no TCP):
+      health returns `db:'up'`; bearer middleware rejects missing/wrong
+      token with 401 and passes with `REPH_API_TOKEN` set (inject env via
+      deps, not `process.env` mutation); exercises list filters by
+      `muscleGroup` + `q`; custom create → 201 + `isCustom:true`, global
+      delete → 409; workouts: create → 201, second create → 409,
+      `GET /active` → row, PATCH with wrong `expectedUpdatedAt` → 409,
+      PATCH replaces entries atomically (old child rows gone), finish sets
+      `endTime` + `status:'completed'`, finish twice → 409, limit/before
+      pagination ordered desc; settings GET seeds defaults
+      (`kg`, `90s`, `dark`, `en`), PUT merges partial.
 - [ ] Run → FAIL.
 - [ ] Implement in order: `env.ts` (zod), `lib/errors.ts`
-  (`ApiError` + handler mapping code→status:
-  bad_request 400, unauthorized 401, not_found 404, conflict 409,
-  internal 500; unknown errors → 500 + log, never leak messages),
-  `lib/auth.ts`, `lib/pagination.ts` (`limit` default 50 max 200,
-  `before` epoch-ms).
+      (`ApiError` + handler mapping code→status:
+      bad_request 400, unauthorized 401, not_found 404, conflict 409,
+      internal 500; unknown errors → 500 + log, never leak messages),
+      `lib/auth.ts`, `lib/pagination.ts` (`limit` default 50 max 200,
+      `before` epoch-ms).
 - [ ] Implement modules with Drizzle; `workouts.ts` handles the nested
-  replace inside `db.transaction`; row→contract mapping function
-  `toWorkoutDTO(row, entries, sets)` per contracts (epoch-ms numbers).
+      replace inside `db.transaction`; row→contract mapping function
+      `toWorkoutDTO(row, entries, sets)` per contracts (epoch-ms numbers).
 - [ ] `index.ts`: `Bun.serve({ port: env.PORT, fetch: app.fetch })`,
-  log `Reph API → http://localhost:3001`.
+      log `Reph API → http://localhost:3001`.
 - [ ] Run tests → PASS; smoke against real DB: `bun run db:migrate &&
   bun --env-file=.env run --filter @reph/api dev`, then
-  `curl localhost:3001/health` and one `POST /api/v1/workouts` with
-  `-H "Authorization: Bearer $REPH_API_TOKEN"` (token set in `.env`).
+      `curl localhost:3001/health` and one `POST /api/v1/workouts` with
+      `-H "Authorization: Bearer $REPH_API_TOKEN"` (token set in `.env`).
 - [ ] Flip implemented rows in [PRD-API §3](../specs/PRD-API.md) to 🟩.
 - [ ] Commit: `feat(api): exercises, workouts, settings, health modules`
 
@@ -390,28 +408,28 @@ placeholder screens (Today/History/Exercises/Settings), `public/icons/*`,
 **Core Interfaces**; UI components per [DESIGN §3](../guides/DESIGN.md).
 
 - [ ] Vite config: `@vitejs/plugin-react`, `tailwindcss` plugin,
-  `vite-plugin-pwa` (`manifest`: name "Reph", `theme_color #0a0a0b`,
-  categories `["health","fitness"]`, shortcut **Log Workout** →
-  `/workout/active`, icons 192/512/maskable — generate simple SVG-based
-  PNGs now), dev proxy `/api` → `http://localhost:3001`.
+      `vite-plugin-pwa` (`manifest`: name "Reph", `theme_color #0a0a0b`,
+      categories `["health","fitness"]`, shortcut **Log Workout** →
+      `/workout/active`, icons 192/512/maskable — generate simple SVG-based
+      PNGs now), dev proxy `/api` → `http://localhost:3001`.
 - [ ] `app.css`: Tailwind v4 `@import "tailwindcss";` + `@theme` tokens
-  per [DESIGN §2](../guides/DESIGN.md) (light `:root`, dark `.dark`,
-  accent green, `.numeric` class). `index.html`: viewport
-  `viewport-fit=cover`, color-scheme meta, dark class on `<html>`.
+      per [DESIGN §2](../guides/DESIGN.md) (light `:root`, dark `.dark`,
+      accent green, `.numeric` class). `index.html`: viewport
+      `viewport-fit=cover`, color-scheme meta, dark class on `<html>`.
 - [ ] i18n init (`en`/`id`, `lng:'en'`), seed keys for shell
-  (`app.name`, `tabs.*`, `common.*` retry/loading/cancel/confirm).
+      (`app.name`, `tabs.*`, `common.*` retry/loading/cancel/confirm).
 - [ ] `api/client.ts` per signature (fetch wrapper: JSON, auth header
-  from `import.meta.env.VITE_REPH_TOKEN`, parse `apiErrorSchema` →
-  throw `ApiError`); `api/hooks.ts` with `QueryClientProvider`
-  (`retry: false`, `staleTime: 30_000`) and the exported hooks.
+      from `import.meta.env.VITE_REPH_TOKEN`, parse `apiErrorSchema` →
+      throw `ApiError`); `api/hooks.ts` with `QueryClientProvider`
+      (`retry: false`, `staleTime: 30_000`) and the exported hooks.
 - [ ] Router (code-based tree) with `AppShell` root: safe-area bottom
-  `TabBar` (Today · History · Exercises · Settings, accent active state,
-  `aria-current`), content outlet, `RestTimerBar` mount point.
+      `TabBar` (Today · History · Exercises · Settings, accent active state,
+      `aria-current`), content outlet, `RestTimerBar` mount point.
 - [ ] UI components + `Skeleton`/`EmptyState`/`ErrorState` with all four
-  screen states documented in [DESIGN §4](../guides/DESIGN.md).
+      screen states documented in [DESIGN §4](../guides/DESIGN.md).
 - [ ] Verify: `bun run --filter @reph/web dev` renders the shell;
-  `bun run typecheck && bun test` green; `bun run build` produces a
-  manifest in `dist/`.
+      `bun run typecheck && bun test` green; `bun run build` produces a
+      manifest in `dist/`.
 - [ ] Commit: `feat(web): app shell, design tokens, api client, i18n`
 
 ### Task 6: Stats & units libraries
@@ -423,13 +441,13 @@ placeholder screens (Today/History/Exercises/Settings), `public/icons/*`,
 Stats/units** (consumed by Tasks 7–11).
 
 - [ ] Write failing tests: `estimate1RM(100,5)≈116.67`;
-  `estimate1RM(w,1)===w`; `bestSetByEpley` picks the set with max Epley
-  (not max weight) and returns null on empty/all-null; `workoutVolumeKg`
-  counts only `done` sets excluding `warmup` and cardio sets;
-  `weeklyVolumeSeries` buckets by local Monday across N weeks ascending;
-  `previousPerformance` returns the most recent done set's triple and
-  **null** when exercise never performed; converters exact (2.20462 /
-  0.621371); `displayWeight(80,'kg')==='80 kg'`, lb variant 1 decimal.
+      `estimate1RM(w,1)===w`; `bestSetByEpley` picks the set with max Epley
+      (not max weight) and returns null on empty/all-null; `workoutVolumeKg`
+      counts only `done` sets excluding `warmup` and cardio sets;
+      `weeklyVolumeSeries` buckets by local Monday across N weeks ascending;
+      `previousPerformance` returns the most recent done set's triple and
+      **null** when exercise never performed; converters exact (2.20462 /
+      0.621371); `displayWeight(80,'kg')==='80 kg'`, lb variant 1 decimal.
 - [ ] Run → FAIL → implement pure functions → PASS.
 - [ ] Commit: `feat(web): stats and unit helpers with tests`
 
@@ -447,22 +465,22 @@ Produces: `ExercisePicker` is NOT here (Task 9); screens referenced by
 Today (Task 11).
 
 - [ ] `ExercisesScreen`: `useExercises` + search input (debounced 200 ms,
-  `q` param) + muscle-group filter via `Sheet` + `SegmentedControl`;
-  sticky group headers; `Skeleton` while loading, `EmptyState` on no
-  results, `ErrorState` with retry. FAB "+" → sheet form (name ≥ 1 char,
-  muscle group, equipment, type segmented) → `useCreateExercise`.
+      `q` param) + muscle-group filter via `Sheet` + `SegmentedControl`;
+      sticky group headers; `Skeleton` while loading, `EmptyState` on no
+      results, `ErrorState` with retry. FAB "+" → sheet form (name ≥ 1 char,
+      muscle group, equipment, type segmented) → `useCreateExercise`.
 - [ ] `ExerciseDetailScreen`: badges; **PR card** — scan `useWorkouts(200)`
-  entries for this exercise → `bestSetByEpley` over each workout's sets →
-  global best with date; **history list** — most recent first, best set
-  of each session highlighted, "previous" line via
-  `previousPerformance`; all weights through `displayWeight` with
-  settings from `useSettings`.
+      entries for this exercise → `bestSetByEpley` over each workout's sets →
+      global best with date; **history list** — most recent first, best set
+      of each session highlighted, "previous" line via
+      `previousPerformance`; all weights through `displayWeight` with
+      settings from `useSettings`.
 - [ ] i18n keys for every string; manual pass: create custom exercise →
-  appears in list/detail.
+      appears in list/detail.
 - [ ] Tests: component test for search filtering + one for the create
-  form validation (happy-dom, mock hooks module).
+      form validation (happy-dom, mock hooks module).
 - [ ] `bun run typecheck && bun test && bun run lint`; commit
-  `feat(web): exercise library browse, create, and detail history`
+      `feat(web): exercise library browse, create, and detail history`
 
 ### Task 8: Active workout store (server-backed)
 
@@ -474,20 +492,20 @@ Today (Task 11).
 Interfaces → Active workout store**; consumes hooks + `newId()`.
 
 - [ ] Write failing tests (mock `src/api/hooks` with an in-memory
-  workout; `useActiveWorkout.getState()`): `startWorkout` posts and
-  mirrors (non-null workout, `status:'active'`); `hydrate` with active
-  row restores mirror, with `null` clears it; `addExercise` appends
-  entry (`position` = n) + one empty normal set; `addSet`/`updateSet`
-  (patch + bumps `position` order stability)/`removeSet`; `moveEntry`
-  swaps positions; `toggleSuperset` creates one `supersetId` on both
-  entries, second toggle clears both; `setTitle`/`setBodyWeight`;
-  every mutation awaits the API **before** state commit except
-  `updateSet` which applies optimistically and rolls back on rejection;
-  `finishWorkout` calls finish, clears mirror, returns id;
-  `discardWorkout` deletes and clears.
+      workout; `useActiveWorkout.getState()`): `startWorkout` posts and
+      mirrors (non-null workout, `status:'active'`); `hydrate` with active
+      row restores mirror, with `null` clears it; `addExercise` appends
+      entry (`position` = n) + one empty normal set; `addSet`/`updateSet`
+      (patch + bumps `position` order stability)/`removeSet`; `moveEntry`
+      swaps positions; `toggleSuperset` creates one `supersetId` on both
+      entries, second toggle clears both; `setTitle`/`setBodyWeight`;
+      every mutation awaits the API **before** state commit except
+      `updateSet` which applies optimistically and rolls back on rejection;
+      `finishWorkout` calls finish, clears mirror, returns id;
+      `discardWorkout` deletes and clears.
 - [ ] Run → FAIL → implement (single `commit(workout)` helper that
-  PATCHes full entries payload with `expectedUpdatedAt`, updates mirror
-  from response, invalidates `['workouts']`) → PASS.
+      PATCHes full entries payload with `expectedUpdatedAt`, updates mirror
+      from response, invalidates `['workouts']`) → PASS.
 - [ ] Commit: `feat(web): server-backed active workout store`
 
 ### Task 9: Logging UI + exercise picker + rest timer
@@ -504,29 +522,29 @@ Produces: `ExercisePicker` props
 templates); `RestTimerBar` rendered in `AppShell`.
 
 - [ ] `restTimer` store: fake-timer tests for start/pause/resume/cancel/
-  `addSeconds`, beep at zero (WebAudio oscillator mocked),
-  `navigator.vibrate` guarded, completion sets `isRunning:false`.
+      `addSeconds`, beep at zero (WebAudio oscillator mocked),
+      `navigator.vibrate` guarded, completion sets `isRunning:false`.
 - [ ] `SetRow` (strength): `[✓] [weight] × [reps] [RPE] [badge] [⋯]`
-  — tap-to-edit `Input` (`inputMode="decimal"`), commit on blur/Enter,
-  display via `displayWeight` / input→kg via `lbToKg`; badge cycles
-  normal→warmup→drop→failure from ⋯ menu (menu also deletes); RPE
-  0–10 half-point stepper in a small popover. Cardio variant renders
-  duration/distance/calories fields (read from `Exercise.type`).
+      — tap-to-edit `Input` (`inputMode="decimal"`), commit on blur/Enter,
+      display via `displayWeight` / input→kg via `lbToKg`; badge cycles
+      normal→warmup→drop→failure from ⋯ menu (menu also deletes); RPE
+      0–10 half-point stepper in a small popover. Cardio variant renders
+      duration/distance/calories fields (read from `Exercise.type`).
 - [ ] `EntryCard`: header (name → popover showing last performance +
-  "repeat" prefill button), superset badge/toggle (⋯ → pick sibling
-  entry), collapsible notes, "+ Add set" (then `restTimer.start()` if
-  previous set was done), ⋯ menu (replace exercise, move up/down,
-  delete with confirm).
+      "repeat" prefill button), superset badge/toggle (⋯ → pick sibling
+      entry), collapsible notes, "+ Add set" (then `restTimer.start()` if
+      previous set was done), ⋯ menu (replace exercise, move up/down,
+      delete with confirm).
 - [ ] `ExercisePicker`: `Sheet` with search, recent 5 (from
-  `useWorkouts(10)`), full library grouped; `EmptyState` for no matches.
+      `useWorkouts(10)`), full library grouped; `EmptyState` for no matches.
 - [ ] `ActiveWorkoutScreen`: sticky header (editable title, elapsed
-  ticker `Date.now()-startTime`, Finish primary button, ⋯ →
-  body-weight input + discard confirm); list of `EntryCard`s; "Add
-  exercise" button; offline banner per [PRD-FE §4](../specs/PRD-FE.md)
-  (writes blocked with inline note when `navigator.onLine === false`).
+      ticker `Date.now()-startTime`, Finish primary button, ⋯ →
+      body-weight input + discard confirm); list of `EntryCard`s; "Add
+      exercise" button; offline banner per [PRD-FE §4](../specs/PRD-FE.md)
+      (writes blocked with inline note when `navigator.onLine === false`).
 - [ ] Manual E2E on device-width viewport: start → 2 exercises →
-  warmup+normal sets → superset → timer beeps → finish → row appears in
-  history query; refresh mid-workout → `hydrate()` restores session.
+      warmup+normal sets → superset → timer beeps → finish → row appears in
+      history query; refresh mid-workout → `hydrate()` restores session.
 - [ ] Commit: `feat(web): workout logging UI with rest timer`
 
 ### Task 10: History & workout detail
@@ -539,16 +557,16 @@ route `/workouts/$id`. Modify: `src/i18n/*`, `src/components/workout/EntryCard.t
 (`useUpdateWorkout`, `useDeleteWorkout`), stats/units.
 
 - [ ] `HistoryScreen`: group by month (`date-fns` `format(it, 'LLLL yyyy')`),
-  row = date day + title + duration + volume + set count; skeleton /
-  empty ("No workouts yet" → CTA to `/`) / error states.
+      row = date day + title + duration + volume + set count; skeleton /
+      empty ("No workouts yet" → CTA to `/`) / error states.
 - [ ] `WorkoutDetailScreen`: stats strip (duration, volume, sets, reps),
-  `EntryCard`s `readOnly`, workout notes; **Edit** → inline edit mode
-  reusing `SetRow` inputs → Save calls `useUpdateWorkout` with
-  `expectedUpdatedAt` (409 → conflict prompt with Reload); **Delete** →
-  confirm dialog → navigate `/history`.
+      `EntryCard`s `readOnly`, workout notes; **Edit** → inline edit mode
+      reusing `SetRow` inputs → Save calls `useUpdateWorkout` with
+      `expectedUpdatedAt` (409 → conflict prompt with Reload); **Delete** →
+      confirm dialog → navigate `/history`.
 - [ ] Tests: history grouping (given workouts across 2 months → 2 headers
-  ascending); detail renders sets; conflict path shows reload prompt
-  (mocked mutation rejection with `ApiError code:'conflict'`).
+      ascending); detail renders sets; conflict path shows reload prompt
+      (mocked mutation rejection with `ApiError code:'conflict'`).
 - [ ] Commit: `feat(web): history list and workout detail with edit/delete`
 
 ### Task 11: Settings & Today
@@ -562,17 +580,17 @@ boot), `src/i18n/*`.
 `weeklyVolumeSeries`, `bestSetByEpley`.
 
 - [ ] `SettingsScreen`: sections Appearance (theme), Units (weight,
-  distance), Rest timer (presets 30/60/90/120/180 + custom
-  `NumberStepper`), Language (English / Bahasa Indonesia), About
-  (version, one-line data-ownership note). Each change →
-  `useUpdateSettings` → immediate effect: `documentElement.classList`
-  dark/light, `i18n.changeLanguage`, rest-timer store default.
+      distance), Rest timer (presets 30/60/90/120/180 + custom
+      `NumberStepper`), Language (English / Bahasa Indonesia), About
+      (version, one-line data-ownership note). Each change →
+      `useUpdateSettings` → immediate effect: `documentElement.classList`
+      dark/light, `i18n.changeLanguage`, rest-timer store default.
 - [ ] `TodayScreen`: greeting + date; primary Start (→
-  `useCreateWorkout` → navigate `/workout/active`) or Resume when
-  active exists; this-week row (workouts, total volume, total sets via
-  `weeklyVolumeSeries(…, 1)`); recent PRs (≤ 3 across last 20 workouts,
-  `bestSetByEpley`, `displayWeight`); recent workouts (≤ 5, reuse
-  history row component); first-run `EmptyState`.
+      `useCreateWorkout` → navigate `/workout/active`) or Resume when
+      active exists; this-week row (workouts, total volume, total sets via
+      `weeklyVolumeSeries(…, 1)`); recent PRs (≤ 3 across last 20 workouts,
+      `bestSetByEpley`, `displayWeight`); recent workouts (≤ 5, reuse
+      history row component); first-run `EmptyState`.
 - [ ] i18n completeness audit for all screens so far (both files).
 - [ ] Commit: `feat(web): settings and today home screen`
 
@@ -586,19 +604,19 @@ Phase-1 rows 🟩), `docs/features/README.md` (statuses), `docs/data/db-schema.m
 **Interfaces:** none new — gate only.
 
 - [ ] Offline check: `bun run build && bun run --filter @reph/web preview`
-  → DevTools offline → full reload → shell renders, banner shows, writes
-  blocked gracefully; online → writes resume.
+      → DevTools offline → full reload → shell renders, banner shows, writes
+      blocked gracefully; online → writes resume.
 - [ ] i18n grep gate: no string literals in `src/screens` +
-  `src/components` (excluding tests) reaching UI — fix stragglers into
-  `t()`.
+      `src/components` (excluding tests) reaching UI — fix stragglers into
+      `t()`.
 - [ ] Docs sync: statuses, schema diagram, features table — as above.
 - [ ] **Release gate (all must pass):**
-  `bun run typecheck && bun test && bun run lint && bun run format:check && bun run build`
-  plus the manual checklist: start → log (warmup/drop/superset/RPE) →
-  timer beep → finish → history → detail edit (incl. conflict path) →
-  delete → exercise PR → custom exercise → settings kg→lb display switch
-  → theme switch → language switch → offline reload → PWA install on
-  Android Chrome (Add to Home Screen) and iOS Safari.
+      `bun run typecheck && bun test && bun run lint && bun run format:check && bun run build`
+      plus the manual checklist: start → log (warmup/drop/superset/RPE) →
+      timer beep → finish → history → detail edit (incl. conflict path) →
+      delete → exercise PR → custom exercise → settings kg→lb display switch
+      → theme switch → language switch → offline reload → PWA install on
+      Android Chrome (Add to Home Screen) and iOS Safari.
 - [ ] Commit: `chore: phase 1 release gate — pwa polish, docs sync`
 
 ---

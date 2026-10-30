@@ -37,13 +37,13 @@ Start here. Every note below is linked with standard markdown links
 
 ## Decisions
 
-| ADR                                       | Subject                                                        | Status    |
-| ----------------------------------------- | -------------------------------------------------------------- | --------- |
-| [ADR-001](adr/ADR-001-monorepo-layout.md) | Monorepo layout: `apps/web`, `apps/api`, `packages/contracts`   | accepted  |
-| [ADR-002](adr/ADR-002-bun-runtime.md)     | Bun as the sole runtime (install, run, test, lint via oxlint)   | accepted  |
-| [ADR-003](adr/ADR-003-postgres-docker.md) | PostgreSQL 16 in Docker + Drizzle ORM (PGlite for unit tests)   | accepted  |
-| [ADR-004](adr/ADR-004-online-first.md)    | Online-first operation — the API is the single source of truth  | accepted  |
-| [ADR-005](adr/ADR-005-self-hosted-stb.md) | Self-hosted target: home STB (1 GB RAM / 4 GB storage)          | accepted  |
+| ADR                                       | Subject                                                        | Status   |
+| ----------------------------------------- | -------------------------------------------------------------- | -------- |
+| [ADR-001](adr/ADR-001-monorepo-layout.md) | Monorepo layout: `apps/web`, `apps/api`, `packages/contracts`  | accepted |
+| [ADR-002](adr/ADR-002-bun-runtime.md)     | Bun as the sole runtime (install, run, test, lint via oxlint)  | accepted |
+| [ADR-003](adr/ADR-003-postgres-docker.md) | PostgreSQL 16 in Docker + Drizzle ORM (PGlite for unit tests)  | accepted |
+| [ADR-004](adr/ADR-004-online-first.md)    | Online-first operation — the API is the single source of truth | accepted |
+| [ADR-005](adr/ADR-005-self-hosted-stb.md) | Self-hosted target: home STB (1 GB RAM / 4 GB storage)         | accepted |
 
 ## Guides
 

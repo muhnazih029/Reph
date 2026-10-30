@@ -8,6 +8,7 @@ tags:
 status: draft
 updated: 2026-10-29
 ---
+
 # Development Guide
 
 **Status:** Draft
@@ -19,11 +20,11 @@ updated: 2026-10-29
 
 ## 1. Prerequisites
 
-| Tool | Version | Notes |
-|------|---------|-------|
-| Bun | ≥ 1.4 | runtime, package manager, test runner |
-| Docker / Podman | any recent | PostgreSQL 16 only |
-| Git | any recent | — |
+| Tool            | Version    | Notes                                 |
+| --------------- | ---------- | ------------------------------------- |
+| Bun             | ≥ 1.4      | runtime, package manager, test runner |
+| Docker / Podman | any recent | PostgreSQL 16 only                    |
+| Git             | any recent | —                                     |
 
 ## 2. Repo map
 
@@ -80,12 +81,12 @@ bun run db:seed            # idempotent exercise library upsert
 
 `.env` (never committed; `.env.example` documents every key):
 
-| Key | Required | Purpose |
-|-----|----------|---------|
-| `DATABASE_URL` | yes | `postgres://reph:reph@localhost:5432/reph` (compose default) |
-| `REPH_API_TOKEN` | prod yes / dev optional | bearer token; empty = auth disabled (local dev only) |
-| `REPH_DATA_DIR` | Phase 2 | directory for photo files (default `./data`) |
-| `PORT` | no | API port, default `3001` |
+| Key              | Required                | Purpose                                                      |
+| ---------------- | ----------------------- | ------------------------------------------------------------ |
+| `DATABASE_URL`   | yes                     | `postgres://reph:reph@localhost:5432/reph` (compose default) |
+| `REPH_API_TOKEN` | prod yes / dev optional | bearer token; empty = auth disabled (local dev only)         |
+| `REPH_DATA_DIR`  | Phase 2                 | directory for photo files (default `./data`)                 |
+| `PORT`           | no                      | API port, default `3001`                                     |
 
 ## 5. Conventions
 
@@ -103,10 +104,10 @@ bun run db:seed            # idempotent exercise library upsert
 
 ### 5.2 Tests (bun test)
 
-| Tier | Location | Infra | Rule |
-|------|----------|-------|------|
-| Unit | co-located `*.test.ts` | none (PGlite for DB-backed api tests) | runs with compose **down** |
-| E2E | `apps/api/test/`, `apps/web/test/` (later) | compose **up** | added when a flow spans modules |
+| Tier | Location                                   | Infra                                 | Rule                            |
+| ---- | ------------------------------------------ | ------------------------------------- | ------------------------------- |
+| Unit | co-located `*.test.ts`                     | none (PGlite for DB-backed api tests) | runs with compose **down**      |
+| E2E  | `apps/api/test/`, `apps/web/test/` (later) | compose **up**                        | added when a flow spans modules |
 
 - Given/When/Then structure; one behavior per test; factories in
   `test/factories.ts`.
@@ -124,10 +125,10 @@ bun run db:seed            # idempotent exercise library upsert
 
 ## 6. Troubleshooting
 
-| Symptom | Fix |
-|---------|-----|
-| `ECONNREFUSED 5432` | `docker compose up -d`, check `docker compose ps` |
-| Migration drift errors | `bun run db:generate` then `bun run db:migrate`; never edit generated SQL |
-| Port 3000/3001 busy | export `PORT`, or stop the other process |
-| Web tests hang on fetch | queries not mocked — wrap with `QueryClientProvider({ queries: { retry: false } })` and mock `src/api/client` |
-| Stale PWA assets after deploy | hard-reload; service worker is `autoUpdate` |
+| Symptom                       | Fix                                                                                                           |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `ECONNREFUSED 5432`           | `docker compose up -d`, check `docker compose ps`                                                             |
+| Migration drift errors        | `bun run db:generate` then `bun run db:migrate`; never edit generated SQL                                     |
+| Port 3000/3001 busy           | export `PORT`, or stop the other process                                                                      |
+| Web tests hang on fetch       | queries not mocked — wrap with `QueryClientProvider({ queries: { retry: false } })` and mock `src/api/client` |
+| Stale PWA assets after deploy | hard-reload; service worker is `autoUpdate`                                                                   |

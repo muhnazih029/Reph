@@ -8,6 +8,7 @@ tags:
 status: draft
 updated: 2026-10-29
 ---
+
 # Contracts (`packages/contracts`)
 
 **Version:** 0.1-draft (2026-10-29)
@@ -27,12 +28,26 @@ inferred types. **If it is not in this file, it is not on the wire.**
 import { z } from "zod";
 
 export const muscleGroupSchema = z.enum([
-  "chest", "back", "shoulders", "upper_arms", "forearms",
-  "hips", "thighs", "calves", "waist", "cardio",
+  "chest",
+  "back",
+  "shoulders",
+  "upper_arms",
+  "forearms",
+  "hips",
+  "thighs",
+  "calves",
+  "waist",
+  "cardio",
 ]);
 export const equipmentSchema = z.enum([
-  "barbell", "dumbbell", "machine", "cable",
-  "kettlebell", "bodyweight", "band", "other",
+  "barbell",
+  "dumbbell",
+  "machine",
+  "cable",
+  "kettlebell",
+  "bodyweight",
+  "band",
+  "other",
 ]);
 export const exerciseTypeSchema = z.enum(["strength", "cardio"]);
 export const setTypeSchema = z.enum(["normal", "warmup", "drop", "failure"]);
@@ -51,7 +66,7 @@ export const epochMsSchema = z.number().int().nonnegative();
 ```ts
 export const exerciseSchema = z.object({
   id: idSchema,
-  userId: idSchema.nullable(),        // null = global seeded library
+  userId: idSchema.nullable(), // null = global seeded library
   name: z.string().min(1).max(80),
   muscleGroup: muscleGroupSchema,
   equipment: equipmentSchema,
@@ -81,7 +96,7 @@ export const workoutEntrySchema = z.object({
   id: idSchema,
   exerciseId: idSchema,
   notes: z.string().max(2000),
-  supersetId: idSchema.nullable(),    // entries sharing an id form a superset
+  supersetId: idSchema.nullable(), // entries sharing an id form a superset
   position: z.number().int().min(0),
   sets: z.array(workoutSetSchema),
 });
@@ -96,7 +111,7 @@ export const workoutSchema = z.object({
   startTime: epochMsSchema,
   endTime: epochMsSchema.nullable(),
   bodyWeightKg: z.number().min(0).max(999).nullable(),
-  entries: z.array(workoutEntrySchema),   // ordered by position
+  entries: z.array(workoutEntrySchema), // ordered by position
   createdAt: epochMsSchema,
   updatedAt: epochMsSchema,
 });
@@ -104,8 +119,8 @@ export type Workout = z.infer<typeof workoutSchema>;
 
 export const settingsSchema = z.object({
   userId: idSchema,
-  weightUnit: weightUnitSchema,       // display only — storage is always kg
-  distanceUnit: distanceUnitSchema,   // display only — storage is always meters
+  weightUnit: weightUnitSchema, // display only — storage is always kg
+  distanceUnit: distanceUnitSchema, // display only — storage is always meters
   restTimerSeconds: z.number().int().min(0).max(3600),
   theme: themeSchema,
   language: languageSchema,
@@ -117,15 +132,19 @@ export type Settings = z.infer<typeof settingsSchema>;
 ## 3. Request bodies
 
 ```ts
-export const createExerciseRequestSchema = exerciseSchema
-  .omit({ id: true, userId: true, isCustom: true, createdAt: true });
+export const createExerciseRequestSchema = exerciseSchema.omit({
+  id: true,
+  userId: true,
+  isCustom: true,
+  createdAt: true,
+});
 
 export const createWorkoutRequestSchema = z.object({
   title: workoutSchema.shape.title.optional(),
 });
 
 export const updateWorkoutRequestSchema = z.object({
-  expectedUpdatedAt: epochMsSchema,   // 409 guard (PRD-API §2)
+  expectedUpdatedAt: epochMsSchema, // 409 guard (PRD-API §2)
   title: workoutSchema.shape.title.optional(),
   notes: workoutSchema.shape.notes.optional(),
   bodyWeightKg: workoutSchema.shape.bodyWeightKg.optional(),
@@ -136,10 +155,12 @@ export const finishWorkoutRequestSchema = z.object({
   expectedUpdatedAt: epochMsSchema,
 });
 
-export const updateSettingsRequestSchema = settingsSchema.omit({
-  userId: true,
-  updatedAt: true,
-}).partial();
+export const updateSettingsRequestSchema = settingsSchema
+  .omit({
+    userId: true,
+    updatedAt: true,
+  })
+  .partial();
 ```
 
 ## 4. Envelope

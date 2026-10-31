@@ -556,18 +556,18 @@ route `/workouts/$id`. Modify: `src/i18n/*`, `src/components/workout/EntryCard.t
 **Interfaces:** Consumes: `useWorkouts`, `useWorkout`, mutations
 (`useUpdateWorkout`, `useDeleteWorkout`), stats/units.
 
-- [ ] `HistoryScreen`: group by month (`date-fns` `format(it, 'LLLL yyyy')`),
+- [x] `HistoryScreen`: group by month (`date-fns` `format(it, 'LLLL yyyy')`),
       row = date day + title + duration + volume + set count; skeleton /
       empty ("No workouts yet" → CTA to `/`) / error states.
-- [ ] `WorkoutDetailScreen`: stats strip (duration, volume, sets, reps),
+- [x] `WorkoutDetailScreen`: stats strip (duration, volume, sets, reps),
       `EntryCard`s `readOnly`, workout notes; **Edit** → inline edit mode
       reusing `SetRow` inputs → Save calls `useUpdateWorkout` with
       `expectedUpdatedAt` (409 → conflict prompt with Reload); **Delete** →
       confirm dialog → navigate `/history`.
-- [ ] Tests: history grouping (given workouts across 2 months → 2 headers
+- [x] Tests: history grouping (given workouts across 2 months → 2 headers
       ascending); detail renders sets; conflict path shows reload prompt
       (mocked mutation rejection with `ApiError code:'conflict'`).
-- [ ] Commit: `feat(web): history list and workout detail with edit/delete`
+- [x] Commit: `feat(web): history list and workout detail with edit/delete`
 
 ### Task 11: Settings & Today
 

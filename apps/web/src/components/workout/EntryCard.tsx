@@ -1,4 +1,4 @@
-import type { Exercise, WorkoutEntry } from "@reph/contracts";
+import type { Exercise, WorkoutEntry, WorkoutSet } from "@reph/contracts";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useWorkouts } from "../../api/hooks";
@@ -25,6 +25,9 @@ export function EntryCard({
   weightUnit,
   distanceUnit,
   disabled = false,
+  readOnly = false,
+  onSetPatch,
+  onRemoveSet,
 }: {
   entry: WorkoutEntry;
   exercise: Exercise | undefined;
@@ -32,6 +35,11 @@ export function EntryCard({
   weightUnit: "kg" | "lbs";
   distanceUnit: "km" | "mi";
   disabled?: boolean;
+  /** history/detail display mode (docs/plans/phase-1-mvp.md Task 10) */
+  readOnly?: boolean;
+  /** detail edit mode: patch/remove receivers for the caller's draft */
+  onSetPatch?: (setId: string, patch: Partial<WorkoutSet>) => void;
+  onRemoveSet?: (setId: string) => void;
 }) {
   const { t } = useTranslation();
   const workouts = useWorkouts(200);
@@ -39,7 +47,7 @@ export function EntryCard({
   const [pickerOpen, setPickerOpen] = useState(false);
   const [notesOpen, setNotesOpen] = useState(false);
   const [previousOpen, setPreviousOpen] = useState(false);
-  const previous = previousPerformance(workouts.data ?? [], entry.exerciseId);
+  const previous = readOnly ? null : previousPerformance(workouts.data ?? [], entry.exerciseId);
 
   if (!exercise) return null;
 
@@ -81,26 +89,32 @@ export function EntryCard({
   return (
     <div className="rounded-radius border border-border bg-surface">
       <header className="flex items-center gap-2 px-4 py-2.5">
-        <button
-          type="button"
-          className="min-h-11 flex-1 truncate text-left text-base font-medium"
-          onClick={() => setPreviousOpen(true)}
-        >
-          {exercise.name}
-        </button>
+        {readOnly ? (
+          <span className="truncate text-base font-medium">{exercise.name}</span>
+        ) : (
+          <button
+            type="button"
+            className="min-h-11 flex-1 truncate text-left text-base font-medium"
+            onClick={() => setPreviousOpen(true)}
+          >
+            {exercise.name}
+          </button>
+        )}
         {entry.supersetId ? (
           <span className="rounded-sm bg-accent/10 px-1.5 py-0.5 text-xs text-accent">
             {t("workout.superset")}
           </span>
         ) : null}
-        <button
-          type="button"
-          aria-label={t("workout.entryMenu")}
-          className="min-h-11 min-w-9 text-text-muted"
-          onClick={() => setMenuOpen(true)}
-        >
-          ⋯
-        </button>
+        {!readOnly && !onSetPatch ? (
+          <button
+            type="button"
+            aria-label={t("workout.entryMenu")}
+            className="min-h-11 min-w-9 text-text-muted"
+            onClick={() => setMenuOpen(true)}
+          >
+            ⋯
+          </button>
+        ) : null}
       </header>
 
       <ul className="divide-y divide-border">
@@ -113,12 +127,19 @@ export function EntryCard({
               weightUnit={weightUnit}
               distanceUnit={distanceUnit}
               disabled={disabled}
+              readOnly={readOnly && !onSetPatch}
+              onPatch={onSetPatch ? (patch) => onSetPatch(set.id, patch) : undefined}
+              onRemove={onRemoveSet && onSetPatch ? () => onRemoveSet(set.id) : undefined}
             />
           </li>
         ))}
       </ul>
 
-      {notesOpen ? (
+      {readOnly ? (
+        entry.notes !== "" ? (
+          <p className="px-4 pb-3 text-sm text-text-muted">{entry.notes}</p>
+        ) : null
+      ) : notesOpen ? (
         <div className="px-4 py-2">
           <Input
             aria-label={t("workout.notes")}
@@ -136,26 +157,28 @@ export function EntryCard({
         </div>
       ) : null}
 
-      <div className="flex gap-2 px-4 py-3">
-        {entry.notes === "" && !notesOpen ? (
+      {!readOnly ? (
+        <div className="flex gap-2 px-4 py-3">
+          {entry.notes === "" && !notesOpen ? (
+            <button
+              type="button"
+              className="min-h-11 rounded-sm px-3 text-sm text-text-muted disabled:opacity-50"
+              disabled={disabled}
+              onClick={() => setNotesOpen(true)}
+            >
+              {t("workout.addNote")}
+            </button>
+          ) : null}
           <button
             type="button"
-            className="min-h-11 rounded-sm px-3 text-sm text-text-muted disabled:opacity-50"
+            className="min-h-11 flex-1 rounded-sm border border-dashed border-border text-sm text-text-muted disabled:opacity-50"
             disabled={disabled}
-            onClick={() => setNotesOpen(true)}
+            onClick={() => void addSet()}
           >
-            {t("workout.addNote")}
+            {t("workout.addSet")}
           </button>
-        ) : null}
-        <button
-          type="button"
-          className="min-h-11 flex-1 rounded-sm border border-dashed border-border text-sm text-text-muted disabled:opacity-50"
-          disabled={disabled}
-          onClick={() => void addSet()}
-        >
-          {t("workout.addSet")}
-        </button>
-      </div>
+        </div>
+      ) : null}
 
       <PreviousSheet
         open={previousOpen}

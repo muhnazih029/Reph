@@ -2,16 +2,17 @@ import type { ExerciseType, WorkoutSet } from "@reph/contracts";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useActiveWorkoutStore } from "../../stores/activeWorkout";
-import { lbToKg } from "../../lib/units";
+import { displayWeight, lbToKg } from "../../lib/units";
 import { Input } from "../ui/Input";
 import { Sheet } from "../ui/Sheet";
 import { NumberStepper } from "../ui/NumberStepper";
 import { Button } from "../ui/Button";
 
-// One set line: [✓] [weight] × [reps] [RPE] [badge] [⋯] (strength) or
-// [✓] [duration] [distance] [calories] (cardio) — Task 9. Tap-to-edit
-// inputs commit on blur/Enter; weights display in the user's unit but
-// commit as canonical kg.
+// One set line — three modes (Task 9/10):
+//   live  — commits to the active-workout store (✓, menus, RPE popover)
+//   edit  — workout-detail inline edit; patches go to the caller's draft
+//   readOnly — history display through displayWeight
+// Weights display in the user's unit but always commit canonical kg.
 
 type WeightUnit = "kg" | "lbs";
 type DistanceUnit = "km" | "mi";
@@ -23,6 +24,9 @@ export function SetRow({
   weightUnit,
   distanceUnit,
   disabled = false,
+  readOnly = false,
+  onPatch,
+  onRemove,
 }: {
   entryId: string;
   set: WorkoutSet;
@@ -30,14 +34,54 @@ export function SetRow({
   weightUnit: WeightUnit;
   distanceUnit: DistanceUnit;
   disabled?: boolean;
+  readOnly?: boolean;
+  /** edit mode: patch receiver (idle while live mode writes to the store) */
+  onPatch?: (patch: Partial<WorkoutSet>) => void;
+  /** edit mode: removes the set from the caller's draft */
+  onRemove?: () => void;
 }) {
   const { t } = useTranslation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [rpeOpen, setRpeOpen] = useState(false);
 
-  const toggleDone = () => {
-    void useActiveWorkoutStore.getState().updateSet(entryId, set.id, { done: !set.done });
+  if (readOnly) {
+    return (
+      <div className="flex flex-wrap items-center gap-2 px-4 py-2">
+        <span
+          className={`numeric text-sm ${set.done ? "text-text" : "text-text-muted line-through"}`}
+        >
+          {set.done ? "✓" : "○"}
+        </span>
+        {exerciseType === "strength" ? (
+          <span className="numeric text-sm">
+            {displayWeight(set.weightKg, weightUnit)} × {set.reps ?? "–"}
+          </span>
+        ) : (
+          <span className="numeric text-sm">
+            {cardioSummary(set, distanceUnit, t("common.minutesShort"))}
+          </span>
+        )}
+        {exerciseType === "strength" && set.rpe !== null ? (
+          <span className="numeric text-xs text-text-muted">@ {set.rpe} RPE</span>
+        ) : null}
+        {set.type !== "normal" ? (
+          <span className="rounded-sm px-1.5 py-0.5 text-xs bg-surface-2 text-text-muted">
+            {t(`workout.setType.${set.type}`)}
+          </span>
+        ) : null}
+      </div>
+    );
+  }
+
+  const patch = (partial: Partial<WorkoutSet>) => {
+    if (onPatch) {
+      onPatch(partial);
+      return;
+    }
+    void useActiveWorkoutStore.getState().updateSet(entryId, set.id, partial);
   };
+
+  const toggleDone = () => patch({ done: !set.done });
 
   return (
     <div className={`flex flex-wrap items-center gap-2 px-4 py-2 ${set.done ? "opacity-60" : ""}`}>
@@ -57,12 +101,21 @@ export function SetRow({
       </button>
 
       {exerciseType === "strength" ? (
-        <StrengthFields entryId={entryId} set={set} weightUnit={weightUnit} disabled={disabled} />
+        <StrengthFields set={set} weightUnit={weightUnit} disabled={disabled} onPatch={patch} />
       ) : (
-        <CardioFields entryId={entryId} set={set} distanceUnit={distanceUnit} disabled={disabled} />
+        <CardioFields set={set} distanceUnit={distanceUnit} disabled={disabled} onPatch={patch} />
       )}
 
-      {exerciseType === "strength" ? (
+      {exerciseType === "strength" && onPatch ? (
+        <NumberCell
+          label={t("workout.rpe")}
+          value={set.rpe}
+          disabled={disabled}
+          className="w-14"
+          onCommit={(rpe) => patch({ rpe })}
+        />
+      ) : null}
+      {exerciseType === "strength" && !onPatch ? (
         <button
           type="button"
           onClick={() => setRpeOpen(true)}
@@ -73,29 +126,59 @@ export function SetRow({
         </button>
       ) : null}
 
-      <button
-        type="button"
-        aria-label={t("workout.setMenu")}
-        disabled={disabled}
-        onClick={() => setMenuOpen(true)}
-        className="min-h-9 min-w-9 rounded-sm text-text-muted"
-      >
-        ⋯
-      </button>
+      {onRemove ? (
+        <button
+          type="button"
+          aria-label={t("workout.deleteSet")}
+          onClick={onRemove}
+          className="min-h-9 min-w-9 rounded-sm text-danger"
+        >
+          ×
+        </button>
+      ) : null}
 
-      <span
-        className={`rounded-sm px-1.5 py-0.5 text-xs ${set.type === "normal" ? "invisible" : "bg-surface-2 text-text-muted"}`}
-      >
-        {t(`workout.setType.${set.type}`)}
-      </span>
+      {!onPatch ? (
+        <button
+          type="button"
+          aria-label={t("workout.setMenu")}
+          disabled={disabled}
+          onClick={() => setMenuOpen(true)}
+          className="min-h-9 min-w-9 rounded-sm text-text-muted"
+        >
+          ⋯
+        </button>
+      ) : null}
 
-      <SetMenuSheet open={menuOpen} onOpenChange={setMenuOpen} entryId={entryId} set={set} />
-      <RpeSheet open={rpeOpen} onOpenChange={setRpeOpen} entryId={entryId} set={set} />
+      {set.type !== "normal" ? (
+        <span className="rounded-sm px-1.5 py-0.5 text-xs bg-surface-2 text-text-muted">
+          {t(`workout.setType.${set.type}`)}
+        </span>
+      ) : null}
+
+      {!onPatch ? (
+        <>
+          <SetMenuSheet open={menuOpen} onOpenChange={setMenuOpen} entryId={entryId} set={set} />
+          <RpeSheet open={rpeOpen} onOpenChange={setRpeOpen} entryId={entryId} set={set} />
+        </>
+      ) : null}
     </div>
   );
 }
 
-/** Numeric tap-to-edit cell; commits on blur/Enter, shows "–" when empty. */
+function cardioSummary(set: WorkoutSet, unit: DistanceUnit, minutesLabel: string): string {
+  const parts: string[] = [];
+  if (set.durationSeconds !== null)
+    parts.push(`${Math.round(set.durationSeconds / 60)} ${minutesLabel}`);
+  if (set.distanceMeters !== null) {
+    parts.push(
+      `${Math.round((set.distanceMeters / (unit === "mi" ? 1609.344 : 1000)) * 100) / 100} ${unit}`,
+    );
+  }
+  if (set.calories !== null) parts.push(`${set.calories} kcal`);
+  return parts.join(" · ") || "–";
+}
+
+/** Numeric tap-to-edit cell; commits on blur/Enter, shows "–"/empty when null. */
 function NumberCell({
   value,
   onCommit,
@@ -124,7 +207,7 @@ function NumberCell({
       aria-label={label}
       numeric
       disabled={disabled}
-      className={`h-9 w-16 px-1 text-center ${className}`}
+      className={`h-9 px-1 text-center ${className}`}
       value={shownValue}
       onChange={(event) => setDraft(event.target.value)}
       onBlur={commit}
@@ -136,18 +219,17 @@ function NumberCell({
 }
 
 function StrengthFields({
-  entryId,
   set,
   weightUnit,
   disabled,
+  onPatch,
 }: {
-  entryId: string;
   set: WorkoutSet;
   weightUnit: WeightUnit;
   disabled?: boolean;
+  onPatch: (patch: Partial<WorkoutSet>) => void;
 }) {
   const { t } = useTranslation();
-  const store = useActiveWorkoutStore.getState();
   const display =
     set.weightKg === null
       ? null
@@ -159,10 +241,10 @@ function StrengthFields({
         label={`${t("workout.weight")} (${weightUnit})`}
         value={display}
         disabled={disabled}
-        className="numeric"
+        className="numeric w-16"
         onCommit={(value) => {
           const kg = value === null ? null : weightUnit === "lbs" ? lbToKg(value) : value;
-          void store.updateSet(entryId, set.id, { weightKg: kg });
+          onPatch({ weightKg: kg });
         }}
       />
       <span aria-hidden="true" className="text-text-muted">
@@ -172,7 +254,8 @@ function StrengthFields({
         label={t("workout.reps")}
         value={set.reps}
         disabled={disabled}
-        onCommit={(reps) => void store.updateSet(entryId, set.id, { reps })}
+        className="w-16"
+        onCommit={(reps) => onPatch({ reps })}
       />
     </>
   );
@@ -184,18 +267,17 @@ function kgToLbWeight(kg: number): number {
 }
 
 function CardioFields({
-  entryId,
   set,
   distanceUnit,
   disabled,
+  onPatch,
 }: {
-  entryId: string;
   set: WorkoutSet;
   distanceUnit: DistanceUnit;
   disabled?: boolean;
+  onPatch: (patch: Partial<WorkoutSet>) => void;
 }) {
   const { t } = useTranslation();
-  const store = useActiveWorkoutStore.getState();
   const minutes =
     set.durationSeconds === null ? null : Math.round((set.durationSeconds / 60) * 10) / 10;
   const distance =
@@ -209,18 +291,18 @@ function CardioFields({
         label={`${t("workout.duration")} (${t("common.minutesShort")})`}
         value={minutes}
         disabled={disabled}
+        className="w-16"
         onCommit={(value) =>
-          void store.updateSet(entryId, set.id, {
-            durationSeconds: value === null ? null : Math.round(value * 60),
-          })
+          onPatch({ durationSeconds: value === null ? null : Math.round(value * 60) })
         }
       />
       <NumberCell
         label={`${t("workout.distance")} (${distanceUnit})`}
         value={distance}
         disabled={disabled}
+        className="w-16"
         onCommit={(value) =>
-          void store.updateSet(entryId, set.id, {
+          onPatch({
             distanceMeters:
               value === null ? null : Math.round(value * (distanceUnit === "mi" ? 1609.344 : 1000)),
           })
@@ -230,13 +312,14 @@ function CardioFields({
         label={t("workout.calories")}
         value={set.calories}
         disabled={disabled}
-        onCommit={(value) => void store.updateSet(entryId, set.id, { calories: value })}
+        className="w-16"
+        onCommit={(calories) => onPatch({ calories })}
       />
     </>
   );
 }
 
-/** ⋯ sheet — set-type cycle + delete (docs/plans/phase-1-mvp.md Task 9). */
+/** ⋯ sheet (live mode) — set-type cycle + delete. */
 function SetMenuSheet({
   open,
   onOpenChange,
@@ -288,7 +371,7 @@ function SetMenuSheet({
   );
 }
 
-/** RPE 0–10 in half-point steps (docs/plans/phase-1-mvp.md Task 9). */
+/** RPE 0–10 in half-point steps (live mode). */
 function RpeSheet({
   open,
   onOpenChange,

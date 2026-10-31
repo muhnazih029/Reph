@@ -1,13 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, mock } from "bun:test";
+import { mockedQueryClient } from "../test/mockQueryClient";
 
-// module mocks persist for the whole test process — give the settings
-// cache a shape (this also overrides whatever other files mocked before)
-const settingsHolder: { cache?: { restTimerSeconds?: number } } = {};
+// module mocks persist for the whole test process — this file and
+// activeWorkout.test share the same queryClient singleton mock
 mock.module("../api/queryClient", () => ({
-  queryClient: {
-    invalidateQueries: () => {},
-    getQueryData: (key: unknown[]) => (key[0] === "settings" ? settingsHolder.cache : undefined),
-  },
+  queryClient: mockedQueryClient,
 }));
 
 const { useRestTimerStore } = await import("./restTimer");
@@ -42,13 +39,13 @@ describe("restTimer store", () => {
   });
 
   it("falls back to the cached settings duration when started without arguments", () => {
-    settingsHolder.cache = { restTimerSeconds: 45 };
+    mockedQueryClient.setQueryData(["settings"], { restTimerSeconds: 45 });
     try {
       store().start();
       expect(store().totalSeconds).toBe(45);
       expect(store().remainingSeconds).toBe(45);
     } finally {
-      settingsHolder.cache = undefined;
+      mockedQueryClient.setQueryData(["settings"], undefined);
       store().cancel();
     }
   });

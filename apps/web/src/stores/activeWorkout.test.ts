@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, mock } from "bun:test";
 import type { Workout, WorkoutSet } from "@reph/contracts";
+import { mockedQueryClient } from "../test/mockQueryClient";
 
 const EX_A = crypto.randomUUID();
 const EX_B = crypto.randomUUID();
@@ -11,7 +12,7 @@ const EX_B = crypto.randomUUID();
 
 let active: Workout | null = null;
 let staleExpectedUpdatedAt = false; // forces the next PATCH to 409
-const invalidated: unknown[] = [];
+const invalidated = mockedQueryClient.invalidated;
 
 class MockApiError extends Error {
   constructor(
@@ -98,12 +99,10 @@ mock.module("../api/client", () => ({
   },
 }));
 
+// Shared mock singleton — process-wide module mocks make every test file
+// observe the same queryClient instance (see src/test/mockQueryClient.ts).
 mock.module("../api/queryClient", () => ({
-  queryClient: {
-    invalidateQueries: (options: unknown) => {
-      invalidated.push(options);
-    },
-  },
+  queryClient: mockedQueryClient,
 }));
 
 const { useActiveWorkoutStore } = await import("./activeWorkout");

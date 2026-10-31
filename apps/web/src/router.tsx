@@ -2,6 +2,7 @@ import { createRootRoute, createRoute, createRouter, useParams } from "@tanstack
 import { AppShell } from "./components/layout/AppShell";
 import { ActiveWorkoutScreen } from "./screens/ActiveWorkoutScreen";
 import { ExerciseDetailScreen } from "./screens/ExerciseDetailScreen";
+import { WorkoutDetailScreen } from "./screens/WorkoutDetailScreen";
 import { ExercisesScreen } from "./screens/ExercisesScreen";
 import { HistoryScreen } from "./screens/HistoryScreen";
 import { SettingsScreen } from "./screens/SettingsScreen";
@@ -54,6 +55,16 @@ const activeWorkoutRoute = createRoute({
   component: ActiveWorkoutScreen,
 });
 
+const workoutDetailRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/workouts/$id",
+  component: function WorkoutDetailRoute() {
+    const { id } = useParams({ strict: false });
+    if (!id) throw new Error("missing :id route param");
+    return <WorkoutDetailScreen id={id} />;
+  },
+});
+
 export const router = createRouter({
   routeTree: rootRoute.addChildren([
     todayRoute,
@@ -62,6 +73,7 @@ export const router = createRouter({
     exerciseDetailRoute,
     settingsRoute,
     activeWorkoutRoute,
+    workoutDetailRoute,
   ]),
 });
 

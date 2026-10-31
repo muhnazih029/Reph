@@ -100,7 +100,21 @@
   },
   "history": {
     "title": "History",
-    "empty": "No workouts yet"
+    "empty": "No workouts yet",
+    "setsCount_one": "{{count}} set",
+    "setsCount_other": "{{count}} sets",
+    "volumeDisplay": "{{value}} kg"
+  },
+  "detail": {
+    "edit": "Edit",
+    "backToHistory": "Back to history",
+    "duration": "Duration",
+    "volume": "Volume",
+    "sets": "Sets",
+    "reps": "Reps",
+    "conflictTitle": "This workout changed on the server. Reload to get the latest version.",
+    "reload": "Reload",
+    "deleteConfirm": "Delete this workout permanently?"
   },
   "exercises": {
     "title": "Exercises",

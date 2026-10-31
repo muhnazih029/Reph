@@ -100,7 +100,21 @@
   },
   "history": {
     "title": "Riwayat",
-    "empty": "Belum ada latihan"
+    "empty": "Belum ada latihan",
+    "setsCount_one": "{{count}} set",
+    "setsCount_other": "{{count}} set",
+    "volumeDisplay": "{{value}} kg"
+  },
+  "detail": {
+    "edit": "Ubah",
+    "backToHistory": "Kembali ke riwayat",
+    "duration": "Durasi",
+    "volume": "Volume",
+    "sets": "Set",
+    "reps": "Repetisi",
+    "conflictTitle": "Latihan ini berubah di server. Muat ulang untuk versi terbaru.",
+    "reload": "Muat ulang",
+    "deleteConfirm": "Hapus latihan ini secara permanen?"
   },
   "exercises": {
     "title": "Latihan",

@@ -35,6 +35,60 @@ mock.module("../api/hooks", () => ({
     isError: false,
     error: null,
   }),
+  // process-wide mocks leak across test files — cover the exports other
+  // screens import so their module evaluation never hits the real hooks
+  useWorkouts: () => ({
+    data: [],
+    isPending: false,
+    error: null,
+    refetch: () => Promise.resolve({} as never),
+  }),
+  useWorkout: () => ({
+    data: null,
+    isPending: false,
+    error: null,
+    refetch: () => Promise.resolve({} as never),
+  }),
+  useActiveWorkout: () => ({ data: null, isPending: false, error: null }),
+  useSettings: () => ({
+    data: {
+      weightUnit: "kg",
+      distanceUnit: "km",
+      restTimerSeconds: 90,
+      theme: "system",
+      language: "en",
+    },
+    isPending: false,
+    error: null,
+    refetch: () => Promise.resolve({} as never),
+  }),
+  useExercise: () => ({
+    data: null,
+    isPending: false,
+    error: null,
+    refetch: () => Promise.resolve({} as never),
+  }),
+  useStatsSummary: () => ({
+    data: null,
+    isPending: false,
+    error: null,
+    refetch: () => Promise.resolve({} as never),
+  }),
+  useUpdateWorkout: () => ({
+    mutate: (
+      _payload: unknown,
+      options?: { onSuccess?: () => void; onError?: (error: unknown) => void },
+    ) => {
+      options?.onSuccess?.();
+    },
+    isPending: false,
+    error: null,
+  }),
+  useDeleteWorkout: () => ({
+    mutateAsync: () => Promise.resolve(undefined as never),
+    isPending: false,
+    error: null,
+  }),
 }));
 
 const { ExercisesScreen } = await import("./ExercisesScreen");

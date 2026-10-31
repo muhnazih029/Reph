@@ -440,7 +440,7 @@ placeholder screens (Today/History/Exercises/Settings), `public/icons/*`,
 **Interfaces:** Produces every function under **Core Interfaces →
 Stats/units** (consumed by Tasks 7–11).
 
-- [ ] Write failing tests: `estimate1RM(100,5)≈116.67`;
+- [x] Write failing tests: `estimate1RM(100,5)≈116.67`;
       `estimate1RM(w,1)===w`; `bestSetByEpley` picks the set with max Epley
       (not max weight) and returns null on empty/all-null; `workoutVolumeKg`
       counts only `done` sets excluding `warmup` and cardio sets;
@@ -448,8 +448,8 @@ Stats/units** (consumed by Tasks 7–11).
       `previousPerformance` returns the most recent done set's triple and
       **null** when exercise never performed; converters exact (2.20462 /
       0.621371); `displayWeight(80,'kg')==='80 kg'`, lb variant 1 decimal.
-- [ ] Run → FAIL → implement pure functions → PASS.
-- [ ] Commit: `feat(web): stats and unit helpers with tests`
+- [x] Run → FAIL → implement pure functions → PASS.
+- [x] Commit: `feat(web): stats and unit helpers with tests`
 
 ### Task 7: Exercise library UI
 
@@ -464,22 +464,22 @@ Stats/units** (consumed by Tasks 7–11).
 Produces: `ExercisePicker` is NOT here (Task 9); screens referenced by
 Today (Task 11).
 
-- [ ] `ExercisesScreen`: `useExercises` + search input (debounced 200 ms,
+- [x] `ExercisesScreen`: `useExercises` + search input (debounced 200 ms,
       `q` param) + muscle-group filter via `Sheet` + `SegmentedControl`;
       sticky group headers; `Skeleton` while loading, `EmptyState` on no
       results, `ErrorState` with retry. FAB "+" → sheet form (name ≥ 1 char,
       muscle group, equipment, type segmented) → `useCreateExercise`.
-- [ ] `ExerciseDetailScreen`: badges; **PR card** — scan `useWorkouts(200)`
+- [x] `ExerciseDetailScreen`: badges; **PR card** — scan `useWorkouts(200)`
       entries for this exercise → `bestSetByEpley` over each workout's sets →
       global best with date; **history list** — most recent first, best set
       of each session highlighted, "previous" line via
       `previousPerformance`; all weights through `displayWeight` with
       settings from `useSettings`.
-- [ ] i18n keys for every string; manual pass: create custom exercise →
+- [x] i18n keys for every string; manual pass: create custom exercise →
       appears in list/detail.
-- [ ] Tests: component test for search filtering + one for the create
+- [x] Tests: component test for search filtering + one for the create
       form validation (happy-dom, mock hooks module).
-- [ ] `bun run typecheck && bun test && bun run lint`; commit
+- [x] `bun run typecheck && bun test && bun run lint`; commit
       `feat(web): exercise library browse, create, and detail history`
 
 ### Task 8: Active workout store (server-backed)
@@ -491,7 +491,7 @@ Today (Task 11).
 **Interfaces:** Produces `useActiveWorkout` exactly per **Core
 Interfaces → Active workout store**; consumes hooks + `newId()`.
 
-- [ ] Write failing tests (mock `src/api/hooks` with an in-memory
+- [x] Write failing tests (mock `src/api/hooks` with an in-memory
       workout; `useActiveWorkout.getState()`): `startWorkout` posts and
       mirrors (non-null workout, `status:'active'`); `hydrate` with active
       row restores mirror, with `null` clears it; `addExercise` appends
@@ -503,10 +503,10 @@ Interfaces → Active workout store**; consumes hooks + `newId()`.
       `updateSet` which applies optimistically and rolls back on rejection;
       `finishWorkout` calls finish, clears mirror, returns id;
       `discardWorkout` deletes and clears.
-- [ ] Run → FAIL → implement (single `commit(workout)` helper that
+- [x] Run → FAIL → implement (single `commit(workout)` helper that
       PATCHes full entries payload with `expectedUpdatedAt`, updates mirror
       from response, invalidates `['workouts']`) → PASS.
-- [ ] Commit: `feat(web): server-backed active workout store`
+- [x] Commit: `feat(web): server-backed active workout store`
 
 ### Task 9: Logging UI + exercise picker + rest timer
 
@@ -521,31 +521,31 @@ Produces: `ExercisePicker` props
 `{ open, onOpenChange, onSelect(exerciseId) }` (reused Phase 2 from
 templates); `RestTimerBar` rendered in `AppShell`.
 
-- [ ] `restTimer` store: fake-timer tests for start/pause/resume/cancel/
+- [x] `restTimer` store: fake-timer tests for start/pause/resume/cancel/
       `addSeconds`, beep at zero (WebAudio oscillator mocked),
       `navigator.vibrate` guarded, completion sets `isRunning:false`.
-- [ ] `SetRow` (strength): `[✓] [weight] × [reps] [RPE] [badge] [⋯]`
+- [x] `SetRow` (strength): `[✓] [weight] × [reps] [RPE] [badge] [⋯]`
       — tap-to-edit `Input` (`inputMode="decimal"`), commit on blur/Enter,
       display via `displayWeight` / input→kg via `lbToKg`; badge cycles
       normal→warmup→drop→failure from ⋯ menu (menu also deletes); RPE
       0–10 half-point stepper in a small popover. Cardio variant renders
       duration/distance/calories fields (read from `Exercise.type`).
-- [ ] `EntryCard`: header (name → popover showing last performance +
+- [x] `EntryCard`: header (name → popover showing last performance +
       "repeat" prefill button), superset badge/toggle (⋯ → pick sibling
       entry), collapsible notes, "+ Add set" (then `restTimer.start()` if
       previous set was done), ⋯ menu (replace exercise, move up/down,
       delete with confirm).
-- [ ] `ExercisePicker`: `Sheet` with search, recent 5 (from
+- [x] `ExercisePicker`: `Sheet` with search, recent 5 (from
       `useWorkouts(10)`), full library grouped; `EmptyState` for no matches.
-- [ ] `ActiveWorkoutScreen`: sticky header (editable title, elapsed
+- [x] `ActiveWorkoutScreen`: sticky header (editable title, elapsed
       ticker `Date.now()-startTime`, Finish primary button, ⋯ →
       body-weight input + discard confirm); list of `EntryCard`s; "Add
       exercise" button; offline banner per [PRD-FE §4](../specs/PRD-FE.md)
       (writes blocked with inline note when `navigator.onLine === false`).
-- [ ] Manual E2E on device-width viewport: start → 2 exercises →
+- [x] Manual E2E on device-width viewport: start → 2 exercises →
       warmup+normal sets → superset → timer beeps → finish → row appears in
       history query; refresh mid-workout → `hydrate()` restores session.
-- [ ] Commit: `feat(web): workout logging UI with rest timer`
+- [x] Commit: `feat(web): workout logging UI with rest timer`
 
 ### Task 10: History & workout detail
 

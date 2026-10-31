@@ -1,5 +1,6 @@
 import { createRootRoute, createRoute, createRouter, useParams } from "@tanstack/react-router";
 import { AppShell } from "./components/layout/AppShell";
+import { ActiveWorkoutScreen } from "./screens/ActiveWorkoutScreen";
 import { ExerciseDetailScreen } from "./screens/ExerciseDetailScreen";
 import { ExercisesScreen } from "./screens/ExercisesScreen";
 import { HistoryScreen } from "./screens/HistoryScreen";
@@ -45,6 +46,14 @@ const settingsRoute = createRoute({
   component: SettingsScreen,
 });
 
+// Redirect guard (Task 9): no active workout → home. The screen hydrates
+// on mount and bounces itself; the route may still render loading state.
+const activeWorkoutRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/workout/active",
+  component: ActiveWorkoutScreen,
+});
+
 export const router = createRouter({
   routeTree: rootRoute.addChildren([
     todayRoute,
@@ -52,6 +61,7 @@ export const router = createRouter({
     exercisesRoute,
     exerciseDetailRoute,
     settingsRoute,
+    activeWorkoutRoute,
   ]),
 });
 

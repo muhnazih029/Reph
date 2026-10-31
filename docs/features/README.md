@@ -31,8 +31,8 @@ source; PRD sections stay at overview level and link here.
 
 | Feature                                             | Spec                               | Phase | Status      | File                                    |
 | --------------------------------------------------- | ---------------------------------- | ----- | ----------- | --------------------------------------- |
-| Workout logging (active session, sets, supersets)   | [PRD §3.1](../specs/PRD.md)        | 1     | planned     | —                                       |
-| Rest timer                                          | [PRD §3.1](../specs/PRD.md)        | 1     | planned     | —                                       |
+| Workout logging (active session, sets, supersets)   | [PRD §3.1](../specs/PRD.md)        | 1     | built       | [workout-logging](workout-logging.md)   |
+| Rest timer                                          | [PRD §3.1](../specs/PRD.md)        | 1     | built       | [rest-timer](rest-timer.md)             |
 | Exercise library + custom exercises                 | [PRD §3.2](../specs/PRD.md)        | 1     | built       | [exercise-library](exercise-library.md) |
 | History & workout detail (edit/delete)              | [PRD §3.3](../specs/PRD.md)        | 1     | planned     | —                                       |
 | Stats primitives (1RM Epley, volume, weekly series) | [PRD §3.3](../specs/PRD.md)        | 1     | planned     | —                                       |

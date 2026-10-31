@@ -579,20 +579,20 @@ boot), `src/i18n/*`.
 `useWorkouts`, `useActiveWorkout`, `useCreateWorkout`,
 `weeklyVolumeSeries`, `bestSetByEpley`.
 
-- [ ] `SettingsScreen`: sections Appearance (theme), Units (weight,
+- [x] `SettingsScreen`: sections Appearance (theme), Units (weight,
       distance), Rest timer (presets 30/60/90/120/180 + custom
       `NumberStepper`), Language (English / Bahasa Indonesia), About
       (version, one-line data-ownership note). Each change →
       `useUpdateSettings` → immediate effect: `documentElement.classList`
       dark/light, `i18n.changeLanguage`, rest-timer store default.
-- [ ] `TodayScreen`: greeting + date; primary Start (→
+- [x] `TodayScreen`: greeting + date; primary Start (→
       `useCreateWorkout` → navigate `/workout/active`) or Resume when
       active exists; this-week row (workouts, total volume, total sets via
       `weeklyVolumeSeries(…, 1)`); recent PRs (≤ 3 across last 20 workouts,
       `bestSetByEpley`, `displayWeight`); recent workouts (≤ 5, reuse
       history row component); first-run `EmptyState`.
-- [ ] i18n completeness audit for all screens so far (both files).
-- [ ] Commit: `feat(web): settings and today home screen`
+- [x] i18n completeness audit for all screens so far (both files).
+- [x] Commit: `feat(web): settings and today home screen`
 
 ### Task 12: PWA polish, docs sync, release gate
 

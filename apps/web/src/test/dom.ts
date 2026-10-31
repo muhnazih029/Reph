@@ -62,4 +62,12 @@ if (!("__rephDomRegistered" in globalThis)) {
   // input/change events are silently ignored.
   // oxlint-disable-next-line unicorn/prefer-add-event-listener
   (window.document as unknown as { oninput: null }).oninput = null;
+
+  // Vite `define` replacements don't run under bun test — provide a test
+  // default for the injected version constant.
+  Object.defineProperty(globalThis, "REPH_VERSION", {
+    configurable: true,
+    writable: true,
+    value: "0.0.0-test",
+  });
 }

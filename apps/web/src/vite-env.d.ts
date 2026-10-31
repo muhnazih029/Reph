@@ -9,3 +9,6 @@ interface ImportMetaEnv {
 interface ImportMeta {
   readonly env: ImportMetaEnv;
 }
+
+/** Injected from vite.config.ts `define` (package version). */
+declare const REPH_VERSION: string;

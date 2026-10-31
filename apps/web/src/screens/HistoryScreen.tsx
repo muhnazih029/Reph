@@ -4,8 +4,8 @@ import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "@tanstack/react-router";
 import { useWorkouts } from "../api/hooks";
-import { workoutVolumeKg } from "../lib/stats";
 import { Card } from "../components/ui/Card";
+import { WorkoutRow } from "../components/history/WorkoutRow";
 import { EmptyState } from "../components/ui/EmptyState";
 import { ErrorState } from "../components/ui/ErrorState";
 import { Skeleton } from "../components/ui/Skeleton";
@@ -24,11 +24,6 @@ function groupByMonth(workouts: Workout[]): MonthGroup[] {
     groups.set(label, group);
   }
   return Array.from(groups.values());
-}
-
-function durationLabel(workout: Workout): string {
-  if (workout.endTime === null) return "–";
-  return `${Math.max(1, Math.round((workout.endTime - workout.startTime) / 60_000))}`;
 }
 
 export function HistoryScreen() {
@@ -80,27 +75,7 @@ export function HistoryScreen() {
               <ul className="divide-y divide-border">
                 {group.workouts.map((workout) => (
                   <li key={workout.id}>
-                    <Link
-                      to="/workouts/$id"
-                      params={{ id: workout.id }}
-                      className="flex min-h-14 items-center justify-between gap-3 px-4 py-3 active:bg-surface-2"
-                    >
-                      <span className="flex min-w-0 flex-col">
-                        <span className="truncate text-sm font-medium">
-                          {workout.title === "" ? t("workout.titlePlaceholder") : workout.title}
-                        </span>
-                        <span className="text-xs text-text-muted">
-                          {format(workout.startTime, "d MMM")} ·{" "}
-                          {t("history.setsCount", { count: doneSets(workout) })} ·{" "}
-                          {t("history.volumeDisplay", {
-                            value: Math.round(workoutVolumeKg(workout)),
-                          })}
-                        </span>
-                      </span>
-                      <span className="numeric shrink-0 text-sm text-text-muted">
-                        {durationLabel(workout)} {t("common.minutesShort")}
-                      </span>
-                    </Link>
+                    <WorkoutRow workout={workout} />
                   </li>
                 ))}
               </ul>
@@ -109,12 +84,5 @@ export function HistoryScreen() {
         ))
       )}
     </section>
-  );
-}
-
-function doneSets(workout: Workout): number {
-  return workout.entries.reduce(
-    (count, entry) => count + entry.sets.filter((set) => set.done).length,
-    0,
   );
 }

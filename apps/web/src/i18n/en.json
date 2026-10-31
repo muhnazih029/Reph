@@ -95,8 +95,15 @@
   },
   "today": {
     "title": "Today",
+    "greeting": "Today",
     "startWorkout": "Start workout",
-    "resume": "Resume workout"
+    "resume": "Resume workout",
+    "firstRunBody": "Start your first workout and it will show up here.",
+    "weekWorkouts": "This week",
+    "weekVolume": "Volume (kg)",
+    "weekSets": "Sets",
+    "recentPrs": "Recent personal records",
+    "recentWorkouts": "Recent workouts"
   },
   "history": {
     "title": "History",
@@ -135,6 +142,21 @@
     "noSessions": "Not performed in any workout yet"
   },
   "settings": {
-    "title": "Settings"
+    "title": "Settings",
+    "appearance": "Appearance",
+    "theme": "Theme",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "units": "Units",
+    "weightUnit": "Weight unit",
+    "kg": "Kilograms (kg)",
+    "lbs": "Pounds (lb)",
+    "distanceUnit": "Distance unit",
+    "km": "Kilometres (km)",
+    "mi": "Miles (mi)",
+    "restTimer": "Rest timer (seconds)",
+    "language": "Language",
+    "about": "About",
+    "ownershipNote": "Self-hosted — your training data lives on your own server."
   }
 }

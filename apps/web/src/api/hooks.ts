@@ -165,8 +165,13 @@ export function useDeleteWorkout(): UseMutationResult<void, ApiError, string> {
 export function useSettings(): UseQueryResult<Settings, ApiError> {
   return useQuery({
     queryKey: queryKeys.settings,
-    queryFn: () => apiGet("/settings", settingsSchema),
+    queryFn: fetchSettings,
   });
+}
+
+/** standalone fetch for boot-time consumers (main.tsx applies theme/language) */
+export function fetchSettings(): Promise<Settings> {
+  return apiGet("/settings", settingsSchema);
 }
 
 export function useUpdateSettings(): UseMutationResult<

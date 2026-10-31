@@ -1,5 +1,6 @@
-import { beforeEach, describe, expect, it, mock } from "bun:test";
+import { beforeEach, describe, expect, it } from "bun:test";
 import type { Workout, WorkoutEntry, WorkoutSet } from "@reph/contracts";
+import { mockHooks } from "../test/mockHooks";
 
 // Task 10 gate — history grouping, detail rendering, conflict path.
 // api/hooks is mocked in-memory (happy-dom comes from the bunfig preload).
@@ -59,7 +60,7 @@ const makeWorkout = (startTime: number, overrides: Partial<Workout> = {}): Worko
   ...overrides,
 });
 
-mock.module("../api/hooks", () => ({
+mockHooks({
   useExercises: (query?: { q?: string }) => ({
     data:
       query?.q && !"Bench Press".toLowerCase().includes(query.q.toLowerCase())
@@ -135,8 +136,7 @@ mock.module("../api/hooks", () => ({
     isPending: false,
     error: null,
   }),
-  queryKeys: { workout: (id: string) => ["workout", id] },
-}));
+});
 
 const { HistoryScreen } = await import("../screens/HistoryScreen");
 const { WorkoutDetailScreen } = await import("../screens/WorkoutDetailScreen");

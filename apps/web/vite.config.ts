@@ -5,6 +5,9 @@ import { VitePWA } from "vite-plugin-pwa";
 
 // PWA manifest per docs/specs/PRD-FE.md §6; dev proxy /api → apps/api.
 export default defineConfig({
+  define: {
+    REPH_VERSION: JSON.stringify("0.1.0"),
+  },
   plugins: [
     react(),
     tailwindcss(),

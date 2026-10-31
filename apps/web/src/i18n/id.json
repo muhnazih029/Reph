@@ -95,8 +95,15 @@
   },
   "today": {
     "title": "Hari ini",
+    "greeting": "Hari ini",
     "startWorkout": "Mulai latihan",
-    "resume": "Lanjutkan latihan"
+    "resume": "Lanjutkan latihan",
+    "firstRunBody": "Mulai latihan pertamamu dan tampil di sini.",
+    "weekWorkouts": "Minggu ini",
+    "weekVolume": "Volume (kg)",
+    "weekSets": "Set",
+    "recentPrs": "Rekor pribadi terbaru",
+    "recentWorkouts": "Latihan terbaru"
   },
   "history": {
     "title": "Riwayat",
@@ -135,6 +142,21 @@
     "noSessions": "Belum pernah dilakukan dalam latihan"
   },
   "settings": {
-    "title": "Pengaturan"
+    "title": "Pengaturan",
+    "appearance": "Tampilan",
+    "theme": "Tema",
+    "themeLight": "Terang",
+    "themeDark": "Gelap",
+    "units": "Satuan",
+    "weightUnit": "Satuan berat",
+    "kg": "Kilogram (kg)",
+    "lbs": "Pound (lb)",
+    "distanceUnit": "Satuan jarak",
+    "km": "Kilometer (km)",
+    "mi": "Mil (mi)",
+    "restTimer": "Timer istirahat (detik)",
+    "language": "Bahasa",
+    "about": "Tentang",
+    "ownershipNote": "Self-hosted — data latihanmu tersimpan di servermu sendiri."
   }
 }

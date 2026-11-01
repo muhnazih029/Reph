@@ -32,6 +32,7 @@ export interface ActiveWorkoutState {
   setEntryNotes(entryId: string, notes: string): Promise<void>;
   toggleSuperset(entryId: string, otherEntryId: string): Promise<void>;
   setTitle(title: string): Promise<void>;
+  setNotes(notes: string): Promise<void>;
   setBodyWeight(kg: number | null): Promise<void>;
   finishWorkout(): Promise<string>;
   discardWorkout(): Promise<void>;
@@ -222,6 +223,8 @@ export const useActiveWorkoutStore = create<ActiveWorkoutState>()((set, get) => 
       }),
 
     setTitle: (title) => commit((workout) => (workout.title = title)),
+
+    setNotes: (notes) => commit((workout) => (workout.notes = notes)),
 
     setBodyWeight: (kg) => commit((workout) => (workout.bodyWeightKg = kg)),
 

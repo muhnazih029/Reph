@@ -1,8 +1,8 @@
 import type { Workout } from "@reph/contracts";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "@tanstack/react-router";
-import { useExercises, useSettings } from "../api/hooks";
+import { useExercises, useSettings, useUploadPhoto } from "../api/hooks";
 import { useActiveWorkoutStore } from "../stores/activeWorkout";
 import { Button } from "../components/ui/Button";
 import { Input } from "../components/ui/Input";
@@ -40,6 +40,12 @@ export function ActiveWorkoutScreen() {
   const [pickerOpen, setPickerOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [discardOpen, setDiscardOpen] = useState(false);
+  const [finishOpen, setFinishOpen] = useState(false);
+  const [finishTitle, setFinishTitle] = useState("");
+  const [finishNotes, setFinishNotes] = useState("");
+  const [finishPhoto, setFinishPhoto] = useState<File | null>(null);
+  const photoInputRef = useRef<HTMLInputElement>(null);
+  const uploadPhoto = useUploadPhoto();
 
   // boot: hydrate the server row; no active workout → redirected home
   useEffect(() => {
@@ -59,7 +65,15 @@ export function ActiveWorkoutScreen() {
   );
 
   const finish = async () => {
+    if (finishTitle.trim() !== "") {
+      await useActiveWorkoutStore.getState().setTitle(finishTitle.trim());
+    }
+    if (finishNotes.trim() !== "") {
+      await useActiveWorkoutStore.getState().setNotes(finishNotes.trim());
+    }
     await useActiveWorkoutStore.getState().finishWorkout();
+    if (finishPhoto) await uploadPhoto.mutateAsync(finishPhoto).catch(() => undefined);
+    setFinishOpen(false);
     void router.navigate({ to: "/history" });
   };
 
@@ -84,7 +98,10 @@ export function ActiveWorkoutScreen() {
       <StickyHeader
         workout={workout}
         onMenu={() => setMenuOpen(true)}
-        onFinish={() => void finish()}
+        onFinish={() => {
+          setFinishTitle(workout.title);
+          setFinishOpen(true);
+        }}
       />
 
       {workout.entries.map((entry) => (
@@ -131,6 +148,69 @@ export function ActiveWorkoutScreen() {
           setDiscardOpen(true);
         }}
       />
+
+      <Sheet open={finishOpen} onOpenChange={setFinishOpen} title={t("workout.finish")}>
+        <div className="flex flex-col gap-3 pb-3">
+          <div className="grid grid-cols-3 gap-2 text-center text-sm">
+            <div>
+              <p className="numeric text-base">{workout.entries.reduce((c, e) => c + e.sets.filter((s) => s.done).length, 0)}</p>
+              <p className="text-xs text-text-muted">{t("detail.sets")}</p>
+            </div>
+            <div>
+              <p className="numeric text-base">{Math.round(workout.entries.reduce((s, e) => s + e.sets.reduce((i, set) => i + (set.done && set.type !== "warmup" && set.weightKg !== null && set.reps !== null ? set.weightKg * set.reps : 0), 0), 0))}</p>
+              <p className="text-xs text-text-muted">{t("detail.volume")}</p>
+            </div>
+            <div>
+              <p className="numeric text-base">{workout.entries.reduce((c, e) => c + e.sets.filter((s) => s.done).reduce((r, s) => r + (s.reps ?? 0), 0), 0)}</p>
+              <p className="text-xs text-text-muted">{t("detail.reps")}</p>
+            </div>
+          </div>
+          <label className="flex flex-col gap-1 text-sm text-text-muted">
+            {t("workout.title")}
+            <Input
+              aria-label={t("workout.title")}
+              value={finishTitle}
+              onChange={(e) => setFinishTitle(e.target.value)}
+              placeholder={t("workout.titlePlaceholder")}
+            />
+          </label>
+          <label className="flex flex-col gap-1 text-sm text-text-muted">
+            {t("workout.notes")}
+            <Input
+              aria-label={t("workout.notes")}
+              value={finishNotes}
+              onChange={(e) => setFinishNotes(e.target.value)}
+              placeholder={t("workout.notesPlaceholder")}
+            />
+          </label>
+          <div className="flex flex-col gap-1 text-sm text-text-muted">
+            {t("photos.title")}
+            <input
+              ref={photoInputRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              className="hidden"
+              onChange={(e) => setFinishPhoto(e.target.files?.[0] ?? null)}
+            />
+            <Button variant="secondary" onClick={() => photoInputRef.current?.click()}>
+              {finishPhoto ? finishPhoto.name : t("photos.upload")}
+            </Button>
+          </div>
+          <div className="flex gap-2">
+            <Button variant="secondary" className="flex-1" onClick={() => setFinishOpen(false)}>
+              {t("common.cancel")}
+            </Button>
+            <Button
+              className="flex-1"
+              loading={uploadPhoto.isPending}
+              onClick={() => void finish()}
+            >
+              {t("workout.finish")}
+            </Button>
+          </div>
+        </div>
+      </Sheet>
 
       <Sheet open={discardOpen} onOpenChange={setDiscardOpen} title={t("workout.discard")}>
         <div className="flex flex-col gap-3 pb-3">

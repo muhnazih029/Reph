@@ -1,5 +1,5 @@
 import type { UpdateWorkoutInput, Workout, WorkoutSet } from "@reph/contracts";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "@tanstack/react-router";
 import {
@@ -7,6 +7,7 @@ import {
   useExercise,
   useSettings,
   useUpdateWorkout,
+  useUploadPhoto,
   useWorkout,
 } from "../api/hooks";
 import type { ApiError } from "../api/client";
@@ -78,6 +79,8 @@ export function WorkoutDetailScreen({ id }: { id: string }) {
   const settings = useSettings();
   const update = useUpdateWorkout(id);
   const deleteWorkout = useDeleteWorkout();
+  const uploadPhoto = useUploadPhoto();
+  const photoInputRef = useRef<HTMLInputElement>(null);
 
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState<Workout | null>(null);
@@ -229,6 +232,21 @@ export function WorkoutDetailScreen({ id }: { id: string }) {
             <Button variant="secondary" onClick={startEditing}>
               {t("detail.edit")}
             </Button>
+            <Button variant="secondary" onClick={() => photoInputRef.current?.click()}>
+              {t("photos.upload")}
+            </Button>
+            <input
+              ref={photoInputRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              className="hidden"
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) void uploadPhoto.mutateAsync(f);
+                e.target.value = "";
+              }}
+            />
             <Button variant="danger" onClick={() => setDeleteOpen(true)}>
               {t("common.delete")}
             </Button>

@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "@tanstack/react-router";
-import { useRoutines, useCreateRoutine, useDeleteRoutine, useStartRoutine } from "../api/hooks";
+import { useRoutines, useCreateRoutine, useDeleteRoutine, useStartRoutine, useActiveWorkout } from "../api/hooks";
+import { useActiveWorkoutStore } from "../stores/activeWorkout";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
 import { EmptyState } from "../components/ui/EmptyState";
@@ -10,6 +11,7 @@ import { Skeleton } from "../components/ui/Skeleton";
 export function RoutinesScreen() {
   const { t } = useTranslation();
   const router = useRouter();
+  const active = useActiveWorkout();
   const routines = useRoutines();
   const create = useCreateRoutine();
   const remove = useDeleteRoutine();
@@ -69,11 +71,20 @@ export function RoutinesScreen() {
                 </button>
                 <Button
                   variant="secondary"
-                  onClick={() =>
-                    void start
-                      .mutateAsync(routine.id)
-                      .then(() => router.navigate({ to: "/workout/active" }))
-                  }
+                  onClick={() => {
+                    if (active.data) {
+                      const ok = window.confirm(t("routines.activeExists"));
+                      if (!ok) return;
+                      void useActiveWorkoutStore
+                        .getState()
+                        .discardWorkout()
+                        .then(() =>
+                          start.mutateAsync(routine.id).then(() => router.navigate({ to: "/workout/active" })),
+                        );
+                      return;
+                    }
+                    void start.mutateAsync(routine.id).then(() => router.navigate({ to: "/workout/active" }));
+                  }}
                   disabled={start.isPending}
                 >
                   {t("routines.start")}

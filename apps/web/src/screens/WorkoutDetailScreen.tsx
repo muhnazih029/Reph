@@ -10,6 +10,7 @@ import {
   useUploadPhoto,
   useWorkout,
   usePhotos,
+  useDeletePhoto,
 } from "../api/hooks";
 import type { ApiError } from "../api/client";
 import { workoutVolumeKg } from "../lib/stats";
@@ -81,6 +82,7 @@ export function WorkoutDetailScreen({ id }: { id: string }) {
   const update = useUpdateWorkout(id);
   const deleteWorkout = useDeleteWorkout();
   const uploadPhoto = useUploadPhoto();
+  const deletePhoto = useDeletePhoto();
   const photoInputRef = useRef<HTMLInputElement>(null);
   const photos = usePhotos(8, 0, id);
 
@@ -303,13 +305,22 @@ export function WorkoutDetailScreen({ id }: { id: string }) {
           </p>
           <div className="grid grid-cols-4 gap-2">
             {(photos.data ?? []).map((p) => (
-              <img
-                key={p.id}
-                src={`/api/v1/photos/${p.id}/image`}
-                alt=""
-                className="aspect-square w-full rounded object-cover"
-                loading="lazy"
-              />
+              <div key={p.id} className="relative">
+                <img
+                  src={`/api/v1/photos/${p.id}/image`}
+                  alt=""
+                  className="aspect-square w-full rounded object-cover"
+                  loading="lazy"
+                />
+                <button
+                  type="button"
+                  aria-label={t("photos.delete")}
+                  onClick={() => void deletePhoto.mutateAsync(p.id)}
+                  className="absolute right-1 top-1 rounded-full bg-black/60 px-2 text-xs text-white"
+                >
+                  ×
+                </button>
+              </div>
             ))}
           </div>
         </div>

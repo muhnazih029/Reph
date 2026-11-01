@@ -193,7 +193,8 @@
     "emptyEntries": "Belum ada latihan",
     "emptyEntriesBody": "Tambah latihan untuk mulai menyusun rutinitas.",
     "addSet": "Tambah set",
-    "addExercise": "Tambah latihan"
+    "addExercise": "Tambah latihan",
+    "activeExists": "Ada latihan aktif. Buang dan mulai rutinitas ini?"
   },
   "photos": {
     "title": "Foto progres",

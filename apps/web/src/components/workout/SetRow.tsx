@@ -2,6 +2,7 @@ import type { ExerciseType, WorkoutSet } from "@reph/contracts";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useActiveWorkoutStore } from "../../stores/activeWorkout";
+import { useRestTimerStore } from "../../stores/restTimer";
 import { displayWeight, lbToKg } from "../../lib/units";
 import { Input } from "../ui/Input";
 import { Sheet } from "../ui/Sheet";
@@ -189,7 +190,11 @@ export function SetRow({
           aria-label={t("workout.markDone")}
           aria-pressed={done}
           disabled={disabled}
-          onClick={() => patch({ done: !done })}
+          onClick={() => {
+            const next = !done;
+            patch({ done: next });
+            if (next) useRestTimerStore.getState().start();
+          }}
           className={`flex h-8 w-8 items-center justify-center rounded-full border text-sm ${
             done
               ? "border-success bg-success text-accent-contrast"

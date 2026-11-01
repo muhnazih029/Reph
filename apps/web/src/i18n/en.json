@@ -193,7 +193,8 @@
     "emptyEntries": "No exercises yet",
     "emptyEntriesBody": "Add an exercise to start building this routine.",
     "addSet": "Add set",
-    "addExercise": "Add exercise"
+    "addExercise": "Add exercise",
+    "activeExists": "An active workout is in progress. Discard it and start this routine?"
   },
   "photos": {
     "title": "Progress photos",

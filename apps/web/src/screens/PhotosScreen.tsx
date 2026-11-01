@@ -48,7 +48,8 @@ export function PhotosScreen() {
                 <img
                   src={`/api/v1/photos/${p.id}/image`}
                   alt={p.notes || t("photos.photo")}
-                  className="aspect-square w-full rounded-sm object-cover"
+                  className="aspect-square w-full rounded object-cover"
+                  loading="lazy"
                 />
               </button>
               <button

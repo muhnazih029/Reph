@@ -9,6 +9,7 @@ import {
   useExercises,
   useSettings,
   useWorkouts,
+  usePhotos,
 } from "../api/hooks";
 import { bestSetByEpley, estimate1RM, weeklyVolumeSeries } from "../lib/stats";
 import { displayWeight } from "../lib/units";
@@ -70,6 +71,8 @@ export function TodayScreen() {
   const settings = useSettings();
   const create = useCreateWorkout();
   const [starting, setStarting] = useState(false);
+
+  const photos = usePhotos(6);
 
   const completed = useMemo(
     () => (workouts.data ?? []).filter((workout) => workout.status === "completed"),
@@ -180,6 +183,26 @@ export function TodayScreen() {
           ) : null}
         </>
       )}
+
+      {(photos.data ?? []).length > 0 ? (
+        <div>
+          <p className="mt-1 px-1 text-xs font-medium uppercase tracking-wide text-text-muted">
+            {t("photos.title")}
+          </p>
+          <div className="grid grid-cols-3 gap-2">
+            {(photos.data ?? []).map((p) => (
+              <a key={p.id} href="/photos" className="block">
+                <img
+                  src={`/api/v1/photos/${p.id}/image`}
+                  alt=""
+                  className="aspect-square w-full rounded object-cover"
+                  loading="lazy"
+                />
+              </a>
+            ))}
+          </div>
+        </div>
+      ) : null}
     </section>
   );
 }

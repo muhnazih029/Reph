@@ -307,7 +307,8 @@ export function WorkoutDetailScreen({ id }: { id: string }) {
                 key={p.id}
                 src={`/api/v1/photos/${p.id}/image`}
                 alt=""
-                className="aspect-square w-full rounded-sm object-cover"
+                className="aspect-square w-full rounded object-cover"
+                loading="lazy"
               />
             ))}
           </div>

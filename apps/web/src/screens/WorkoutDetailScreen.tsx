@@ -82,7 +82,7 @@ export function WorkoutDetailScreen({ id }: { id: string }) {
   const deleteWorkout = useDeleteWorkout();
   const uploadPhoto = useUploadPhoto();
   const photoInputRef = useRef<HTMLInputElement>(null);
-  const photos = usePhotos(8);
+  const photos = usePhotos(8, 0, id);
 
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState<Workout | null>(null);
@@ -245,7 +245,7 @@ export function WorkoutDetailScreen({ id }: { id: string }) {
               className="hidden"
               onChange={(e) => {
                 const f = e.target.files?.[0];
-                if (f) void uploadPhoto.mutateAsync(f);
+                if (f) void uploadPhoto.mutateAsync({ file: f, workoutId: id });
                 e.target.value = "";
               }}
             />

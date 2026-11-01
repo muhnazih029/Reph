@@ -270,19 +270,22 @@ export function useStartRoutine(): UseMutationResult<Workout, ApiError, string> 
 
 import { progressPhotoSchema, type ProgressPhoto } from "@reph/contracts";
 
-export function usePhotos(limit = 20, offset = 0): UseQueryResult<ProgressPhoto[], ApiError> {
+export function usePhotos(limit = 20, offset = 0, workoutId?: string): UseQueryResult<ProgressPhoto[], ApiError> {
+  const qs = new URLSearchParams({ limit: String(limit), offset: String(offset) });
+  if (workoutId) qs.set("workoutId", workoutId);
   return useQuery({
-    queryKey: ["photos", limit, offset] as const,
-    queryFn: () => apiGet(`/photos?limit=${limit}&offset=${offset}`, progressPhotoSchema.array()),
+    queryKey: ["photos", limit, offset, workoutId ?? null] as const,
+    queryFn: () => apiGet(`/photos?${qs.toString()}`, progressPhotoSchema.array()),
   });
 }
 
-export function useUploadPhoto(): UseMutationResult<ProgressPhoto, ApiError, File> {
+export function useUploadPhoto(): UseMutationResult<ProgressPhoto, ApiError, { file: File; workoutId?: string }> {
   const client = useQueryClient();
   return useMutation({
-    mutationFn: async (file) => {
+    mutationFn: async ({ file, workoutId }) => {
       const form = new FormData();
       form.append("file", file);
+      if (workoutId) form.append("workoutId", workoutId);
       const res = await fetch("/api/v1/photos", {
         method: "POST",
         headers: { authorization: `Bearer ${import.meta.env.VITE_REPH_TOKEN ?? ""}` },

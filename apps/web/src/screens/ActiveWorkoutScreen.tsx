@@ -67,6 +67,7 @@ export function ActiveWorkoutScreen() {
   );
 
   const finish = async () => {
+    if (!workout) return;
     if (finishTitle.trim() !== "") {
       await useActiveWorkoutStore.getState().setTitle(finishTitle.trim());
     }
@@ -74,7 +75,7 @@ export function ActiveWorkoutScreen() {
       await useActiveWorkoutStore.getState().setNotes(finishNotes.trim());
     }
     await useActiveWorkoutStore.getState().finishWorkout();
-    if (finishPhoto) await uploadPhoto.mutateAsync(finishPhoto).catch(() => undefined);
+    if (finishPhoto) await uploadPhoto.mutateAsync({ file: finishPhoto, workoutId: workout.id }).catch(() => undefined);
     setFinishOpen(false);
     void router.navigate({ to: "/history" });
   };
@@ -156,7 +157,7 @@ export function ActiveWorkoutScreen() {
             className="hidden"
             onChange={(e) => {
               const f = e.target.files?.[0];
-              if (f) void compressImage(f).then(setFinishPhoto);
+              if (f) void compressImage(f).then((cf) => setFinishPhoto(cf));
               e.target.value = "";
             }}
           />

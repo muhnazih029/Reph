@@ -14,6 +14,7 @@ function toDTO(row: Row): ProgressPhoto {
   return {
     id: row.id,
     userId: row.userId,
+    workoutId: row.workoutId,
     takenAt: epochMs(row.takenAt),
     mimeType: row.mimeType,
     weightKg: row.weightKg === null ? null : Number(row.weightKg),
@@ -28,9 +29,11 @@ export function photosModule({ db }: { db: DrizzleDb }) {
   app.get("/", async (c) => {
     const limit = Math.min(Number(c.req.query("limit") ?? 20), 100);
     const offset = Number(c.req.query("offset") ?? 0);
+    const workoutId = c.req.query("workoutId");
     const rows = await db
       .select()
       .from(progressPhotos)
+      .where(workoutId ? eq(progressPhotos.workoutId, workoutId) : undefined)
       .orderBy(desc(progressPhotos.takenAt))
       .limit(limit)
       .offset(offset);
@@ -48,10 +51,12 @@ export function photosModule({ db }: { db: DrizzleDb }) {
     const data = `data:${file.type};base64,${base64}`;
     const weightKg = body["weightKg"] ? Number(body["weightKg"]) : null;
     const notes = typeof body["notes"] === "string" ? body["notes"] : "";
+    const workoutId = typeof body["workoutId"] === "string" ? body["workoutId"] : null;
     const [row] = await db
       .insert(progressPhotos)
       .values({
         userId: OWNER_USER_ID,
+        workoutId,
         mimeType: file.type,
         data,
         weightKg: weightKg === null ? null : String(weightKg),

@@ -28,7 +28,7 @@ export function PhotosScreen() {
         className="hidden"
         onChange={(e) => {
           const f = e.target.files?.[0];
-          if (f) void compressImage(f).then((cf) => upload.mutateAsync(cf));
+          if (f) void compressImage(f).then((cf) => upload.mutateAsync({ file: cf }));
           e.target.value = "";
         }}
       />

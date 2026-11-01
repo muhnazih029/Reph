@@ -205,6 +205,7 @@ export const progressPhotos = pgTable(
   {
     id: uuid("id").primaryKey().defaultRandom(),
     userId: uuid("user_id"),
+    workoutId: uuid("workout_id").references(() => workouts.id, { onDelete: "set null" }),
     takenAt: timestamp("taken_at", { withTimezone: true }).notNull().defaultNow(),
     mimeType: text("mime_type").notNull(),
     data: text("data").notNull(),

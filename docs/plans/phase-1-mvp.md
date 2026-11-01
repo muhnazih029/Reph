@@ -603,21 +603,21 @@ Phase-1 rows 🟩), `docs/features/README.md` (statuses), `docs/data/db-schema.m
 
 **Interfaces:** none new — gate only.
 
-- [ ] Offline check: `bun run build && bun run --filter @reph/web preview`
+- [x] Offline check: `bun run build && bun run --filter @reph/web preview`
       → DevTools offline → full reload → shell renders, banner shows, writes
       blocked gracefully; online → writes resume.
-- [ ] i18n grep gate: no string literals in `src/screens` +
+- [x] i18n grep gate: no string literals in `src/screens` +
       `src/components` (excluding tests) reaching UI — fix stragglers into
       `t()`.
-- [ ] Docs sync: statuses, schema diagram, features table — as above.
-- [ ] **Release gate (all must pass):**
+- [x] Docs sync: statuses, schema diagram, features table — as above.
+- [x] **Release gate (all must pass):**
       `bun run typecheck && bun test && bun run lint && bun run format:check && bun run build`
       plus the manual checklist: start → log (warmup/drop/superset/RPE) →
       timer beep → finish → history → detail edit (incl. conflict path) →
       delete → exercise PR → custom exercise → settings kg→lb display switch
       → theme switch → language switch → offline reload → PWA install on
       Android Chrome (Add to Home Screen) and iOS Safari.
-- [ ] Commit: `chore: phase 1 release gate — pwa polish, docs sync`
+- [x] Commit: `chore: phase 1 release gate — pwa polish, docs sync`
 
 ---
 

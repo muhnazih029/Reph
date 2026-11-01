@@ -1,6 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-
 // Bottom tab bar — Today · History · Exercises · Settings; Phase 2 adds
 // Progress as the fifth tab (docs/specs/PRD-FE.md §1). Respects the
 // safe-area inset; 44 px targets; aria-current on the active tab.
@@ -18,7 +17,7 @@ export function TabBar() {
 
   return (
     <nav
-      aria-label="Primary"
+      aria-label={t("app.primaryNav")}
       className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-surface"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >

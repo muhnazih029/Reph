@@ -35,10 +35,10 @@ source; PRD sections stay at overview level and link here.
 | Rest timer                                          | [PRD §3.1](../specs/PRD.md)        | 1     | built       | [rest-timer](rest-timer.md)                         |
 | Exercise library + custom exercises                 | [PRD §3.2](../specs/PRD.md)        | 1     | built       | [exercise-library](exercise-library.md)             |
 | History & workout detail (edit/delete)              | [PRD §3.3](../specs/PRD.md)        | 1     | built       | [history-workout-detail](history-workout-detail.md) |
-| Stats primitives (1RM Epley, volume, weekly series) | [PRD §3.3](../specs/PRD.md)        | 1     | planned     | —                                                   |
+| Stats primitives (1RM Epley, volume, weekly series) | [PRD §3.3](../specs/PRD.md)        | 1     | built       | [stats-units](stats-units.md)                       |
 | Today / home                                        | [PRD §3.3](../specs/PRD.md)        | 1     | built       | [today-home](today-home.md)                         |
 | Settings (units, timer, theme, language)            | [PRD §3.4](../specs/PRD.md)        | 1     | built       | [settings](settings.md)                             |
-| PWA install + offline banner                        | [PRD-FE §4–§6](../specs/PRD-FE.md) | 1     | planned     | —                                                   |
+| PWA install + offline banner                        | [PRD-FE §4–§6](../specs/PRD-FE.md) | 1     | built       | [pwa-offline](pwa-offline.md)                       |
 | Progress photos + compare                           | [PRD §3.5](../specs/PRD.md)        | 2     | planned     | —                                                   |
 | Routines/templates + folders                        | [PRD §3.6](../specs/PRD.md)        | 2     | planned     | —                                                   |
 | Calendar + streak                                   | [PRD §3.6](../specs/PRD.md)        | 2     | planned     | —                                                   |

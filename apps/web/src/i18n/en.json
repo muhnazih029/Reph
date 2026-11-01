@@ -1,5 +1,5 @@
 {
-  "app": { "name": "Reph" },
+  "app": { "name": "Reph", "primaryNav": "Primary navigation" },
   "tabs": {
     "today": "Today",
     "history": "History",

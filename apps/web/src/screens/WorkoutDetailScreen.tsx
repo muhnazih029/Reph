@@ -90,6 +90,7 @@ export function WorkoutDetailScreen({ id }: { id: string }) {
   const [draft, setDraft] = useState<Workout | null>(null);
   const [conflict, setConflict] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [previewPhoto, setPreviewPhoto] = useState<string | null>(null);
 
   if (workout.isPending) {
     return (
@@ -314,12 +315,18 @@ export function WorkoutDetailScreen({ id }: { id: string }) {
           <div className="grid grid-cols-4 gap-2">
             {(photos.data ?? []).map((p) => (
               <div key={p.id} className="relative">
-                <img
-                  src={`/api/v1/photos/${p.id}/image`}
-                  alt=""
-                  className="aspect-square w-full rounded object-cover"
-                  loading="lazy"
-                />
+                <button
+                  type="button"
+                  onClick={() => setPreviewPhoto(p.id)}
+                  className="block w-full"
+                >
+                  <img
+                    src={`/api/v1/photos/${p.id}/image`}
+                    alt=""
+                    className="aspect-square w-full rounded object-cover"
+                    loading="lazy"
+                  />
+                </button>
                 <button
                   type="button"
                   aria-label={t("photos.delete")}
@@ -335,6 +342,15 @@ export function WorkoutDetailScreen({ id }: { id: string }) {
               </div>
             ))}
           </div>
+        </div>
+      ) : null}
+
+      {previewPhoto ? (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+          onClick={() => setPreviewPhoto(null)}
+        >
+          <img src={`/api/v1/photos/${previewPhoto}/image`} alt="" className="max-h-full max-w-full rounded" />
         </div>
       ) : null}
 

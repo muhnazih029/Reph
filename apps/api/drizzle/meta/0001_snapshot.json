@@ -160,12 +160,8 @@
           "name": "routine_entries_routine_id_routines_id_fk",
           "tableFrom": "routine_entries",
           "tableTo": "routines",
-          "columnsFrom": [
-            "routine_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["routine_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -173,12 +169,8 @@
           "name": "routine_entries_exercise_id_exercises_id_fk",
           "tableFrom": "routine_entries",
           "tableTo": "exercises",
-          "columnsFrom": [
-            "exercise_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["exercise_id"],
+          "columnsTo": ["id"],
           "onDelete": "restrict",
           "onUpdate": "no action"
         }
@@ -348,12 +340,8 @@
           "name": "routine_sets_routine_entry_id_routine_entries_id_fk",
           "tableFrom": "routine_sets",
           "tableTo": "routine_entries",
-          "columnsFrom": [
-            "routine_entry_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["routine_entry_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -455,12 +443,8 @@
           "name": "routines_folder_id_routine_folders_id_fk",
           "tableFrom": "routines",
           "tableTo": "routine_folders",
-          "columnsFrom": [
-            "folder_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["folder_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -608,12 +592,8 @@
           "name": "workout_entries_workout_id_workouts_id_fk",
           "tableFrom": "workout_entries",
           "tableTo": "workouts",
-          "columnsFrom": [
-            "workout_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["workout_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -621,12 +601,8 @@
           "name": "workout_entries_exercise_id_exercises_id_fk",
           "tableFrom": "workout_entries",
           "tableTo": "exercises",
-          "columnsFrom": [
-            "exercise_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["exercise_id"],
+          "columnsTo": ["id"],
           "onDelete": "restrict",
           "onUpdate": "no action"
         }
@@ -741,12 +717,8 @@
           "name": "workout_sets_entry_id_workout_entries_id_fk",
           "tableFrom": "workout_sets",
           "tableTo": "workout_entries",
-          "columnsFrom": [
-            "entry_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["entry_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -881,10 +853,7 @@
     "public.distance_unit": {
       "name": "distance_unit",
       "schema": "public",
-      "values": [
-        "km",
-        "mi"
-      ]
+      "values": ["km", "mi"]
     },
     "public.equipment": {
       "name": "equipment",
@@ -903,18 +872,12 @@
     "public.exercise_type": {
       "name": "exercise_type",
       "schema": "public",
-      "values": [
-        "strength",
-        "cardio"
-      ]
+      "values": ["strength", "cardio"]
     },
     "public.language": {
       "name": "language",
       "schema": "public",
-      "values": [
-        "en",
-        "id"
-      ]
+      "values": ["en", "id"]
     },
     "public.muscle_group": {
       "name": "muscle_group",
@@ -935,36 +898,22 @@
     "public.set_type": {
       "name": "set_type",
       "schema": "public",
-      "values": [
-        "normal",
-        "warmup",
-        "drop",
-        "failure"
-      ]
+      "values": ["normal", "warmup", "drop", "failure"]
     },
     "public.theme": {
       "name": "theme",
       "schema": "public",
-      "values": [
-        "dark",
-        "light"
-      ]
+      "values": ["dark", "light"]
     },
     "public.weight_unit": {
       "name": "weight_unit",
       "schema": "public",
-      "values": [
-        "kg",
-        "lbs"
-      ]
+      "values": ["kg", "lbs"]
     },
     "public.workout_status": {
       "name": "workout_status",
       "schema": "public",
-      "values": [
-        "active",
-        "completed"
-      ]
+      "values": ["active", "completed"]
     }
   },
   "schemas": {},

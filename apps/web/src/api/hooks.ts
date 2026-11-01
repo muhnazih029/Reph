@@ -13,8 +13,11 @@ import {
   type Settings,
   type UpdateWorkoutInput,
   type Workout,
+  routineFolderSchema,
+  routineSchema,
+  type Routine,
+  type RoutineFolder,
 } from "@reph/contracts";
-import { z } from "zod";
 import {
   useMutation,
   useQuery,
@@ -35,6 +38,9 @@ export const queryKeys = {
   workout: (id: string) => ["workout", id] as const,
   workoutActive: ["workout-active"] as const,
   settings: ["settings"] as const,
+  routines: ["routines"] as const,
+  routine: (id: string) => ["routine", id] as const,
+  routineFolders: ["routine-folders"] as const,
 };
 
 /** Query-string filters supported by GET /exercises (PRD-API §3). */
@@ -184,5 +190,61 @@ export function useUpdateSettings(): UseMutationResult<
     mutationFn: (input) =>
       apiSend("PUT", "/settings", updateSettingsRequestSchema.parse(input), settingsSchema),
     onSuccess: () => void client.invalidateQueries({ queryKey: queryKeys.settings }),
+  });
+}
+
+// ---------- Routines (Phase 2 Track A) ----------
+
+import { createRoutineRequestSchema } from "@reph/contracts";
+import { z } from "zod";
+
+export function useRoutineFolders(): UseQueryResult<RoutineFolder[], ApiError> {
+  return useQuery({
+    queryKey: queryKeys.routineFolders,
+    queryFn: () => apiGet("/routines/routine-folders", routineFolderSchema.array()),
+  });
+}
+
+export function useRoutines(folderId?: string): UseQueryResult<Routine[], ApiError> {
+  const qs = folderId ? `?folderId=${folderId}` : "";
+  return useQuery({
+    queryKey: queryKeys.routines,
+    queryFn: () => apiGet(`/routines${qs}`, routineSchema.array()),
+  });
+}
+
+export function useRoutine(id: string): UseQueryResult<Routine, ApiError> {
+  return useQuery({
+    queryKey: queryKeys.routine(id),
+    queryFn: () => apiGet(`/routines/${id}`, routineSchema),
+  });
+}
+
+export function useCreateRoutine(): UseMutationResult<Routine, ApiError, { name: string }> {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (input) =>
+      apiSend("POST", "/routines", createRoutineRequestSchema.parse(input), routineSchema),
+    onSuccess: () => void client.invalidateQueries({ queryKey: queryKeys.routines }),
+  });
+}
+
+export function useDeleteRoutine(): UseMutationResult<void, ApiError, string> {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (id) => apiSend("DELETE", `/routines/${id}`, undefined, z.void()),
+    onSuccess: () => void client.invalidateQueries({ queryKey: queryKeys.routines }),
+  });
+}
+
+export function useStartRoutine(): UseMutationResult<Workout, ApiError, string> {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (id) => apiSend("POST", `/routines/${id}/start`, undefined, workoutSchema),
+    onSuccess: (workout) => {
+      void client.invalidateQueries({ queryKey: queryKeys.workoutActive });
+      void client.invalidateQueries({ queryKey: queryKeys.workout(workout.id) });
+      void client.invalidateQueries({ queryKey: queryKeys.routines });
+    },
   });
 }

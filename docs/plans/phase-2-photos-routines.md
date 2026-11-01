@@ -38,6 +38,7 @@ Phase 2 covers three independent subsystems. They are written here as one
 plan but grouped into three independent tracks (A/B/C) so a reviewer can
 approve/reject one track without affecting the others. If execution feels
 too large, split into three plans:
+
 - `phase-2a-routines.md`
 - `phase-2b-photos.md`
 - `phase-2c-calendar.md`
@@ -88,6 +89,7 @@ apps/web/src/components/
 ### Task A1: DB schema for routines, folders, entries, sets
 
 **Files:**
+
 - Modify: `apps/api/src/db/schema.ts`
 - Modify: `apps/api/src/db/migrations/*` (via `db:generate`)
 
@@ -115,8 +117,12 @@ export const routines = pgTable("routines", {
 
 export const routineEntries = pgTable("routine_entries", {
   id: uuid("id").primaryKey().defaultRandom(),
-  routineId: uuid("routine_id").notNull().references(() => routines.id, { onDelete: "cascade" }),
-  exerciseId: uuid("exercise_id").notNull().references(() => exercises.id, { onDelete: "restrict" }),
+  routineId: uuid("routine_id")
+    .notNull()
+    .references(() => routines.id, { onDelete: "cascade" }),
+  exerciseId: uuid("exercise_id")
+    .notNull()
+    .references(() => exercises.id, { onDelete: "restrict" }),
   position: integer("position").notNull().default(0),
   notes: text("notes").notNull().default(""),
   supersetId: uuid("superset_id"),
@@ -124,7 +130,9 @@ export const routineEntries = pgTable("routine_entries", {
 
 export const routineSets = pgTable("routine_sets", {
   id: uuid("id").primaryKey().defaultRandom(),
-  routineEntryId: uuid("routine_entry_id").notNull().references(() => routineEntries.id, { onDelete: "cascade" }),
+  routineEntryId: uuid("routine_entry_id")
+    .notNull()
+    .references(() => routineEntries.id, { onDelete: "cascade" }),
   position: integer("position").notNull().default(0),
   type: setType("type").notNull().default("normal"),
   reps: integer("reps"),
@@ -155,6 +163,7 @@ git commit -m "feat(api): routines, folders, entries, sets schema"
 ### Task A2: Contracts for routines
 
 **Files:**
+
 - Create: `packages/contracts/src/routines.ts`
 - Modify: `packages/contracts/src/index.ts`
 
@@ -238,11 +247,13 @@ git commit -m "feat(contracts): routine, folder, entry, set schemas"
 ### Task A3: API module for routines
 
 **Files:**
+
 - Create: `apps/api/src/modules/routines.ts`
 - Modify: `apps/api/src/app.ts` (register module under `/api/v1/routines`)
 - Create: `apps/api/src/modules/routines.test.ts`
 
 Endpoints:
+
 - `GET /routines` (optional `?folderId=`)
 - `GET /routines/:id`
 - `POST /routines`
@@ -260,6 +271,7 @@ Endpoints:
 ### Task A4: Web — Routines screen + editor
 
 **Files:**
+
 - Create: `apps/web/src/screens/RoutinesScreen.tsx`
 - Create: `apps/web/src/screens/RoutineEditorScreen.tsx`
 - Modify: `apps/web/src/router.tsx` (add `/routines`, `/routines/$id`)
@@ -281,6 +293,7 @@ Run full gate; commit `chore: track A (routines) release gate`.
 ### Task B1: DB schema for progress photos
 
 **Files:**
+
 - Modify: `apps/api/src/db/schema.ts`
 
 ```ts
@@ -309,6 +322,7 @@ export const progressPhotos = pgTable("progress_photos", {
 ### Task B3: API module
 
 Endpoints:
+
 - `GET /photos` (list metadata, paginated by `before` takenAt)
 - `POST /photos` (multipart upload, max 5 MB, image/* only)
 - `GET /photos/:id/image` (binary stream)
@@ -320,6 +334,7 @@ Endpoints:
 ### Task B4: Web — Photos screen + compare
 
 **Files:**
+
 - `PhotosScreen.tsx` (grid timeline, upload via `<input type="file" accept="image/*">` + camera capture on mobile)
 - `PhotoCompareScreen.tsx` (two photos side-by-side with date/weight labels)
 - hooks: usePhotos, useUploadPhoto, useDeletePhoto
@@ -336,9 +351,11 @@ Endpoints:
 ### Task C1: Stats endpoints
 
 **Files:**
+
 - Modify: `apps/api/src/modules/stats.ts` (or create)
 
 Endpoints:
+
 - `GET /stats/calendar?year=&month=` → `{ days: [{ date: "YYYY-MM-DD", count: number }] }`
 - `GET /stats/streak` → `{ current: number, longest: number }`
 
@@ -350,6 +367,7 @@ Derived from `workouts` where `status='completed'`, grouped by `date_trunc('day'
 ### Task C2: Web — Calendar screen
 
 **Files:**
+
 - `CalendarScreen.tsx` (month grid, heatmap intensity by count, tap day → list workouts)
 - `StreakBadge` component on TodayScreen
 - Route `/calendar`
@@ -375,5 +393,6 @@ Derived from `workouts` where `status='completed'`, grouped by `date_trunc('day'
 - [ ] Update `docs/plans/phase-1-mvp.md` "After Phase 1" note → Phase 2 in progress
 
 ## After Phase 2
+
 Next: Phase 3 (body metrics + trend, stats dashboard, year in review, CSV import/export) — `docs/plans/phase-3-analytics.md`.
 STB deploy still pending (can be done any time after Phase 2 gate green).

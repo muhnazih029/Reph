@@ -169,5 +169,19 @@
     "language": "Bahasa",
     "about": "Tentang",
     "ownershipNote": "Self-hosted — data latihanmu tersimpan di servermu sendiri."
+  },
+  "routines": {
+    "title": "Rutinitas",
+    "name": "Nama",
+    "namePlaceholder": "mis. Hari push",
+    "create": "Buat",
+    "empty": "Belum ada rutinitas",
+    "emptyBody": "Buat rutinitas untuk memulai latihan dari template.",
+    "exercises": "latihan",
+    "sets": "set",
+    "start": "Mulai",
+    "edit": "Edit rutinitas",
+    "delete": "Hapus",
+    "notFound": "Rutinitas tidak ditemukan"
   }
 }

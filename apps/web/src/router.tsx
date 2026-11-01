@@ -7,6 +7,8 @@ import { ExercisesScreen } from "./screens/ExercisesScreen";
 import { HistoryScreen } from "./screens/HistoryScreen";
 import { SettingsScreen } from "./screens/SettingsScreen";
 import { TodayScreen } from "./screens/TodayScreen";
+import { RoutinesScreen } from "./screens/RoutinesScreen";
+import { RoutineEditorScreen } from "./screens/RoutineEditorScreen";
 
 // Code-based typed route tree (docs/specs/PRD-FE.md §1). Logging routes
 // land in Task 9; detail routes in Tasks 7/10.
@@ -65,6 +67,22 @@ const workoutDetailRoute = createRoute({
   },
 });
 
+const routinesRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/routines",
+  component: RoutinesScreen,
+});
+
+const routineEditorRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/routines/$id",
+  component: function RoutineEditorRoute() {
+    const { id } = useParams({ strict: false });
+    if (!id) throw new Error("missing :id route param");
+    return <RoutineEditorScreen id={id} />;
+  },
+});
+
 export const router = createRouter({
   routeTree: rootRoute.addChildren([
     todayRoute,
@@ -74,6 +92,8 @@ export const router = createRouter({
     settingsRoute,
     activeWorkoutRoute,
     workoutDetailRoute,
+    routinesRoute,
+    routineEditorRoute,
   ]),
 });
 

@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { and, asc, eq, inArray } from "drizzle-orm";
+import { asc, eq, inArray } from "drizzle-orm";
 import type { InferSelectModel } from "drizzle-orm";
 import {
   createRoutineFolderRequestSchema,
@@ -144,7 +144,11 @@ export function routinesModule({ db }: { db: DrizzleDb }) {
   app.get("/routines", async (c) => {
     const folderId = c.req.query("folderId");
     const rows = folderId
-      ? await db.select().from(routines).where(eq(routines.folderId, folderId)).orderBy(asc(routines.position))
+      ? await db
+          .select()
+          .from(routines)
+          .where(eq(routines.folderId, folderId))
+          .orderBy(asc(routines.position))
       : await db.select().from(routines).orderBy(asc(routines.position));
     const out: Routine[] = [];
     for (const r of rows) out.push(await loadRoutine(db, r.id));
@@ -219,7 +223,10 @@ export function routinesModule({ db }: { db: DrizzleDb }) {
         })
         .where(eq(routines.id, id));
       if (body.entries) {
-        const oldEntries = await tx.select().from(routineEntries).where(eq(routineEntries.routineId, id));
+        const oldEntries = await tx
+          .select()
+          .from(routineEntries)
+          .where(eq(routineEntries.routineId, id));
         const oldIds = oldEntries.map((e) => e.id);
         if (oldIds.length) {
           await tx.delete(routineSets).where(inArray(routineSets.routineEntryId, oldIds));
@@ -303,7 +310,9 @@ export function routinesModule({ db }: { db: DrizzleDb }) {
       .where(eq(workoutEntries.workoutId, wRow.id))
       .orderBy(asc(workoutEntries.position));
     const eIds = entries.map((e) => e.id);
-    const sets = eIds.length ? await db.select().from(workoutSets).where(inArray(workoutSets.entryId, eIds)) : [];
+    const sets = eIds.length
+      ? await db.select().from(workoutSets).where(inArray(workoutSets.entryId, eIds))
+      : [];
     const byEntry = new Map<string, (typeof sets)[number][]>();
     for (const s of sets) {
       const arr = byEntry.get(s.entryId) ?? [];

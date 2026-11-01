@@ -1,9 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import {
-  createRoutineRequestSchema,
-  routineSchema,
-  updateRoutineRequestSchema,
-} from "./index";
+import { createRoutineRequestSchema, routineSchema, updateRoutineRequestSchema } from "./index";
 
 const now = 1_798_000_000_000;
 const uuid = () => crypto.randomUUID();
@@ -48,7 +44,10 @@ describe("routineSchema", () => {
     expect(() => routineSchema.parse({ ...validRoutine(), name: "" })).toThrow();
   });
   it("rejects rpe > 10", () => {
-    const bad = { ...validRoutine(), entries: [{ ...validRoutineEntry(), sets: [{ ...validRoutineSet(), rpe: 11 }] }] };
+    const bad = {
+      ...validRoutine(),
+      entries: [{ ...validRoutineEntry(), sets: [{ ...validRoutineSet(), rpe: 11 }] }],
+    };
     expect(() => routineSchema.parse(bad)).toThrow();
   });
 });

@@ -169,5 +169,19 @@
     "language": "Language",
     "about": "About",
     "ownershipNote": "Self-hosted — your training data lives on your own server."
+  },
+  "routines": {
+    "title": "Routines",
+    "name": "Name",
+    "namePlaceholder": "e.g. Push day",
+    "create": "Create",
+    "empty": "No routines yet",
+    "emptyBody": "Create a routine to start a workout from a template.",
+    "exercises": "exercises",
+    "sets": "sets",
+    "start": "Start",
+    "edit": "Edit routine",
+    "delete": "Delete",
+    "notFound": "Routine not found"
   }
 }

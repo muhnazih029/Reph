@@ -6,6 +6,8 @@ import { createAuthMiddleware } from "./lib/auth";
 import { ApiError, errorPayload } from "./lib/errors";
 import { exercisesModule } from "./modules/exercises";
 import { healthModule } from "./modules/health";
+import { photosModule } from "./modules/photos";
+import { statsModule } from "./modules/stats";
 import { settingsModule } from "./modules/settings";
 import { routinesModule } from "./modules/routines";
 import { workoutsModule } from "./modules/workouts";
@@ -45,6 +47,8 @@ export function createApp({ db, env }: AppDeps) {
   api.route("/exercises", exercisesModule({ db }));
   api.route("/workouts", workoutsModule({ db }));
   api.route("/routines", routinesModule({ db }));
+  api.route("/photos", photosModule({ db }));
+  api.route("/stats", statsModule({ db }));
   api.route("/settings", settingsModule({ db }));
   app.route("/api/v1", api);
 

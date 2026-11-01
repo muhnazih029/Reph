@@ -8,6 +8,8 @@ import { HistoryScreen } from "./screens/HistoryScreen";
 import { SettingsScreen } from "./screens/SettingsScreen";
 import { TodayScreen } from "./screens/TodayScreen";
 import { RoutinesScreen } from "./screens/RoutinesScreen";
+import { PhotosScreen } from "./screens/PhotosScreen";
+import { CalendarScreen } from "./screens/CalendarScreen";
 import { RoutineEditorScreen } from "./screens/RoutineEditorScreen";
 
 // Code-based typed route tree (docs/specs/PRD-FE.md §1). Logging routes
@@ -83,6 +85,18 @@ const routineEditorRoute = createRoute({
   },
 });
 
+const photosRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/photos",
+  component: PhotosScreen,
+});
+
+const calendarRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/calendar",
+  component: CalendarScreen,
+});
+
 export const router = createRouter({
   routeTree: rootRoute.addChildren([
     todayRoute,
@@ -94,6 +108,8 @@ export const router = createRouter({
     workoutDetailRoute,
     routinesRoute,
     routineEditorRoute,
+    photosRoute,
+    calendarRoute,
   ]),
 });
 

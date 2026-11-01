@@ -183,5 +183,21 @@
     "edit": "Edit rutinitas",
     "delete": "Hapus",
     "notFound": "Rutinitas tidak ditemukan"
+  },
+  "photos": {
+    "title": "Foto progres",
+    "upload": "Unggah foto",
+    "uploading": "Mengunggah...",
+    "empty": "Belum ada foto",
+    "emptyBody": "Unggah foto progres pertama Anda.",
+    "photo": "Foto",
+    "delete": "Hapus"
+  },
+  "calendar": {
+    "title": "Kalender",
+    "currentStreak": "Streak saat ini",
+    "longestStreak": "Streak terpanjang",
+    "empty": "Belum ada latihan",
+    "emptyBody": "Latihan selesai akan muncul di sini."
   }
 }

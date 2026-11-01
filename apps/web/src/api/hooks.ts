@@ -248,3 +248,70 @@ export function useStartRoutine(): UseMutationResult<Workout, ApiError, string> 
     },
   });
 }
+
+// ---------- Photos (Phase 2 Track B) ----------
+
+import { progressPhotoSchema, type ProgressPhoto } from "@reph/contracts";
+
+export function usePhotos(): UseQueryResult<ProgressPhoto[], ApiError> {
+  return useQuery({
+    queryKey: ["photos"] as const,
+    queryFn: () => apiGet("/photos", progressPhotoSchema.array()),
+  });
+}
+
+export function useUploadPhoto(): UseMutationResult<ProgressPhoto, ApiError, File> {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: async (file) => {
+      const form = new FormData();
+      form.append("file", file);
+      const res = await fetch("/api/v1/photos", {
+        method: "POST",
+        headers: { authorization: `Bearer ${import.meta.env.VITE_REPH_TOKEN ?? ""}` },
+        body: form,
+      });
+      if (!res.ok) throw new Error("upload failed");
+      return progressPhotoSchema.parse(await res.json());
+    },
+    onSuccess: () => void client.invalidateQueries({ queryKey: ["photos"] }),
+  });
+}
+
+export function useDeletePhoto(): UseMutationResult<void, ApiError, string> {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (id) => apiSend("DELETE", `/photos/${id}`, undefined, z.void()),
+    onSuccess: () => void client.invalidateQueries({ queryKey: ["photos"] }),
+  });
+}
+
+// ---------- Calendar / Streak (Phase 2 Track C) ----------
+
+export function useCalendar(
+  year: number,
+  month: number,
+): UseQueryResult<
+  { year: number; month: number; days: { date: string; count: number }[] },
+  ApiError
+> {
+  return useQuery({
+    queryKey: ["calendar", year, month] as const,
+    queryFn: () =>
+      apiGet(
+        `/stats/calendar?year=${year}&month=${month}`,
+        z.object({
+          year: z.number(),
+          month: z.number(),
+          days: z.array(z.object({ date: z.string(), count: z.number() })),
+        }),
+      ),
+  });
+}
+
+export function useStreak(): UseQueryResult<{ current: number; longest: number }, ApiError> {
+  return useQuery({
+    queryKey: ["streak"] as const,
+    queryFn: () => apiGet("/stats/streak", z.object({ current: z.number(), longest: z.number() })),
+  });
+}

@@ -199,6 +199,22 @@ export const routineSets = pgTable(
   },
   (t) => [index("routine_sets_entry_position_idx").on(t.routineEntryId, asc(t.position))],
 );
+/** Progress photo — Phase 2 Track B. Binary stored in DB (bytea). */
+export const progressPhotos = pgTable(
+  "progress_photos",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id"),
+    takenAt: timestamp("taken_at", { withTimezone: true }).notNull().defaultNow(),
+    mimeType: text("mime_type").notNull(),
+    data: text("data").notNull(),
+    weightKg: numeric("weight_kg", { precision: 6, scale: 2 }),
+    notes: text("notes").notNull().default(""),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("progress_photos_user_taken_at_idx").on(t.userId, desc(t.takenAt))],
+);
+
 /** Single row per user; seeded lazily on first GET /settings (docs/data/db-schema.md §5). */
 export const settings = pgTable("settings", {
   userId: uuid("user_id").primaryKey(),

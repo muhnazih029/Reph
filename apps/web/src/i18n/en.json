@@ -183,5 +183,21 @@
     "edit": "Edit routine",
     "delete": "Delete",
     "notFound": "Routine not found"
+  },
+  "photos": {
+    "title": "Progress photos",
+    "upload": "Upload photo",
+    "uploading": "Uploading...",
+    "empty": "No photos yet",
+    "emptyBody": "Upload your first progress photo.",
+    "photo": "Photo",
+    "delete": "Delete"
+  },
+  "calendar": {
+    "title": "Calendar",
+    "currentStreak": "Current streak",
+    "longestStreak": "Longest streak",
+    "empty": "No workouts",
+    "emptyBody": "Completed workouts appear here."
   }
 }

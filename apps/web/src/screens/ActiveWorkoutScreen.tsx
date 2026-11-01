@@ -9,6 +9,7 @@ import { Input } from "../components/ui/Input";
 import { Sheet } from "../components/ui/Sheet";
 import { EmptyState } from "../components/ui/EmptyState";
 import { Skeleton } from "../components/ui/Skeleton";
+import { compressImage } from "../lib/image";
 import { EntryCard } from "../components/workout/EntryCard";
 import { ExercisePicker } from "../components/workout/ExercisePicker";
 
@@ -191,7 +192,11 @@ export function ActiveWorkoutScreen() {
               accept="image/*"
               capture="environment"
               className="hidden"
-              onChange={(e) => setFinishPhoto(e.target.files?.[0] ?? null)}
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) void compressImage(f).then(setFinishPhoto);
+                e.target.value = "";
+              }}
             />
             <Button variant="secondary" onClick={() => photoInputRef.current?.click()}>
               {finishPhoto ? finishPhoto.name : t("photos.upload")}

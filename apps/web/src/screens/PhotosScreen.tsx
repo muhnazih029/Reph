@@ -4,6 +4,7 @@ import { usePhotos, useUploadPhoto, useDeletePhoto } from "../api/hooks";
 import { Button } from "../components/ui/Button";
 import { EmptyState } from "../components/ui/EmptyState";
 import { Skeleton } from "../components/ui/Skeleton";
+import { compressImage } from "../lib/image";
 
 export function PhotosScreen() {
   const { t } = useTranslation();
@@ -26,7 +27,7 @@ export function PhotosScreen() {
         className="hidden"
         onChange={(e) => {
           const f = e.target.files?.[0];
-          if (f) void upload.mutateAsync(f);
+          if (f) void compressImage(f).then((cf) => upload.mutateAsync(cf));
           e.target.value = "";
         }}
       />

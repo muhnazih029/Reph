@@ -289,26 +289,6 @@ export function WorkoutDetailScreen({ id }: { id: string }) {
               if (event.key === "Enter") event.currentTarget.blur();
             }}
           />
-          <label className="flex items-center justify-between gap-3 text-sm text-text-muted">
-            {t("workout.bodyWeight")}
-            <Input
-              aria-label={t("workout.bodyWeight")}
-              numeric
-              className="w-28"
-              defaultValue={draft?.bodyWeightKg === null ? "" : String(draft?.bodyWeightKg ?? "")}
-              onBlur={(event) => {
-                const parsed =
-                  event.target.value.trim() === ""
-                    ? null
-                    : Number(event.target.value.replace(",", "."));
-                setDraft((current) =>
-                  current
-                    ? { ...current, bodyWeightKg: Number.isFinite(parsed) ? parsed : null }
-                    : current,
-                );
-              }}
-            />
-          </label>
         </div>
       ) : data.notes !== "" ? (
         <Card className="p-4 text-sm text-text-muted">{data.notes}</Card>

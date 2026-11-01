@@ -5,7 +5,6 @@ import { useActiveWorkoutStore } from "../../stores/activeWorkout";
 import { displayWeight, lbToKg } from "../../lib/units";
 import { Input } from "../ui/Input";
 import { Sheet } from "../ui/Sheet";
-import { NumberStepper } from "../ui/NumberStepper";
 import { Button } from "../ui/Button";
 
 // One set line rendered as a compact table row (Hevy-style):
@@ -50,7 +49,6 @@ export function SetRow({
 }) {
   const { t } = useTranslation();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [rpeOpen, setRpeOpen] = useState(false);
 
   const patch = (partial: Partial<WorkoutSet>) => {
     if (onPatch) {
@@ -71,7 +69,7 @@ export function SetRow({
   if (readOnly) {
     return (
       <div
-        className={`grid grid-cols-[2.5rem_1fr_1fr_1fr_2rem] items-center gap-2 px-4 py-2 text-sm ${
+        className={`grid grid-cols-[2.5rem_1fr_1fr_2rem] items-center gap-2 px-4 py-2 text-sm ${
           done ? "bg-success/10" : ""
         }`}
       >
@@ -81,9 +79,6 @@ export function SetRow({
             <span className="numeric text-text-muted">{previousLabel}</span>
             <span className="numeric">
               {displayWeight(set.weightKg, weightUnit)} × {set.reps ?? "–"}
-            </span>
-            <span className="numeric text-text-muted">
-              {set.rpe !== null ? `@ ${set.rpe} RPE` : ""}
             </span>
             <span className="numeric text-center">{done ? "✓" : "○"}</span>
           </>
@@ -102,7 +97,7 @@ export function SetRow({
   // ---- live / edit: interactive table row ----
   return (
     <div
-      className={`grid grid-cols-[2.5rem_1fr_1fr_1fr_auto_auto] items-center gap-2 px-4 py-2 ${
+      className={`grid grid-cols-[2.5rem_1fr_1fr_auto_auto] items-center gap-2 px-4 py-2 ${
         done ? "bg-success/10" : ""
       } ${set.type !== "normal" ? "border-l-2 border-accent" : ""}`}
     >
@@ -137,13 +132,7 @@ export function SetRow({
             className="numeric"
             onCommit={(reps) => patch({ reps })}
           />
-          <RpeCell
-            set={set}
-            disabled={disabled}
-            onOpen={() => setRpeOpen(true)}
-            onPatch={onPatch}
-            onCommit={(rpe) => patch({ rpe })}
-          />
+
         </>
       ) : (
         <>
@@ -213,14 +202,13 @@ export function SetRow({
       {!onPatch ? (
         <>
           <SetMenuSheet open={menuOpen} onOpenChange={setMenuOpen} entryId={entryId} set={set} />
-          <RpeSheet open={rpeOpen} onOpenChange={setRpeOpen} entryId={entryId} set={set} />
         </>
       ) : null}
     </div>
   );
 }
 
-/** Table header above the set rows: SET · PREVIOUS · <unit> · REPS · RPE · ✓. */
+/** Table header above the set rows: SET · PREVIOUS · <unit> · REPS · ✓. */
 export function ColumnHeader({
   exerciseType,
   weightUnit,
@@ -237,68 +225,16 @@ export function ColumnHeader({
       : `${t("common.minutesShort")}/${distanceUnit}`;
   return (
     <div
-      className="grid grid-cols-[2.5rem_1fr_1fr_1fr_auto_auto] items-center gap-2 border-b border-border bg-surface-2/50 px-4 py-1 text-[0.65rem] font-medium uppercase tracking-wide text-text-muted"
+      className="grid grid-cols-[2.5rem_1fr_1fr_auto_auto] items-center gap-2 border-b border-border bg-surface-2/50 px-4 py-1 text-[0.65rem] font-medium uppercase tracking-wide text-text-muted"
       aria-hidden="true"
     >
       <span>SET</span>
       <span>{t("workout.previousShort")}</span>
       <span>{unitLabel}</span>
       <span>{t("workout.repsShort")}</span>
-      <span className="w-14 text-center">RPE</span>
       <span className="w-8 text-center">✓</span>
     </div>
   );
-}
-
-function RpeCell({
-  set,
-  disabled,
-  onOpen,
-  onPatch,
-  onCommit,
-}: {
-  set: WorkoutSet;
-  disabled?: boolean;
-  onOpen: () => void;
-  onPatch?: (patch: Partial<WorkoutSet>) => void;
-  onCommit: (rpe: number | null) => void;
-}) {
-  const { t } = useTranslation();
-  if (onPatch) {
-    return (
-      <NumberCell
-        label={t("workout.rpe")}
-        value={set.rpe}
-        disabled={disabled}
-        className="w-14"
-        onCommit={onCommit}
-      />
-    );
-  }
-  return (
-    <button
-      type="button"
-      aria-label={t("workout.rpe")}
-      onClick={onOpen}
-      disabled={disabled}
-      className="numeric min-h-9 rounded-sm border border-border bg-surface-2 px-2 text-xs disabled:opacity-50"
-    >
-      RPE {set.rpe ?? "–"}
-    </button>
-  );
-}
-
-function cardioSummary(set: WorkoutSet, unit: DistanceUnit, minutesLabel: string): string {
-  const parts: string[] = [];
-  if (set.durationSeconds !== null)
-    parts.push(`${Math.round(set.durationSeconds / 60)} ${minutesLabel}`);
-  if (set.distanceMeters !== null) {
-    parts.push(
-      `${Math.round((set.distanceMeters / (unit === "mi" ? 1609.344 : 1000)) * 100) / 100} ${unit}`,
-    );
-  }
-  if (set.calories !== null) parts.push(`${set.calories} kcal`);
-  return parts.join(" · ") || "–";
 }
 
 /** Numeric tap-to-edit cell; commits on blur/Enter, shows "–"/empty when null. */
@@ -398,36 +334,12 @@ function SetMenuSheet({
   );
 }
 
-/** RPE 0–10 in half-point steps (live mode). */
-function RpeSheet({
-  open,
-  onOpenChange,
-  entryId,
-  set,
-}: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  entryId: string;
-  set: WorkoutSet;
-}) {
-  const { t } = useTranslation();
-  return (
-    <Sheet open={open} onOpenChange={onOpenChange} title={t("workout.rpe")}>
-      <div className="flex flex-col items-center gap-3 pb-4">
-        <NumberStepper
-          label={t("workout.rpe")}
-          value={(set.rpe ?? 0) * 2}
-          step={1}
-          min={0}
-          max={20}
-          onChange={(value) => {
-            void useActiveWorkoutStore.getState().updateSet(entryId, set.id, { rpe: value / 2 });
-          }}
-        />
-        <Button className="w-full" onClick={() => onOpenChange(false)}>
-          {t("common.confirm")}
-        </Button>
-      </div>
-    </Sheet>
-  );
+function cardioSummary(set: WorkoutSet, unit: DistanceUnit, minutesLabel: string): string {
+  const parts: string[] = [];
+  if (set.durationSeconds !== null) parts.push(`${Math.round(set.durationSeconds / 60)} ${minutesLabel}`);
+  if (set.distanceMeters !== null) {
+    parts.push(`${Math.round((set.distanceMeters / (unit === "mi" ? 1609.344 : 1000)) * 100) / 100} ${unit}`);
+  }
+  if (set.calories !== null) parts.push(`${set.calories} kcal`);
+  return parts.join(" · ") || "–";
 }

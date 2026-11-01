@@ -137,6 +137,68 @@ export const workoutSets = pgTable(
   (t) => [index("workout_sets_entry_position_idx").on(t.entryId, asc(t.position))],
 );
 
+/** Reusable workout blueprint — Task A1 (Phase 2). */
+export const routineFolders = pgTable(
+  "routine_folders",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id"),
+    name: text("name").notNull(),
+    position: integer("position").notNull().default(0),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("routine_folders_user_position_idx").on(t.userId, asc(t.position))],
+);
+
+export const routines = pgTable(
+  "routines",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id"),
+    folderId: uuid("folder_id").references(() => routineFolders.id, { onDelete: "set null" }),
+    name: text("name").notNull(),
+    description: text("description"),
+    position: integer("position").notNull().default(0),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("routines_user_folder_position_idx").on(t.userId, t.folderId, asc(t.position))],
+);
+
+export const routineEntries = pgTable(
+  "routine_entries",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    routineId: uuid("routine_id")
+      .notNull()
+      .references(() => routines.id, { onDelete: "cascade" }),
+    exerciseId: uuid("exercise_id")
+      .notNull()
+      .references(() => exercises.id, { onDelete: "restrict" }),
+    position: integer("position").notNull().default(0),
+    notes: text("notes").notNull().default(""),
+    supersetId: uuid("superset_id"),
+  },
+  (t) => [index("routine_entries_routine_position_idx").on(t.routineId, asc(t.position))],
+);
+
+export const routineSets = pgTable(
+  "routine_sets",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    routineEntryId: uuid("routine_entry_id")
+      .notNull()
+      .references(() => routineEntries.id, { onDelete: "cascade" }),
+    position: integer("position").notNull().default(0),
+    type: setTypeEnum("type").notNull().default("normal"),
+    reps: integer("reps"),
+    weightKg: numeric("weight_kg", { precision: 8, scale: 3 }),
+    durationSeconds: integer("duration_seconds"),
+    distanceMeters: numeric("distance_meters", { precision: 8, scale: 2 }),
+    rpe: numeric("rpe", { precision: 3, scale: 1 }),
+  },
+  (t) => [index("routine_sets_entry_position_idx").on(t.routineEntryId, asc(t.position))],
+);
 /** Single row per user; seeded lazily on first GET /settings (docs/data/db-schema.md §5). */
 export const settings = pgTable("settings", {
   userId: uuid("user_id").primaryKey(),

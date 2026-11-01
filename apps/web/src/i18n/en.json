@@ -10,7 +10,8 @@
     "settings": "Settings",
     "routines": "Routines",
     "photos": "Photos",
-    "calendar": "Calendar"
+    "calendar": "Calendar",
+    "home": "Home"
   },
   "common": {
     "loading": "Loading…",

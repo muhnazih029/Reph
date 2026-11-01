@@ -7,7 +7,7 @@ import { OWNER_USER_ID } from "../lib/auth";
 export function statsModule({ db }: { db: DrizzleDb }) {
   const app = new Hono();
 
-  app.get("/stats/calendar", async (c) => {
+  app.get("/calendar", async (c) => {
     const year = Number(c.req.query("year") ?? new Date().getFullYear());
     const month = Number(c.req.query("month") ?? new Date().getMonth() + 1);
     const start = new Date(year, month - 1, 1);
@@ -34,7 +34,7 @@ export function statsModule({ db }: { db: DrizzleDb }) {
     });
   });
 
-  app.get("/stats/streak", async (c) => {
+  app.get("/streak", async (c) => {
     const rows = await db
       .select({ d: sql<string>`to_char(${workouts.endTime}, 'YYYY-MM-DD')` })
       .from(workouts)

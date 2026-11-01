@@ -25,12 +25,12 @@ function toDTO(row: Row): ProgressPhoto {
 export function photosModule({ db }: { db: DrizzleDb }) {
   const app = new Hono();
 
-  app.get("/photos", async (c) => {
+  app.get("/", async (c) => {
     const rows = await db.select().from(progressPhotos).orderBy(desc(progressPhotos.takenAt));
     return c.json(rows.map(toDTO));
   });
 
-  app.post("/photos", async (c) => {
+  app.post("/", async (c) => {
     const body = await c.req.parseBody();
     const file = body["file"];
     if (!(file instanceof File)) throw ApiError.badRequest("file required");
@@ -54,7 +54,7 @@ export function photosModule({ db }: { db: DrizzleDb }) {
     return c.json(toDTO(row!), 201);
   });
 
-  app.get("/photos/:id/image", async (c) => {
+  app.get("/:id/image", async (c) => {
     const id = c.req.param("id");
     const [row] = await db.select().from(progressPhotos).where(eq(progressPhotos.id, id));
     if (!row) throw ApiError.notFound("Photo not found");
@@ -67,7 +67,7 @@ export function photosModule({ db }: { db: DrizzleDb }) {
     });
   });
 
-  app.patch("/photos/:id", async (c) => {
+  app.patch("/:id", async (c) => {
     const id = c.req.param("id");
     const body = await c.req.json().catch(() => ({}));
     const [existing] = await db.select().from(progressPhotos).where(eq(progressPhotos.id, id));
@@ -88,7 +88,7 @@ export function photosModule({ db }: { db: DrizzleDb }) {
     return c.json(toDTO(row!));
   });
 
-  app.delete("/photos/:id", async (c) => {
+  app.delete("/:id", async (c) => {
     const id = c.req.param("id");
     const res = await db.delete(progressPhotos).where(eq(progressPhotos.id, id));
     if (res.rowCount === 0) throw ApiError.notFound("Photo not found");

@@ -141,7 +141,7 @@ export function routinesModule({ db }: { db: DrizzleDb }) {
     return c.body(null, 204);
   });
 
-  app.get("/routines", async (c) => {
+  app.get("/", async (c) => {
     const folderId = c.req.query("folderId");
     const rows = folderId
       ? await db
@@ -155,12 +155,12 @@ export function routinesModule({ db }: { db: DrizzleDb }) {
     return c.json(out);
   });
 
-  app.get("/routines/:id", async (c) => {
+  app.get("/:id", async (c) => {
     const id = c.req.param("id");
     return c.json(await loadRoutine(db, id));
   });
 
-  app.post("/routines", async (c) => {
+  app.post("/", async (c) => {
     const body = parseOrThrow(createRoutineRequestSchema, await c.req.json());
     const routine = await db.transaction(async (tx) => {
       const [row] = await tx
@@ -203,7 +203,7 @@ export function routinesModule({ db }: { db: DrizzleDb }) {
     return c.json(await loadRoutine(db, routine!.id), 201);
   });
 
-  app.patch("/routines/:id", async (c) => {
+  app.patch("/:id", async (c) => {
     const id = c.req.param("id");
     const body = parseOrThrow(updateRoutineRequestSchema, await c.req.json());
     const [existing] = await db.select().from(routines).where(eq(routines.id, id));
@@ -261,14 +261,14 @@ export function routinesModule({ db }: { db: DrizzleDb }) {
     return c.json(await loadRoutine(db, id));
   });
 
-  app.delete("/routines/:id", async (c) => {
+  app.delete("/:id", async (c) => {
     const id = c.req.param("id");
     const res = await db.delete(routines).where(eq(routines.id, id));
     if (res.rowCount === 0) throw ApiError.notFound("Routine not found");
     return c.body(null, 204);
   });
 
-  app.post("/routines/:id/start", async (c) => {
+  app.post("/:id/start", async (c) => {
     const id = c.req.param("id");
     const routine = await loadRoutine(db, id);
     const workout = await db.transaction(async (tx) => {

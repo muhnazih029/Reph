@@ -42,6 +42,27 @@ export function HistoryScreen() {
         {t("history.title")}
       </h2>
 
+      <div className="flex gap-2">
+        <Link
+          to="/routines"
+          className="flex-1 rounded-sm border border-border bg-surface px-3 py-2 text-center text-sm"
+        >
+          {t("routines.title")}
+        </Link>
+        <Link
+          to="/calendar"
+          className="flex-1 rounded-sm border border-border bg-surface px-3 py-2 text-center text-sm"
+        >
+          {t("calendar.title")}
+        </Link>
+        <Link
+          to="/photos"
+          className="flex-1 rounded-sm border border-border bg-surface px-3 py-2 text-center text-sm"
+        >
+          {t("photos.title")}
+        </Link>
+      </div>
+
       {workouts.isPending ? (
         <div className="flex flex-col gap-2">
           {[0, 1, 2, 3].map((row) => (

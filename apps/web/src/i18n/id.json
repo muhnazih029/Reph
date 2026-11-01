@@ -79,7 +79,9 @@
     "repsShort": "Repetisi",
     "notesPlaceholder": "Tambah catatan di sini...",
     "setsCount_one": "{{count}} set",
-    "setsCount_other": "{{count}} set"
+    "setsCount_other": "{{count}} set",
+    "finishCelebration": "Kerja bagus! Latihan selesai.",
+    "finishSummary": "Ini ringkasan latihan Anda"
   },
   "muscleGroups": {
     "chest": "Dada",

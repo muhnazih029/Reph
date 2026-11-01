@@ -5,6 +5,7 @@ import { useRouter } from "@tanstack/react-router";
 import { useExercises, useSettings, useUploadPhoto } from "../api/hooks";
 import { useActiveWorkoutStore } from "../stores/activeWorkout";
 import { Button } from "../components/ui/Button";
+import { Card } from "../components/ui/Card";
 import { Input } from "../components/ui/Input";
 import { Sheet } from "../components/ui/Sheet";
 import { EmptyState } from "../components/ui/EmptyState";
@@ -78,6 +79,110 @@ export function ActiveWorkoutScreen() {
     void router.navigate({ to: "/history" });
   };
 
+  if (finishOpen && workout) {
+    const sets = workout.entries.reduce((c, e) => c + e.sets.filter((s) => s.done).length, 0);
+    const volume = workout.entries.reduce(
+      (s, e) =>
+        s +
+        e.sets.reduce(
+          (i, set) => i + (set.done && set.type !== "warmup" && set.weightKg !== null && set.reps !== null ? set.weightKg * set.reps : 0),
+          0,
+        ),
+      0,
+    );
+    const reps = workout.entries.reduce(
+      (c, e) => c + e.sets.filter((s) => s.done).reduce((r, s) => r + (s.reps ?? 0), 0),
+      0,
+    );
+    return (
+      <section aria-labelledby="finish-title" className="flex flex-col gap-4">
+        <h2 id="finish-title" className="text-2xl font-medium">
+          {t("workout.finishCelebration")}
+        </h2>
+        <p className="text-sm text-text-muted">{t("workout.finishSummary")}</p>
+        <Card className="grid grid-cols-3 gap-2 py-3 text-center">
+          <div>
+            <p className="numeric text-xl">{sets}</p>
+            <p className="text-xs text-text-muted">{t("detail.sets")}</p>
+          </div>
+          <div>
+            <p className="numeric text-xl">{Math.round(volume)}</p>
+            <p className="text-xs text-text-muted">{t("detail.volume")}</p>
+          </div>
+          <div>
+            <p className="numeric text-xl">{reps}</p>
+            <p className="text-xs text-text-muted">{t("detail.reps")}</p>
+          </div>
+        </Card>
+        <ul className="flex flex-col gap-1 text-sm">
+          {workout.entries.map((e) => {
+            const ex = exercisesById.get(e.exerciseId);
+            const doneSets = e.sets.filter((s) => s.done).length;
+            return (
+              <li key={e.id} className="flex justify-between rounded-sm border border-border bg-surface px-3 py-2">
+                <span>{ex?.name ?? e.exerciseId}</span>
+                <span className="numeric text-text-muted">
+                  {doneSets} {t("routines.sets")}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+        <label className="flex flex-col gap-1 text-sm text-text-muted">
+          {t("workout.title")}
+          <Input
+            aria-label={t("workout.title")}
+            value={finishTitle}
+            onChange={(e) => setFinishTitle(e.target.value)}
+            placeholder={t("workout.titlePlaceholder")}
+          />
+        </label>
+        <label className="flex flex-col gap-1 text-sm text-text-muted">
+          {t("workout.notes")}
+          <Input
+            aria-label={t("workout.notes")}
+            value={finishNotes}
+            onChange={(e) => setFinishNotes(e.target.value)}
+            placeholder={t("workout.notesPlaceholder")}
+          />
+        </label>
+        <div className="flex flex-col gap-1 text-sm text-text-muted">
+          {t("photos.title")}
+          <input
+            ref={photoInputRef}
+            type="file"
+            accept="image/*"
+            capture="environment"
+            className="hidden"
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              if (f) void compressImage(f).then(setFinishPhoto);
+              e.target.value = "";
+            }}
+          />
+          <Button variant="secondary" onClick={() => photoInputRef.current?.click()}>
+            {finishPhoto ? finishPhoto.name : t("photos.upload")}
+          </Button>
+          {finishPhoto ? (
+            <img
+              src={URL.createObjectURL(finishPhoto)}
+              alt=""
+              className="mt-2 max-h-40 rounded"
+            />
+          ) : null}
+        </div>
+        <div className="flex gap-2">
+          <Button variant="secondary" className="flex-1" onClick={() => setFinishOpen(false)}>
+            {t("common.cancel")}
+          </Button>
+          <Button className="flex-1" loading={uploadPhoto.isPending} onClick={() => void finish()}>
+            {t("workout.finish")}
+          </Button>
+        </div>
+      </section>
+    );
+  }
+
   if (!workout) {
     return (
       <div className="flex flex-col gap-2">
@@ -149,99 +254,6 @@ export function ActiveWorkoutScreen() {
           setDiscardOpen(true);
         }}
       />
-
-      <Sheet open={finishOpen} onOpenChange={setFinishOpen} title={t("workout.finish")}>
-        <div className="flex flex-col gap-3 pb-3">
-          <div className="grid grid-cols-3 gap-2 text-center text-sm">
-            <div>
-              <p className="numeric text-base">
-                {workout.entries.reduce((c, e) => c + e.sets.filter((s) => s.done).length, 0)}
-              </p>
-              <p className="text-xs text-text-muted">{t("detail.sets")}</p>
-            </div>
-            <div>
-              <p className="numeric text-base">
-                {Math.round(
-                  workout.entries.reduce(
-                    (s, e) =>
-                      s +
-                      e.sets.reduce(
-                        (i, set) =>
-                          i +
-                          (set.done &&
-                          set.type !== "warmup" &&
-                          set.weightKg !== null &&
-                          set.reps !== null
-                            ? set.weightKg * set.reps
-                            : 0),
-                        0,
-                      ),
-                    0,
-                  ),
-                )}
-              </p>
-              <p className="text-xs text-text-muted">{t("detail.volume")}</p>
-            </div>
-            <div>
-              <p className="numeric text-base">
-                {workout.entries.reduce(
-                  (c, e) => c + e.sets.filter((s) => s.done).reduce((r, s) => r + (s.reps ?? 0), 0),
-                  0,
-                )}
-              </p>
-              <p className="text-xs text-text-muted">{t("detail.reps")}</p>
-            </div>
-          </div>
-          <label className="flex flex-col gap-1 text-sm text-text-muted">
-            {t("workout.title")}
-            <Input
-              aria-label={t("workout.title")}
-              value={finishTitle}
-              onChange={(e) => setFinishTitle(e.target.value)}
-              placeholder={t("workout.titlePlaceholder")}
-            />
-          </label>
-          <label className="flex flex-col gap-1 text-sm text-text-muted">
-            {t("workout.notes")}
-            <Input
-              aria-label={t("workout.notes")}
-              value={finishNotes}
-              onChange={(e) => setFinishNotes(e.target.value)}
-              placeholder={t("workout.notesPlaceholder")}
-            />
-          </label>
-          <div className="flex flex-col gap-1 text-sm text-text-muted">
-            {t("photos.title")}
-            <input
-              ref={photoInputRef}
-              type="file"
-              accept="image/*"
-              capture="environment"
-              className="hidden"
-              onChange={(e) => {
-                const f = e.target.files?.[0];
-                if (f) void compressImage(f).then(setFinishPhoto);
-                e.target.value = "";
-              }}
-            />
-            <Button variant="secondary" onClick={() => photoInputRef.current?.click()}>
-              {finishPhoto ? finishPhoto.name : t("photos.upload")}
-            </Button>
-          </div>
-          <div className="flex gap-2">
-            <Button variant="secondary" className="flex-1" onClick={() => setFinishOpen(false)}>
-              {t("common.cancel")}
-            </Button>
-            <Button
-              className="flex-1"
-              loading={uploadPhoto.isPending}
-              onClick={() => void finish()}
-            >
-              {t("workout.finish")}
-            </Button>
-          </div>
-        </div>
-      </Sheet>
 
       <Sheet open={discardOpen} onOpenChange={setDiscardOpen} title={t("workout.discard")}>
         <div className="flex flex-col gap-3 pb-3">

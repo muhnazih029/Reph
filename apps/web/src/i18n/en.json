@@ -79,7 +79,9 @@
     "repsShort": "Reps",
     "notesPlaceholder": "Add notes here...",
     "setsCount_one": "{{count}} set",
-    "setsCount_other": "{{count}} sets"
+    "setsCount_other": "{{count}} sets",
+    "finishCelebration": "Great job! Workout complete.",
+    "finishSummary": "Here's your summary"
   },
   "muscleGroups": {
     "chest": "Chest",

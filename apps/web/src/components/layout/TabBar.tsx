@@ -8,6 +8,9 @@ const TABS = [
   { path: "/", key: "tabs.today" },
   { path: "/history", key: "tabs.history" },
   { path: "/exercises", key: "tabs.exercises" },
+  { path: "/routines", key: "tabs.routines" },
+  { path: "/photos", key: "tabs.photos" },
+  { path: "/calendar", key: "tabs.calendar" },
   { path: "/settings", key: "tabs.settings" },
 ] as const;
 

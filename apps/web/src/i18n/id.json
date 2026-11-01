@@ -7,7 +7,10 @@
     "today": "Hari ini",
     "history": "Riwayat",
     "exercises": "Latihan",
-    "settings": "Pengaturan"
+    "settings": "Pengaturan",
+    "routines": "Rutinitas",
+    "photos": "Foto",
+    "calendar": "Kalender"
   },
   "common": {
     "loading": "Memuat…",

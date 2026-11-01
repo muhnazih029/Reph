@@ -7,7 +7,10 @@
     "today": "Today",
     "history": "History",
     "exercises": "Exercises",
-    "settings": "Settings"
+    "settings": "Settings",
+    "routines": "Routines",
+    "photos": "Photos",
+    "calendar": "Calendar"
   },
   "common": {
     "loading": "Loading…",

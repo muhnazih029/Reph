@@ -7,6 +7,7 @@ import { ApiError, errorPayload } from "./lib/errors";
 import { exercisesModule } from "./modules/exercises";
 import { healthModule } from "./modules/health";
 import { settingsModule } from "./modules/settings";
+import { routinesModule } from "./modules/routines";
 import { workoutsModule } from "./modules/workouts";
 
 // App factory — modules are wired against an injected Drizzle instance so
@@ -43,6 +44,7 @@ export function createApp({ db, env }: AppDeps) {
   }
   api.route("/exercises", exercisesModule({ db }));
   api.route("/workouts", workoutsModule({ db }));
+  api.route("/routines", routinesModule({ db }));
   api.route("/settings", settingsModule({ db }));
   app.route("/api/v1", api);
 

@@ -1,5 +1,8 @@
 {
-  "app": { "name": "Reph", "primaryNav": "Primary navigation" },
+  "app": {
+    "name": "Reph",
+    "primaryNav": "Primary navigation"
+  },
   "tabs": {
     "today": "Today",
     "history": "History",
@@ -139,7 +142,8 @@
     "noPr": "No sets logged yet",
     "last": "Last performed",
     "sessions": "Sessions",
-    "noSessions": "Not performed in any workout yet"
+    "noSessions": "Not performed in any workout yet",
+    "namePlaceholder": "e.g. Bench Press"
   },
   "settings": {
     "title": "Settings",

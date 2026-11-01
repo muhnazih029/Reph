@@ -85,7 +85,7 @@ export function ExercisePicker({
         aria-label={t("exercises.search")}
         type="search"
         placeholder={t("exercises.search")}
-        className="mb-3"
+        className="sticky top-0 z-10 mb-3 bg-surface"
         value={search}
         onChange={(event) => setSearch(event.target.value)}
       />

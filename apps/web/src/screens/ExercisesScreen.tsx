@@ -58,7 +58,7 @@ export function ExercisesScreen() {
         {t("exercises.title")}
       </h2>
 
-      <div className="mb-3 flex gap-2">
+      <div className="sticky top-0 z-20 -mx-4 mb-3 flex gap-2 bg-background px-4 py-2">
         <Input
           aria-label={t("exercises.search")}
           type="search"
@@ -230,6 +230,7 @@ function CreateExerciseSheet({
           {t("exercises.name")}
           <Input
             aria-label={t("exercises.name")}
+            placeholder={t("exercises.namePlaceholder")}
             value={draft.name}
             onChange={(event) => setDraft({ ...draft, name: event.target.value })}
           />

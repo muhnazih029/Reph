@@ -1,5 +1,8 @@
 {
-  "app": { "name": "Reph", "primaryNav": "Navigasi utama" },
+  "app": {
+    "name": "Reph",
+    "primaryNav": "Navigasi utama"
+  },
   "tabs": {
     "today": "Hari ini",
     "history": "Riwayat",
@@ -139,7 +142,8 @@
     "noPr": "Belum ada set tercatat",
     "last": "Terakhir dilakukan",
     "sessions": "Sesi",
-    "noSessions": "Belum pernah dilakukan dalam latihan"
+    "noSessions": "Belum pernah dilakukan dalam latihan",
+    "namePlaceholder": "mis. Bench Press"
   },
   "settings": {
     "title": "Pengaturan",

@@ -7,6 +7,8 @@
   ],
   "scripts": {
     "dev": "bun --env-file=.env run --filter \"@reph/*\" dev",
+    "start": "docker compose up -d && bun --env-file=.env run --filter \"@reph/*\" dev",
+    "stop": "pkill -f '[b]un.*--watch' 2>/dev/null || true",
     "build": "bun run --filter \"@reph/*\" build",
     "test": "bun run --filter \"@reph/*\" test",
     "typecheck": "bun run --filter \"@reph/*\" typecheck",

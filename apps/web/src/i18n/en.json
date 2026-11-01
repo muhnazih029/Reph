@@ -24,7 +24,8 @@
     "offlineWrite": "Offline — changes can’t be saved right now",
     "minutesShort": "min",
     "secondsShort": "s",
-    "set": "set"
+    "set": "set",
+    "back": "Back"
   },
   "restTimer": {
     "label": "Rest timer",
@@ -186,7 +187,11 @@
     "start": "Start",
     "edit": "Edit routine",
     "delete": "Delete",
-    "notFound": "Routine not found"
+    "notFound": "Routine not found",
+    "emptyEntries": "No exercises yet",
+    "emptyEntriesBody": "Add an exercise to start building this routine.",
+    "addSet": "Add set",
+    "addExercise": "Add exercise"
   },
   "photos": {
     "title": "Progress photos",

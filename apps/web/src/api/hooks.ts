@@ -237,6 +237,23 @@ export function useDeleteRoutine(): UseMutationResult<void, ApiError, string> {
   });
 }
 
+export function useUpdateRoutine(
+  id: string,
+): UseMutationResult<
+  Routine,
+  ApiError,
+  { expectedUpdatedAt: number; name?: string; entries?: Routine["entries"] }
+> {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (input) => apiSend("PATCH", `/routines/${id}`, input, routineSchema),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: queryKeys.routine(id) });
+      void client.invalidateQueries({ queryKey: queryKeys.routines });
+    },
+  });
+}
+
 export function useStartRoutine(): UseMutationResult<Workout, ApiError, string> {
   const client = useQueryClient();
   return useMutation({

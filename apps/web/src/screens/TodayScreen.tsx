@@ -2,7 +2,7 @@ import type { Workout } from "@reph/contracts";
 import { useMemo, useState } from "react";
 import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
-import { Link, useRouter } from "@tanstack/react-router";
+import { useRouter } from "@tanstack/react-router";
 import {
   useActiveWorkout,
   useCreateWorkout,
@@ -115,13 +115,6 @@ export function TodayScreen() {
       >
         {active.data ? t("today.resume") : t("today.startWorkout")}
       </Button>
-
-      <Link
-        to="/photos"
-        className="flex min-h-11 items-center justify-center rounded-sm border border-border bg-surface px-4 text-sm"
-      >
-        {t("photos.title")}
-      </Link>
 
       {workouts.isPending || active.isPending ? (
         <div className="flex flex-col gap-2">

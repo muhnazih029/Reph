@@ -188,6 +188,14 @@ export function WorkoutDetailScreen({ id }: { id: string }) {
       ) : null}
 
       <div className="flex items-center gap-2">
+        <button
+          type="button"
+          aria-label={t("common.back")}
+          onClick={() => void router.navigate({ to: "/history" })}
+          className="min-h-9 min-w-9 text-lg text-text-muted"
+        >
+          ←
+        </button>
         {editing ? (
           <Input
             aria-label={t("workout.title")}

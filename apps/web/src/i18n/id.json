@@ -24,7 +24,8 @@
     "offlineWrite": "Offline — perubahan belum bisa disimpan",
     "minutesShort": "mnt",
     "secondsShort": "dtk",
-    "set": "set"
+    "set": "set",
+    "back": "Kembali"
   },
   "restTimer": {
     "label": "Timer istirahat",
@@ -186,7 +187,11 @@
     "start": "Mulai",
     "edit": "Edit rutinitas",
     "delete": "Hapus",
-    "notFound": "Rutinitas tidak ditemukan"
+    "notFound": "Rutinitas tidak ditemukan",
+    "emptyEntries": "Belum ada latihan",
+    "emptyEntriesBody": "Tambah latihan untuk mulai menyusun rutinitas.",
+    "addSet": "Tambah set",
+    "addExercise": "Tambah latihan"
   },
   "photos": {
     "title": "Foto progres",

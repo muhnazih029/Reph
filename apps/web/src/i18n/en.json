@@ -138,7 +138,8 @@
     "reps": "Reps",
     "conflictTitle": "This workout changed on the server. Reload to get the latest version.",
     "reload": "Reload",
-    "deleteConfirm": "Delete this workout permanently?"
+    "deleteConfirm": "Delete this workout permanently?",
+    "discardChanges": "Discard unsaved changes?"
   },
   "exercises": {
     "title": "Exercises",
@@ -204,7 +205,8 @@
     "emptyBody": "Upload your first progress photo.",
     "photo": "Photo",
     "delete": "Delete",
-    "loadMore": "Load more"
+    "loadMore": "Load more",
+    "deleteConfirm": "Delete this photo?"
   },
   "calendar": {
     "title": "Calendar",

@@ -198,7 +198,15 @@ export function WorkoutDetailScreen({ id }: { id: string }) {
         <button
           type="button"
           aria-label={t("common.back")}
-          onClick={() => void router.navigate({ to: "/history" })}
+          onClick={() => {
+            if (editing) {
+              const ok = window.confirm(t("detail.discardChanges"));
+              if (!ok) return;
+              setEditing(false);
+              setDraft(data);
+            }
+            void router.navigate({ to: "/history" });
+          }}
           className="min-h-9 min-w-9 text-lg text-text-muted"
         >
           ←
@@ -218,6 +226,21 @@ export function WorkoutDetailScreen({ id }: { id: string }) {
         )}
         {editing ? (
           <>
+            <Button variant="secondary" onClick={() => photoInputRef.current?.click()}>
+              {t("photos.upload")}
+            </Button>
+            <input
+              ref={photoInputRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              className="hidden"
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) void uploadPhoto.mutateAsync({ file: f, workoutId: id });
+                e.target.value = "";
+              }}
+            />
             <Button
               variant="secondary"
               onClick={() => {
@@ -236,21 +259,6 @@ export function WorkoutDetailScreen({ id }: { id: string }) {
             <Button variant="secondary" onClick={startEditing}>
               {t("detail.edit")}
             </Button>
-            <Button variant="secondary" onClick={() => photoInputRef.current?.click()}>
-              {t("photos.upload")}
-            </Button>
-            <input
-              ref={photoInputRef}
-              type="file"
-              accept="image/*"
-              capture="environment"
-              className="hidden"
-              onChange={(e) => {
-                const f = e.target.files?.[0];
-                if (f) void uploadPhoto.mutateAsync({ file: f, workoutId: id });
-                e.target.value = "";
-              }}
-            />
             <Button variant="danger" onClick={() => setDeleteOpen(true)}>
               {t("common.delete")}
             </Button>
@@ -315,7 +323,11 @@ export function WorkoutDetailScreen({ id }: { id: string }) {
                 <button
                   type="button"
                   aria-label={t("photos.delete")}
-                  onClick={() => void deletePhoto.mutateAsync(p.id)}
+                  onClick={() => {
+                    const ok = window.confirm(t("photos.deleteConfirm"));
+                    if (!ok) return;
+                    void deletePhoto.mutateAsync(p.id);
+                  }}
                   className="absolute right-1 top-1 rounded-full bg-black/60 px-2 text-xs text-white"
                 >
                   ×

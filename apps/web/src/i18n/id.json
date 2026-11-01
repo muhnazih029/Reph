@@ -138,7 +138,8 @@
     "reps": "Repetisi",
     "conflictTitle": "Latihan ini berubah di server. Muat ulang untuk versi terbaru.",
     "reload": "Muat ulang",
-    "deleteConfirm": "Hapus latihan ini secara permanen?"
+    "deleteConfirm": "Hapus latihan ini secara permanen?",
+    "discardChanges": "Buang perubahan yang belum disimpan?"
   },
   "exercises": {
     "title": "Latihan",
@@ -204,7 +205,8 @@
     "emptyBody": "Unggah foto progres pertama Anda.",
     "photo": "Foto",
     "delete": "Hapus",
-    "loadMore": "Muat lagi"
+    "loadMore": "Muat lagi",
+    "deleteConfirm": "Hapus foto ini?"
   },
   "calendar": {
     "title": "Kalender",

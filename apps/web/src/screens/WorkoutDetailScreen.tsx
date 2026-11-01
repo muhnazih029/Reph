@@ -19,6 +19,7 @@ import { Card } from "../components/ui/Card";
 import { Input } from "../components/ui/Input";
 import { Sheet } from "../components/ui/Sheet";
 import { Skeleton } from "../components/ui/Skeleton";
+import { compressImage } from "../lib/image";
 import { EntryCard } from "../components/workout/EntryCard";
 
 // Workout detail — stats strip, read-only EntryCards, inline edit mode
@@ -238,7 +239,7 @@ export function WorkoutDetailScreen({ id }: { id: string }) {
               className="hidden"
               onChange={(e) => {
                 const f = e.target.files?.[0];
-                if (f) void uploadPhoto.mutateAsync({ file: f, workoutId: id });
+                if (f) void compressImage(f).then((cf) => uploadPhoto.mutateAsync({ file: cf, workoutId: id }));
                 e.target.value = "";
               }}
             />
@@ -327,18 +328,20 @@ export function WorkoutDetailScreen({ id }: { id: string }) {
                     loading="lazy"
                   />
                 </button>
-                <button
-                  type="button"
-                  aria-label={t("photos.delete")}
-                  onClick={() => {
-                    const ok = window.confirm(t("photos.deleteConfirm"));
-                    if (!ok) return;
-                    void deletePhoto.mutateAsync(p.id);
-                  }}
-                  className="absolute right-1 top-1 rounded-full bg-black/60 px-2 text-xs text-white"
-                >
-                  ×
-                </button>
+                {editing ? (
+                  <button
+                    type="button"
+                    aria-label={t("photos.delete")}
+                    onClick={() => {
+                      const ok = window.confirm(t("photos.deleteConfirm"));
+                      if (!ok) return;
+                      void deletePhoto.mutateAsync(p.id);
+                    }}
+                    className="absolute right-1 top-1 rounded-full bg-black/60 px-2 text-xs text-white"
+                  >
+                    ×
+                  </button>
+                ) : null}
               </div>
             ))}
           </div>

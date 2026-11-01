@@ -29,10 +29,14 @@ export async function compressImage(file: File, maxBytes = 2 * 1024 * 1024): Pro
       );
     };
     img.addEventListener("load", handleLoad, { once: true });
-    img.addEventListener("error", () => {
-      URL.revokeObjectURL(url);
-      resolve(file);
-    }, { once: true });
+    img.addEventListener(
+      "error",
+      () => {
+        URL.revokeObjectURL(url);
+        resolve(file);
+      },
+      { once: true },
+    );
     img.src = url;
   });
 }

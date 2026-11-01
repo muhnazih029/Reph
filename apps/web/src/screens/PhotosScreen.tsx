@@ -8,7 +8,8 @@ import { compressImage } from "../lib/image";
 
 export function PhotosScreen() {
   const { t } = useTranslation();
-  const photos = usePhotos();
+  const [limit, setLimit] = useState(20);
+  const photos = usePhotos(limit, 0);
   const upload = useUploadPhoto();
   const remove = useDeletePhoto();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -62,6 +63,12 @@ export function PhotosScreen() {
           ))}
         </div>
       )}
+
+      {(photos.data ?? []).length >= limit ? (
+        <Button variant="secondary" onClick={() => setLimit((l) => l + 20)}>
+          {t("photos.loadMore")}
+        </Button>
+      ) : null}
 
       {preview ? (
         <div

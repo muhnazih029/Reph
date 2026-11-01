@@ -26,7 +26,14 @@ export function photosModule({ db }: { db: DrizzleDb }) {
   const app = new Hono();
 
   app.get("/", async (c) => {
-    const rows = await db.select().from(progressPhotos).orderBy(desc(progressPhotos.takenAt));
+    const limit = Math.min(Number(c.req.query("limit") ?? 20), 100);
+    const offset = Number(c.req.query("offset") ?? 0);
+    const rows = await db
+      .select()
+      .from(progressPhotos)
+      .orderBy(desc(progressPhotos.takenAt))
+      .limit(limit)
+      .offset(offset);
     return c.json(rows.map(toDTO));
   });
 

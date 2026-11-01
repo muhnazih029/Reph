@@ -154,15 +154,41 @@ export function ActiveWorkoutScreen() {
         <div className="flex flex-col gap-3 pb-3">
           <div className="grid grid-cols-3 gap-2 text-center text-sm">
             <div>
-              <p className="numeric text-base">{workout.entries.reduce((c, e) => c + e.sets.filter((s) => s.done).length, 0)}</p>
+              <p className="numeric text-base">
+                {workout.entries.reduce((c, e) => c + e.sets.filter((s) => s.done).length, 0)}
+              </p>
               <p className="text-xs text-text-muted">{t("detail.sets")}</p>
             </div>
             <div>
-              <p className="numeric text-base">{Math.round(workout.entries.reduce((s, e) => s + e.sets.reduce((i, set) => i + (set.done && set.type !== "warmup" && set.weightKg !== null && set.reps !== null ? set.weightKg * set.reps : 0), 0), 0))}</p>
+              <p className="numeric text-base">
+                {Math.round(
+                  workout.entries.reduce(
+                    (s, e) =>
+                      s +
+                      e.sets.reduce(
+                        (i, set) =>
+                          i +
+                          (set.done &&
+                          set.type !== "warmup" &&
+                          set.weightKg !== null &&
+                          set.reps !== null
+                            ? set.weightKg * set.reps
+                            : 0),
+                        0,
+                      ),
+                    0,
+                  ),
+                )}
+              </p>
               <p className="text-xs text-text-muted">{t("detail.volume")}</p>
             </div>
             <div>
-              <p className="numeric text-base">{workout.entries.reduce((c, e) => c + e.sets.filter((s) => s.done).reduce((r, s) => r + (s.reps ?? 0), 0), 0)}</p>
+              <p className="numeric text-base">
+                {workout.entries.reduce(
+                  (c, e) => c + e.sets.filter((s) => s.done).reduce((r, s) => r + (s.reps ?? 0), 0),
+                  0,
+                )}
+              </p>
               <p className="text-xs text-text-muted">{t("detail.reps")}</p>
             </div>
           </div>

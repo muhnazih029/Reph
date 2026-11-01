@@ -200,7 +200,8 @@
     "empty": "Belum ada foto",
     "emptyBody": "Unggah foto progres pertama Anda.",
     "photo": "Foto",
-    "delete": "Hapus"
+    "delete": "Hapus",
+    "loadMore": "Muat lagi"
   },
   "calendar": {
     "title": "Kalender",

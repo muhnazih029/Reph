@@ -132,7 +132,6 @@ export function SetRow({
             className="numeric"
             onCommit={(reps) => patch({ reps })}
           />
-
         </>
       ) : (
         <>
@@ -184,20 +183,22 @@ export function SetRow({
         </button>
       ) : null}
 
-      <button
-        type="button"
-        aria-label={t("workout.markDone")}
-        aria-pressed={done}
-        disabled={disabled}
-        onClick={() => patch({ done: !done })}
-        className={`flex h-8 w-8 items-center justify-center rounded-full border text-sm ${
-          done
-            ? "border-success bg-success text-accent-contrast"
-            : "border-border bg-surface-2 text-text-muted"
-        }`}
-      >
-        ✓
-      </button>
+      {!onPatch ? (
+        <button
+          type="button"
+          aria-label={t("workout.markDone")}
+          aria-pressed={done}
+          disabled={disabled}
+          onClick={() => patch({ done: !done })}
+          className={`flex h-8 w-8 items-center justify-center rounded-full border text-sm ${
+            done
+              ? "border-success bg-success text-accent-contrast"
+              : "border-border bg-surface-2 text-text-muted"
+          }`}
+        >
+          ✓
+        </button>
+      ) : null}
 
       {!onPatch ? (
         <>
@@ -336,9 +337,12 @@ function SetMenuSheet({
 
 function cardioSummary(set: WorkoutSet, unit: DistanceUnit, minutesLabel: string): string {
   const parts: string[] = [];
-  if (set.durationSeconds !== null) parts.push(`${Math.round(set.durationSeconds / 60)} ${minutesLabel}`);
+  if (set.durationSeconds !== null)
+    parts.push(`${Math.round(set.durationSeconds / 60)} ${minutesLabel}`);
   if (set.distanceMeters !== null) {
-    parts.push(`${Math.round((set.distanceMeters / (unit === "mi" ? 1609.344 : 1000)) * 100) / 100} ${unit}`);
+    parts.push(
+      `${Math.round((set.distanceMeters / (unit === "mi" ? 1609.344 : 1000)) * 100) / 100} ${unit}`,
+    );
   }
   if (set.calories !== null) parts.push(`${set.calories} kcal`);
   return parts.join(" · ") || "–";

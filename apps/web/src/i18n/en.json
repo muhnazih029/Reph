@@ -200,7 +200,8 @@
     "empty": "No photos yet",
     "emptyBody": "Upload your first progress photo.",
     "photo": "Photo",
-    "delete": "Delete"
+    "delete": "Delete",
+    "loadMore": "Load more"
   },
   "calendar": {
     "title": "Calendar",

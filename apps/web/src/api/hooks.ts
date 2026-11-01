@@ -270,10 +270,10 @@ export function useStartRoutine(): UseMutationResult<Workout, ApiError, string> 
 
 import { progressPhotoSchema, type ProgressPhoto } from "@reph/contracts";
 
-export function usePhotos(): UseQueryResult<ProgressPhoto[], ApiError> {
+export function usePhotos(limit = 20, offset = 0): UseQueryResult<ProgressPhoto[], ApiError> {
   return useQuery({
-    queryKey: ["photos"] as const,
-    queryFn: () => apiGet("/photos", progressPhotoSchema.array()),
+    queryKey: ["photos", limit, offset] as const,
+    queryFn: () => apiGet(`/photos?limit=${limit}&offset=${offset}`, progressPhotoSchema.array()),
   });
 }
 

@@ -9,6 +9,7 @@ import {
   useUpdateWorkout,
   useUploadPhoto,
   useWorkout,
+  usePhotos,
 } from "../api/hooks";
 import type { ApiError } from "../api/client";
 import { workoutVolumeKg } from "../lib/stats";
@@ -81,6 +82,7 @@ export function WorkoutDetailScreen({ id }: { id: string }) {
   const deleteWorkout = useDeleteWorkout();
   const uploadPhoto = useUploadPhoto();
   const photoInputRef = useRef<HTMLInputElement>(null);
+  const photos = usePhotos(8);
 
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState<Workout | null>(null);
@@ -292,6 +294,24 @@ export function WorkoutDetailScreen({ id }: { id: string }) {
         </div>
       ) : data.notes !== "" ? (
         <Card className="p-4 text-sm text-text-muted">{data.notes}</Card>
+      ) : null}
+
+      {(photos.data ?? []).length > 0 ? (
+        <div>
+          <p className="px-1 text-xs font-medium uppercase tracking-wide text-text-muted">
+            {t("photos.title")}
+          </p>
+          <div className="grid grid-cols-4 gap-2">
+            {(photos.data ?? []).map((p) => (
+              <img
+                key={p.id}
+                src={`/api/v1/photos/${p.id}/image`}
+                alt=""
+                className="aspect-square w-full rounded-sm object-cover"
+              />
+            ))}
+          </div>
+        </div>
       ) : null}
 
       <Sheet open={deleteOpen} onOpenChange={setDeleteOpen} title={t("common.delete")}>

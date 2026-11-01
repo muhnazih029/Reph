@@ -33,6 +33,9 @@ export function WorkoutRow({ workout }: { workout: Workout }) {
           {format(workout.startTime, "d MMM")} · {t("history.setsCount", { count: sets })} ·{" "}
           {t("history.volumeDisplay", { value: Math.round(workoutVolumeKg(workout)) })}
         </span>
+        {workout.notes !== "" ? (
+          <span className="truncate text-xs text-text-muted">{workout.notes}</span>
+        ) : null}
       </span>
       <span className="numeric shrink-0 text-sm text-text-muted">
         {minutes} {t("common.minutesShort")}

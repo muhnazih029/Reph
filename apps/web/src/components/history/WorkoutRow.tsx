@@ -2,6 +2,7 @@ import type { Workout } from "@reph/contracts";
 import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
 import { Link } from "@tanstack/react-router";
+import { usePhotos } from "../../api/hooks";
 import { workoutVolumeKg } from "../../lib/stats";
 
 // One history/Today row — date day, title, sets count, volume, duration;
@@ -10,6 +11,7 @@ import { workoutVolumeKg } from "../../lib/stats";
 
 export function WorkoutRow({ workout }: { workout: Workout }) {
   const { t } = useTranslation();
+  const photos = usePhotos(4, 0, workout.id);
   const sets = workout.entries.reduce(
     (count, entry) => count + entry.sets.filter((set) => set.done).length,
     0,
@@ -23,23 +25,38 @@ export function WorkoutRow({ workout }: { workout: Workout }) {
     <Link
       to="/workouts/$id"
       params={{ id: workout.id }}
-      className="flex min-h-14 items-center justify-between gap-3 px-4 py-3 active:bg-surface-2"
+      className="flex min-h-14 flex-col gap-2 px-4 py-3 active:bg-surface-2"
     >
-      <span className="flex min-w-0 flex-col">
-        <span className="truncate text-sm font-medium">
-          {workout.title === "" ? t("workout.titlePlaceholder") : workout.title}
+      <div className="flex items-center justify-between gap-3">
+        <span className="flex min-w-0 flex-col">
+          <span className="truncate text-sm font-medium">
+            {workout.title === "" ? t("workout.titlePlaceholder") : workout.title}
+          </span>
+          <span className="text-xs text-text-muted">
+            {format(workout.startTime, "d MMM")} · {t("history.setsCount", { count: sets })} ·{" "}
+            {t("history.volumeDisplay", { value: Math.round(workoutVolumeKg(workout)) })}
+          </span>
+          {workout.notes !== "" ? (
+            <span className="truncate text-xs text-text-muted">{workout.notes}</span>
+          ) : null}
         </span>
-        <span className="text-xs text-text-muted">
-          {format(workout.startTime, "d MMM")} · {t("history.setsCount", { count: sets })} ·{" "}
-          {t("history.volumeDisplay", { value: Math.round(workoutVolumeKg(workout)) })}
+        <span className="numeric shrink-0 text-sm text-text-muted">
+          {minutes} {t("common.minutesShort")}
         </span>
-        {workout.notes !== "" ? (
-          <span className="truncate text-xs text-text-muted">{workout.notes}</span>
-        ) : null}
-      </span>
-      <span className="numeric shrink-0 text-sm text-text-muted">
-        {minutes} {t("common.minutesShort")}
-      </span>
+      </div>
+      {(photos.data ?? []).length > 0 ? (
+        <div className="grid grid-cols-4 gap-1">
+          {(photos.data ?? []).map((p) => (
+            <img
+              key={p.id}
+              src={`/api/v1/photos/${p.id}/image`}
+              alt=""
+              className="aspect-square w-full rounded object-cover"
+              loading="lazy"
+            />
+          ))}
+        </div>
+      ) : null}
     </Link>
   );
 }

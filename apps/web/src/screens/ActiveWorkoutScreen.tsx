@@ -172,6 +172,23 @@ function StickyHeader({
 }) {
   const { t } = useTranslation();
   const elapsed = useElapsedTick(workout.startTime);
+  const sets = workout.entries.reduce(
+    (count, entry) => count + entry.sets.filter((set) => set.done).length,
+    0,
+  );
+  const volume = workout.entries.reduce(
+    (sum, entry) =>
+      sum +
+      entry.sets.reduce(
+        (inner, set) =>
+          inner +
+          (set.done && set.type !== "warmup" && set.weightKg !== null && set.reps !== null
+            ? set.weightKg * set.reps
+            : 0),
+        0,
+      ),
+    0,
+  );
 
   const commitTitle = (title: string) => {
     if (title !== workout.title) void useActiveWorkoutStore.getState().setTitle(title);
@@ -200,6 +217,15 @@ function StickyHeader({
         >
           ⋯
         </button>
+      </div>
+      <div className="mt-1 flex items-center gap-3 text-xs text-text-muted">
+        <span className="numeric">
+          {sets} {t("workout.setsCount", { count: sets })}
+        </span>
+        <span className="numeric">{Math.round(volume)} kg</span>
+        <span className="numeric">
+          {workout.entries.length} {t("workout.exercisesCount", { count: workout.entries.length })}
+        </span>
       </div>
     </div>
   );

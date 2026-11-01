@@ -67,7 +67,9 @@
     "entryMenu": "Opsi entri",
     "moveUp": "Naik",
     "moveDown": "Turun",
-    "deleteEntry": "Hapus latihan"
+    "deleteEntry": "Hapus latihan",
+    "exercisesCount_one": "{{count}} latihan",
+    "exercisesCount_other": "{{count}} latihan"
   },
   "muscleGroups": {
     "chest": "Dada",

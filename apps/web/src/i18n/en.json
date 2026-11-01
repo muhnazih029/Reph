@@ -67,7 +67,9 @@
     "entryMenu": "Entry options",
     "moveUp": "Move up",
     "moveDown": "Move down",
-    "deleteEntry": "Delete exercise"
+    "deleteEntry": "Delete exercise",
+    "exercisesCount_one": "{{count}} exercise",
+    "exercisesCount_other": "{{count}} exercise"
   },
   "muscleGroups": {
     "chest": "Chest",

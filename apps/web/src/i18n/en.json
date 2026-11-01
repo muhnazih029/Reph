@@ -69,7 +69,12 @@
     "moveDown": "Move down",
     "deleteEntry": "Delete exercise",
     "exercisesCount_one": "{{count}} exercise",
-    "exercisesCount_other": "{{count}} exercise"
+    "exercisesCount_other": "{{count}} exercise",
+    "previousShort": "Previous",
+    "repsShort": "Reps",
+    "notesPlaceholder": "Add notes here...",
+    "setsCount_one": "{{count}} set",
+    "setsCount_other": "{{count}} sets"
   },
   "muscleGroups": {
     "chest": "Chest",

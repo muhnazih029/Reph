@@ -189,6 +189,11 @@ function StickyHeader({
       ),
     0,
   );
+  const reps = workout.entries.reduce(
+    (count, entry) =>
+      count + entry.sets.filter((set) => set.done).reduce((sum, set) => sum + (set.reps ?? 0), 0),
+    0,
+  );
 
   const commitTitle = (title: string) => {
     if (title !== workout.title) void useActiveWorkoutStore.getState().setTitle(title);
@@ -207,7 +212,6 @@ function StickyHeader({
             if (event.key === "Enter") event.currentTarget.blur();
           }}
         />
-        <span className="numeric shrink-0 text-sm text-text-muted">{elapsed}</span>
         <Button onClick={onFinish}>{t("workout.finish")}</Button>
         <button
           type="button"
@@ -218,16 +222,24 @@ function StickyHeader({
           ⋯
         </button>
       </div>
-      <div className="mt-1 flex items-center gap-3 text-xs text-text-muted">
-        <span className="numeric">
-          {sets} {t("workout.setsCount", { count: sets })}
-        </span>
-        <span className="numeric">{Math.round(volume)} kg</span>
-        <span className="numeric">
-          {workout.entries.length} {t("workout.exercisesCount", { count: workout.entries.length })}
-        </span>
+      <div className="mt-1 flex items-center gap-5">
+        <Stat label={t("detail.duration")} value={elapsed} />
+        <Stat label={t("detail.volume")} value={`${Math.round(volume)}`} />
+        <Stat label={t("detail.sets")} value={String(sets)} />
+        <Stat label={t("detail.reps")} value={String(reps)} />
       </div>
     </div>
+  );
+}
+
+function Stat({ label, value }: { label: string; value: string }) {
+  return (
+    <span className="flex flex-col">
+      <span className="text-[0.65rem] font-medium uppercase tracking-wide text-text-muted">
+        {label}
+      </span>
+      <span className="numeric text-sm font-medium text-accent">{value}</span>
+    </span>
   );
 }
 

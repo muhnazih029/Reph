@@ -69,7 +69,12 @@
     "moveDown": "Turun",
     "deleteEntry": "Hapus latihan",
     "exercisesCount_one": "{{count}} latihan",
-    "exercisesCount_other": "{{count}} latihan"
+    "exercisesCount_other": "{{count}} latihan",
+    "previousShort": "Sebelumnya",
+    "repsShort": "Repetisi",
+    "notesPlaceholder": "Tambah catatan di sini...",
+    "setsCount_one": "{{count}} set",
+    "setsCount_other": "{{count}} set"
   },
   "muscleGroups": {
     "chest": "Dada",

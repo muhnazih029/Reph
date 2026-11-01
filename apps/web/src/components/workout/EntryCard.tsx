@@ -9,7 +9,7 @@ import { displayWeight } from "../../lib/units";
 import { Input } from "../ui/Input";
 import { Sheet } from "../ui/Sheet";
 import { Button } from "../ui/Button";
-import { SetRow } from "./SetRow";
+import { ColumnHeader, SetRow } from "./SetRow";
 import { ExercisePicker } from "./ExercisePicker";
 
 // One exercise block of the active workout — header popover (previous
@@ -117,15 +117,22 @@ export function EntryCard({
         ) : null}
       </header>
 
+      <ColumnHeader
+        exerciseType={exercise.type}
+        weightUnit={weightUnit}
+        distanceUnit={distanceUnit}
+      />
       <ul className="divide-y divide-border">
-        {entry.sets.map((set) => (
+        {entry.sets.map((set, index) => (
           <li key={set.id}>
             <SetRow
               entryId={entry.id}
               set={set}
+              setIndex={index + 1}
               exerciseType={exercise.type}
               weightUnit={weightUnit}
               distanceUnit={distanceUnit}
+              previous={previous}
               disabled={disabled}
               readOnly={readOnly && !onSetPatch}
               onPatch={onSetPatch ? (patch) => onSetPatch(set.id, patch) : undefined}
@@ -144,7 +151,7 @@ export function EntryCard({
           <Input
             aria-label={t("workout.notes")}
             defaultValue={entry.notes}
-            placeholder={t("workout.notes")}
+            placeholder={t("workout.notesPlaceholder")}
             onChange={() => undefined}
             onBlur={(event) => {
               void useActiveWorkoutStore.getState().setEntryNotes(entry.id, event.target.value);

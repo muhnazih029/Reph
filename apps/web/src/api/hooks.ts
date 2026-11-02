@@ -343,3 +343,40 @@ export function useStreak(): UseQueryResult<{ current: number; longest: number }
     queryFn: () => apiGet("/stats/streak", z.object({ current: z.number(), longest: z.number() })),
   });
 }
+
+// ---------- Body metrics (Phase 3 Track A) ----------
+
+import { bodyMetricSchema, createBodyMetricRequestSchema, type BodyMetric } from "@reph/contracts";
+
+export function useBodyMetrics(): UseQueryResult<BodyMetric[], ApiError> {
+  return useQuery({
+    queryKey: ["body-metrics"] as const,
+    queryFn: () => apiGet("/body-metrics", bodyMetricSchema.array()),
+  });
+}
+
+export function useCreateBodyMetric(): UseMutationResult<
+  BodyMetric,
+  ApiError,
+  { weightKg?: number | null; bodyFatPct?: number | null; notes?: string }
+> {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (input) =>
+      apiSend(
+        "POST",
+        "/body-metrics",
+        createBodyMetricRequestSchema.parse(input),
+        bodyMetricSchema,
+      ),
+    onSuccess: () => void client.invalidateQueries({ queryKey: ["body-metrics"] }),
+  });
+}
+
+export function useDeleteBodyMetric(): UseMutationResult<void, ApiError, string> {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (id) => apiSend("DELETE", `/body-metrics/${id}`, undefined, z.void()),
+    onSuccess: () => void client.invalidateQueries({ queryKey: ["body-metrics"] }),
+  });
+}

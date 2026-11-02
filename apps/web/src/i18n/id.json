@@ -217,5 +217,14 @@
     "longestStreak": "Streak terpanjang",
     "empty": "Belum ada latihan",
     "emptyBody": "Latihan selesai akan muncul di sini."
+  },
+  "bodyMetrics": {
+    "title": "Metrik tubuh",
+    "weight": "Berat (kg)",
+    "bodyFat": "Lemak tubuh %",
+    "add": "Tambah",
+    "empty": "Belum ada metrik",
+    "emptyBody": "Catat berat dan lemak tubuh Anda.",
+    "delete": "Hapus"
   }
 }

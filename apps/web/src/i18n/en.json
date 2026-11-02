@@ -217,5 +217,14 @@
     "longestStreak": "Longest streak",
     "empty": "No workouts",
     "emptyBody": "Completed workouts appear here."
+  },
+  "bodyMetrics": {
+    "title": "Body metrics",
+    "weight": "Weight (kg)",
+    "bodyFat": "Body fat %",
+    "add": "Add",
+    "empty": "No metrics yet",
+    "emptyBody": "Log your weight and body fat.",
+    "delete": "Delete"
   }
 }

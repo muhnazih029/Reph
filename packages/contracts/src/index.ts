@@ -4,3 +4,4 @@ export * from "./requests";
 export * from "./errors";
 export * from "./routines";
 export * from "./photos";
+export * from "./bodyMetrics";

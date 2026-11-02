@@ -11,7 +11,8 @@
     "routines": "Rutinitas",
     "photos": "Foto",
     "calendar": "Kalender",
-    "home": "Beranda"
+    "home": "Beranda",
+    "workout": "Latihan"
   },
   "common": {
     "loading": "Memuat…",
@@ -81,7 +82,8 @@
     "setsCount_one": "{{count}} set",
     "setsCount_other": "{{count}} set",
     "finishCelebration": "Kerja bagus! Latihan selesai.",
-    "finishSummary": "Ini ringkasan latihan Anda"
+    "finishSummary": "Ini ringkasan latihan Anda",
+    "titleTab": "Latihan"
   },
   "muscleGroups": {
     "chest": "Dada",
@@ -195,7 +197,8 @@
     "emptyEntriesBody": "Tambah latihan untuk mulai menyusun rutinitas.",
     "addSet": "Tambah set",
     "addExercise": "Tambah latihan",
-    "activeExists": "Ada latihan aktif. Buang dan mulai rutinitas ini?"
+    "activeExists": "Ada latihan aktif. Buang dan mulai rutinitas ini?",
+    "newDefault": "Rutinitas baru"
   },
   "photos": {
     "title": "Foto progres",

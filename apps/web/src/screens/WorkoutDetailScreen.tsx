@@ -239,7 +239,10 @@ export function WorkoutDetailScreen({ id }: { id: string }) {
               className="hidden"
               onChange={(e) => {
                 const f = e.target.files?.[0];
-                if (f) void compressImage(f).then((cf) => uploadPhoto.mutateAsync({ file: cf, workoutId: id }));
+                if (f)
+                  void compressImage(f).then((cf) =>
+                    uploadPhoto.mutateAsync({ file: cf, workoutId: id }),
+                  );
                 e.target.value = "";
               }}
             />
@@ -353,7 +356,11 @@ export function WorkoutDetailScreen({ id }: { id: string }) {
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
           onClick={() => setPreviewPhoto(null)}
         >
-          <img src={`/api/v1/photos/${previewPhoto}/image`} alt="" className="max-h-full max-w-full rounded" />
+          <img
+            src={`/api/v1/photos/${previewPhoto}/image`}
+            alt=""
+            className="max-h-full max-w-full rounded"
+          />
         </div>
       ) : null}
 

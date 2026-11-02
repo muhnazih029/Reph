@@ -75,7 +75,10 @@ export function ActiveWorkoutScreen() {
       await useActiveWorkoutStore.getState().setNotes(finishNotes.trim());
     }
     await useActiveWorkoutStore.getState().finishWorkout();
-    if (finishPhoto) await uploadPhoto.mutateAsync({ file: finishPhoto, workoutId: workout.id }).catch(() => undefined);
+    if (finishPhoto)
+      await uploadPhoto
+        .mutateAsync({ file: finishPhoto, workoutId: workout.id })
+        .catch(() => undefined);
     setFinishOpen(false);
     void router.navigate({ to: "/history" });
   };
@@ -86,7 +89,11 @@ export function ActiveWorkoutScreen() {
       (s, e) =>
         s +
         e.sets.reduce(
-          (i, set) => i + (set.done && set.type !== "warmup" && set.weightKg !== null && set.reps !== null ? set.weightKg * set.reps : 0),
+          (i, set) =>
+            i +
+            (set.done && set.type !== "warmup" && set.weightKg !== null && set.reps !== null
+              ? set.weightKg * set.reps
+              : 0),
           0,
         ),
       0,
@@ -120,7 +127,10 @@ export function ActiveWorkoutScreen() {
             const ex = exercisesById.get(e.exerciseId);
             const doneSets = e.sets.filter((s) => s.done).length;
             return (
-              <li key={e.id} className="flex justify-between rounded-sm border border-border bg-surface px-3 py-2">
+              <li
+                key={e.id}
+                className="flex justify-between rounded-sm border border-border bg-surface px-3 py-2"
+              >
                 <span>{ex?.name ?? e.exerciseId}</span>
                 <span className="numeric text-text-muted">
                   {doneSets} {t("routines.sets")}
@@ -165,11 +175,7 @@ export function ActiveWorkoutScreen() {
             {finishPhoto ? finishPhoto.name : t("photos.upload")}
           </Button>
           {finishPhoto ? (
-            <img
-              src={URL.createObjectURL(finishPhoto)}
-              alt=""
-              className="mt-2 max-h-40 rounded"
-            />
+            <img src={URL.createObjectURL(finishPhoto)} alt="" className="mt-2 max-h-40 rounded" />
           ) : null}
         </div>
         <div className="flex gap-2">

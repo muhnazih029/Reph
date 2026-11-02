@@ -7,6 +7,7 @@ import { ExercisesScreen } from "./screens/ExercisesScreen";
 import { HistoryScreen } from "./screens/HistoryScreen";
 import { SettingsScreen } from "./screens/SettingsScreen";
 import { TodayScreen } from "./screens/TodayScreen";
+import { WorkoutScreen } from "./screens/WorkoutScreen";
 import { RoutinesScreen } from "./screens/RoutinesScreen";
 import { PhotosScreen } from "./screens/PhotosScreen";
 import { CalendarScreen } from "./screens/CalendarScreen";
@@ -97,9 +98,16 @@ const calendarRoute = createRoute({
   component: CalendarScreen,
 });
 
+const workoutRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/workout",
+  component: WorkoutScreen,
+});
+
 export const router = createRouter({
   routeTree: rootRoute.addChildren([
     todayRoute,
+    workoutRoute,
     historyRoute,
     exercisesRoute,
     exerciseDetailRoute,

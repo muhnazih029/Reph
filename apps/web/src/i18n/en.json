@@ -11,7 +11,8 @@
     "routines": "Routines",
     "photos": "Photos",
     "calendar": "Calendar",
-    "home": "Home"
+    "home": "Home",
+    "workout": "Workout"
   },
   "common": {
     "loading": "Loading…",
@@ -81,7 +82,8 @@
     "setsCount_one": "{{count}} set",
     "setsCount_other": "{{count}} sets",
     "finishCelebration": "Great job! Workout complete.",
-    "finishSummary": "Here's your summary"
+    "finishSummary": "Here's your summary",
+    "titleTab": "Workout"
   },
   "muscleGroups": {
     "chest": "Chest",
@@ -195,7 +197,8 @@
     "emptyEntriesBody": "Add an exercise to start building this routine.",
     "addSet": "Add set",
     "addExercise": "Add exercise",
-    "activeExists": "An active workout is in progress. Discard it and start this routine?"
+    "activeExists": "An active workout is in progress. Discard it and start this routine?",
+    "newDefault": "New routine"
   },
   "photos": {
     "title": "Progress photos",

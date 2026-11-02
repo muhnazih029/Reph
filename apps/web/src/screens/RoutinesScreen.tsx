@@ -1,7 +1,13 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "@tanstack/react-router";
-import { useRoutines, useCreateRoutine, useDeleteRoutine, useStartRoutine, useActiveWorkout } from "../api/hooks";
+import {
+  useRoutines,
+  useCreateRoutine,
+  useDeleteRoutine,
+  useStartRoutine,
+  useActiveWorkout,
+} from "../api/hooks";
 import { useActiveWorkoutStore } from "../stores/activeWorkout";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
@@ -79,11 +85,15 @@ export function RoutinesScreen() {
                         .getState()
                         .discardWorkout()
                         .then(() =>
-                          start.mutateAsync(routine.id).then(() => router.navigate({ to: "/workout/active" })),
+                          start
+                            .mutateAsync(routine.id)
+                            .then(() => router.navigate({ to: "/workout/active" })),
                         );
                       return;
                     }
-                    void start.mutateAsync(routine.id).then(() => router.navigate({ to: "/workout/active" }));
+                    void start
+                      .mutateAsync(routine.id)
+                      .then(() => router.navigate({ to: "/workout/active" }));
                   }}
                   disabled={start.isPending}
                 >

@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 
 const TABS = [
   { path: "/", key: "tabs.home" },
+  { path: "/workout", key: "tabs.workout" },
   { path: "/history", key: "tabs.history" },
   { path: "/exercises", key: "tabs.exercises" },
   { path: "/settings", key: "tabs.settings" },

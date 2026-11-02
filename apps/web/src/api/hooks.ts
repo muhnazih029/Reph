@@ -270,7 +270,11 @@ export function useStartRoutine(): UseMutationResult<Workout, ApiError, string> 
 
 import { progressPhotoSchema, type ProgressPhoto } from "@reph/contracts";
 
-export function usePhotos(limit = 20, offset = 0, workoutId?: string): UseQueryResult<ProgressPhoto[], ApiError> {
+export function usePhotos(
+  limit = 20,
+  offset = 0,
+  workoutId?: string,
+): UseQueryResult<ProgressPhoto[], ApiError> {
   const qs = new URLSearchParams({ limit: String(limit), offset: String(offset) });
   if (workoutId) qs.set("workoutId", workoutId);
   return useQuery({
@@ -279,7 +283,11 @@ export function usePhotos(limit = 20, offset = 0, workoutId?: string): UseQueryR
   });
 }
 
-export function useUploadPhoto(): UseMutationResult<ProgressPhoto, ApiError, { file: File; workoutId?: string }> {
+export function useUploadPhoto(): UseMutationResult<
+  ProgressPhoto,
+  ApiError,
+  { file: File; workoutId?: string }
+> {
   const client = useQueryClient();
   return useMutation({
     mutationFn: async ({ file, workoutId }) => {

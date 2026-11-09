@@ -19,16 +19,19 @@ export function PhotosScreen() {
 
   return (
     <section aria-labelledby="photos-title" className="flex flex-col gap-3">
-      <Button
-        variant="secondary"
-        className="self-start"
-        onClick={() => void router.navigate({ to: "/history" })}
-      >
-        ← {t("weight.back")}
-      </Button>
-      <h2 id="photos-title" className="text-xl font-medium">
-        {t("photos.title")}
-      </h2>
+      <div className="flex items-center gap-2">
+        <button
+          type="button"
+          aria-label={t("weight.back")}
+          onClick={() => void router.navigate({ to: "/history" })}
+          className="flex h-9 w-9 items-center justify-center rounded-sm text-text-muted hover:bg-surface-2 hover:text-text"
+        >
+          ←
+        </button>
+        <h2 id="photos-title" className="text-xl font-medium">
+          {t("photos.title")}
+        </h2>
+      </div>
       <input
         ref={inputRef}
         type="file"

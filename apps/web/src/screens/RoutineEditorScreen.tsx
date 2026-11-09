@@ -123,16 +123,19 @@ export function RoutineEditorScreen({ id }: { id: string }) {
 
   return (
     <section aria-labelledby="routine-editor-title" className="flex flex-col gap-3">
-      <button
-        type="button"
-        onClick={() => void router.navigate({ to: "/history" })}
-        className="min-h-9 self-start text-sm text-text-muted"
-      >
-        ← {t("common.back")}
-      </button>
-      <h2 id="routine-editor-title" className="text-xl font-medium">
-        {t("routines.edit")}
-      </h2>
+      <div className="flex items-center gap-2">
+        <button
+          type="button"
+          aria-label={t("common.back")}
+          onClick={() => void router.navigate({ to: "/history" })}
+          className="flex h-9 w-9 items-center justify-center rounded-sm text-text-muted hover:bg-surface-2 hover:text-text"
+        >
+          ←
+        </button>
+        <h2 id="routine-editor-title" className="text-xl font-medium">
+          {t("routines.edit")}
+        </h2>
+      </div>
 
       <Card className="flex flex-col gap-2 p-4">
         <label className="flex flex-col gap-1 text-sm text-text-muted">

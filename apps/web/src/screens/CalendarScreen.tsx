@@ -37,16 +37,19 @@ export function CalendarScreen() {
 
   return (
     <section aria-labelledby="calendar-title" className="flex flex-col gap-3">
-      <Button
-        variant="secondary"
-        className="self-start"
-        onClick={() => void router.navigate({ to: "/history" })}
-      >
-        ← {t("weight.back")}
-      </Button>
-      <h2 id="calendar-title" className="text-xl font-medium">
-        {t("calendar.title")}
-      </h2>
+      <div className="flex items-center gap-2">
+        <button
+          type="button"
+          aria-label={t("weight.back")}
+          onClick={() => void router.navigate({ to: "/history" })}
+          className="flex h-9 w-9 items-center justify-center rounded-sm text-text-muted hover:bg-surface-2 hover:text-text"
+        >
+          ←
+        </button>
+        <h2 id="calendar-title" className="text-xl font-medium">
+          {t("calendar.title")}
+        </h2>
+      </div>
 
       <div className="flex items-center justify-between">
         <button type="button" onClick={prev} className="min-h-9 min-w-9">

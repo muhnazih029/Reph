@@ -109,16 +109,19 @@ export function WeightScreen() {
 
   return (
     <section aria-labelledby="weight-title" className="flex flex-col gap-3">
-      <button
-        type="button"
-        onClick={() => void router.navigate({ to: "/history" })}
-        className="self-start text-sm text-text-muted hover:text-text"
-      >
-        ← {t("weight.back")}
-      </button>
-      <h2 id="weight-title" className="text-xl font-medium">
-        {t("weight.weight")}
-      </h2>
+      <div className="flex items-center gap-2">
+        <button
+          type="button"
+          aria-label={t("weight.back")}
+          onClick={() => void router.navigate({ to: "/history" })}
+          className="flex h-9 w-9 items-center justify-center rounded-sm text-text-muted hover:bg-surface-2 hover:text-text"
+        >
+          ←
+        </button>
+        <h2 id="weight-title" className="text-xl font-medium">
+          {t("weight.weight")}
+        </h2>
+      </div>
 
       {latest ? (
         <Card className="flex items-center justify-between p-4">

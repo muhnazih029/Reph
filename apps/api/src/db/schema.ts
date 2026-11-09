@@ -216,7 +216,7 @@ export const progressPhotos = pgTable(
   (t) => [index("progress_photos_user_taken_at_idx").on(t.userId, desc(t.takenAt))],
 );
 
-/** Body metric entry — Phase 3 Track A. */
+/** Weight entry. */
 export const bodyMetrics = pgTable(
   "body_metrics",
   {
@@ -224,7 +224,6 @@ export const bodyMetrics = pgTable(
     userId: uuid("user_id"),
     recordedAt: timestamp("recorded_at", { withTimezone: true }).notNull().defaultNow(),
     weightKg: numeric("weight_kg", { precision: 6, scale: 2 }),
-    bodyFatPct: numeric("body_fat_pct", { precision: 5, scale: 2 }),
     notes: text("notes").notNull().default(""),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },

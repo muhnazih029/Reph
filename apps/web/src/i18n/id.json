@@ -218,13 +218,18 @@
     "empty": "Belum ada latihan",
     "emptyBody": "Latihan selesai akan muncul di sini."
   },
-  "bodyMetrics": {
-    "title": "Metrik tubuh",
-    "weight": "Berat (kg)",
-    "bodyFat": "Lemak tubuh %",
-    "add": "Tambah",
-    "empty": "Belum ada metrik",
-    "emptyBody": "Catat berat dan lemak tubuh Anda.",
-    "delete": "Hapus"
+  "weight": {
+    "weight": "Berat",
+    "add": "Catat",
+    "edit": "Edit",
+    "save": "Simpan",
+    "cancel": "Batal",
+    "delete": "Hapus",
+    "deleteConfirm": "Hapus entri ini?",
+    "empty": "Belum ada data berat",
+    "emptyBody": "Catat berat badan untuk melihat tren.",
+    "latest": "Terbaru",
+    "date": "Tanggal",
+    "back": "Kembali ke riwayat"
   }
 }

@@ -52,6 +52,12 @@ export function HistoryScreen() {
         >
           {t("photos.title")}
         </Link>
+        <Link
+          to="/weight"
+          className="flex-1 rounded-sm border border-border bg-surface px-3 py-2 text-center text-sm"
+        >
+          {t("weight.weight")}
+        </Link>
       </div>
 
       {workouts.isPending ? (

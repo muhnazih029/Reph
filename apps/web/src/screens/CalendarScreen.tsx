@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useRouter } from "@tanstack/react-router";
 import { useCalendar, useStreak } from "../api/hooks";
+import { Button } from "../components/ui/Button";
 import { EmptyState } from "../components/ui/EmptyState";
 
 export function CalendarScreen() {
   const { t } = useTranslation();
+  const router = useRouter();
   const now = new Date();
   const [year, setYear] = useState(now.getFullYear());
   const [month, setMonth] = useState(now.getMonth() + 1);
@@ -34,6 +37,13 @@ export function CalendarScreen() {
 
   return (
     <section aria-labelledby="calendar-title" className="flex flex-col gap-3">
+      <Button
+        variant="secondary"
+        className="self-start"
+        onClick={() => void router.navigate({ to: "/history" })}
+      >
+        ← {t("weight.back")}
+      </Button>
       <h2 id="calendar-title" className="text-xl font-medium">
         {t("calendar.title")}
       </h2>

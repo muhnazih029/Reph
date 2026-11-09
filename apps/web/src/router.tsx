@@ -6,7 +6,7 @@ import { WorkoutDetailScreen } from "./screens/WorkoutDetailScreen";
 import { ExercisesScreen } from "./screens/ExercisesScreen";
 import { HistoryScreen } from "./screens/HistoryScreen";
 import { SettingsScreen } from "./screens/SettingsScreen";
-import { BodyMetricsScreen } from "./screens/BodyMetricsScreen";
+import { WeightScreen } from "./screens/WeightScreen";
 import { TodayScreen } from "./screens/TodayScreen";
 import { WorkoutScreen } from "./screens/WorkoutScreen";
 import { RoutinesScreen } from "./screens/RoutinesScreen";
@@ -105,17 +105,17 @@ const workoutRoute = createRoute({
   component: WorkoutScreen,
 });
 
-const bodyMetricsRoute = createRoute({
+const weightRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: "/body-metrics",
-  component: BodyMetricsScreen,
+  path: "/weight",
+  component: WeightScreen,
 });
 
 export const router = createRouter({
   routeTree: rootRoute.addChildren([
     todayRoute,
     workoutRoute,
-    bodyMetricsRoute,
+    weightRoute,
     historyRoute,
     exercisesRoute,
     exerciseDetailRoute,

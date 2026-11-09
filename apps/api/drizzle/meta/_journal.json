@@ -36,6 +36,13 @@
       "when": 1793592873431,
       "tag": "0004_conscious_goliath",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1794192613455,
+      "tag": "0005_talented_mimic",
+      "breakpoints": true
     }
   ]
 }

@@ -125,13 +125,6 @@ export function WorkoutScreen() {
           </ul>
         </Card>
       )}
-
-      <Button
-        variant="secondary"
-        onClick={() => void router.navigate({ to: "/body-metrics" })}
-      >
-        {t("bodyMetrics.title")}
-      </Button>
     </section>
   );
 }

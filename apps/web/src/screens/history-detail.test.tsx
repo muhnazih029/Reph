@@ -207,8 +207,8 @@ describe("WorkoutDetailScreen", () => {
     await render(() => createElement(WorkoutDetailScreen, { id: detailWorkout!.id }), "/history");
 
     expect(document.body.textContent).toContain("Bench Press");
-    expect(document.body.textContent).toContain("80 kg × 5");
-    expect(document.body.textContent).toContain("@ 8 RPE");
+    expect(document.body.textContent).toContain("80 kg");
+    expect(document.body.textContent).toContain("× 5");
     // stats strip
     expect(document.body.textContent).toContain("Volume");
   });

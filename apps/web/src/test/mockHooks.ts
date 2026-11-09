@@ -76,6 +76,59 @@ const DEFAULT_HOOKS: Record<string, unknown> = {
     isPending: false,
     error: null,
   }),
+  usePhotos: () => idle(),
+  useUploadPhoto: () => ({
+    mutate: () => {},
+    mutateAsync: () => Promise.resolve({} as never),
+    isPending: false,
+    error: null,
+  }),
+  useDeletePhoto: () => ({
+    mutate: () => {},
+    mutateAsync: () => Promise.resolve({}),
+    isPending: false,
+    error: null,
+  }),
+  useCalendar: () => ({ ...(idle() as QueryResult), data: { days: [] } }),
+  useStreak: () => ({ ...(idle() as QueryResult), data: { current: 0, longest: 0 } }),
+  useRoutines: () => idle(),
+  useCreateRoutine: () => ({
+    mutate: () => {},
+    mutateAsync: () => Promise.resolve({} as never),
+    isPending: false,
+    error: null,
+  }),
+  useDeleteRoutine: () => ({
+    mutate: () => {},
+    mutateAsync: () => Promise.resolve({}),
+    isPending: false,
+    error: null,
+  }),
+  useStartRoutine: () => ({
+    mutate: () => {},
+    mutateAsync: () => Promise.resolve({} as never),
+    isPending: false,
+    error: null,
+  }),
+  useBodyMetrics: () => idle(),
+  useCreateBodyMetric: () => ({
+    mutate: () => {},
+    mutateAsync: () => Promise.resolve({} as never),
+    isPending: false,
+    error: null,
+  }),
+  useUpdateBodyMetric: () => ({
+    mutate: () => {},
+    mutateAsync: () => Promise.resolve({} as never),
+    isPending: false,
+    error: null,
+  }),
+  useDeleteBodyMetric: () => ({
+    mutate: () => {},
+    mutateAsync: () => Promise.resolve({}),
+    isPending: false,
+    error: null,
+  }),
 };
 
 /** Register the shared superset mock with file-specific overrides. */

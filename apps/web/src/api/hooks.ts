@@ -10,6 +10,7 @@ import {
   type Equipment,
   type Exercise,
   type MuscleGroup,
+  type BodyMetric,
   type Settings,
   type UpdateWorkoutInput,
   type Workout,
@@ -268,7 +269,12 @@ export function useStartRoutine(): UseMutationResult<Workout, ApiError, string> 
 
 // ---------- Photos (Phase 2 Track B) ----------
 
-import { progressPhotoSchema, type ProgressPhoto } from "@reph/contracts";
+import {
+  progressPhotoSchema,
+  type ProgressPhoto,
+  bodyMetricSchema,
+  createBodyMetricRequestSchema,
+} from "@reph/contracts";
 
 export function usePhotos(
   limit = 20,
@@ -346,8 +352,6 @@ export function useStreak(): UseQueryResult<{ current: number; longest: number }
 
 // ---------- Body metrics (Phase 3 Track A) ----------
 
-import { bodyMetricSchema, createBodyMetricRequestSchema, type BodyMetric } from "@reph/contracts";
-
 export function useBodyMetrics(): UseQueryResult<BodyMetric[], ApiError> {
   return useQuery({
     queryKey: ["body-metrics"] as const,
@@ -358,7 +362,7 @@ export function useBodyMetrics(): UseQueryResult<BodyMetric[], ApiError> {
 export function useCreateBodyMetric(): UseMutationResult<
   BodyMetric,
   ApiError,
-  { weightKg?: number | null; bodyFatPct?: number | null; notes?: string }
+  { weightKg?: number | null; notes?: string; recordedAt?: number }
 > {
   const client = useQueryClient();
   return useMutation({
@@ -367,6 +371,24 @@ export function useCreateBodyMetric(): UseMutationResult<
         "POST",
         "/body-metrics",
         createBodyMetricRequestSchema.parse(input),
+        bodyMetricSchema,
+      ),
+    onSuccess: () => void client.invalidateQueries({ queryKey: ["body-metrics"] }),
+  });
+}
+
+export function useUpdateBodyMetric(): UseMutationResult<
+  BodyMetric,
+  ApiError,
+  { id: string; weightKg?: number | null; notes?: string; recordedAt?: number }
+> {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, ...rest }) =>
+      apiSend(
+        "PATCH",
+        `/body-metrics/${id}`,
+        createBodyMetricRequestSchema.parse(rest),
         bodyMetricSchema,
       ),
     onSuccess: () => void client.invalidateQueries({ queryKey: ["body-metrics"] }),

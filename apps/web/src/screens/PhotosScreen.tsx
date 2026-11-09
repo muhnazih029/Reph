@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useRouter } from "@tanstack/react-router";
 import { usePhotos, useUploadPhoto, useDeletePhoto } from "../api/hooks";
 import { Button } from "../components/ui/Button";
 import { EmptyState } from "../components/ui/EmptyState";
@@ -8,6 +9,7 @@ import { compressImage } from "../lib/image";
 
 export function PhotosScreen() {
   const { t } = useTranslation();
+  const router = useRouter();
   const [limit, setLimit] = useState(20);
   const photos = usePhotos(limit, 0);
   const upload = useUploadPhoto();
@@ -17,6 +19,13 @@ export function PhotosScreen() {
 
   return (
     <section aria-labelledby="photos-title" className="flex flex-col gap-3">
+      <Button
+        variant="secondary"
+        className="self-start"
+        onClick={() => void router.navigate({ to: "/history" })}
+      >
+        ← {t("weight.back")}
+      </Button>
       <h2 id="photos-title" className="text-xl font-medium">
         {t("photos.title")}
       </h2>

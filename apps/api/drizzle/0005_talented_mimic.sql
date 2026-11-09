@@ -1,0 +1,1 @@
+ALTER TABLE "body_metrics" DROP COLUMN "body_fat_pct";

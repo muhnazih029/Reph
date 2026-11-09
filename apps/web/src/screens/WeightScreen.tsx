@@ -169,7 +169,15 @@ export function WeightScreen() {
       ) : (
         <Card className="p-3">
           <ResponsiveContainer width="100%" height={180}>
-            <LineChart data={chartData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+            <LineChart
+              data={chartData}
+              margin={{ top: 8, right: 8, left: 0, bottom: 0 }}
+              onClick={(e: any) => {
+                const p = e?.activePayload?.[0]?.payload as (Point & { weight: number }) | undefined;
+                if (p) openEdit(p);
+              }}
+              style={{ cursor: "pointer" }}
+            >
               <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
               <XAxis dataKey="date" tick={{ fontSize: 11 }} tickFormatter={(v) => format(new Date(v), "dd MMM")} />
               <YAxis domain={["dataMin - 1", "dataMax + 1"]} tick={{ fontSize: 11 }} width={36} />
@@ -182,6 +190,7 @@ export function WeightScreen() {
                     <div className="rounded-sm border border-border bg-surface px-2 py-1 text-xs">
                       <div>{format(new Date(p.date), "dd MMM yyyy")}</div>
                       <div className="font-medium">{displayWeight(p.kg, unit)}</div>
+                      <div className="text-text-muted">{t("weight.tapToEdit")}</div>
                     </div>
                   );
                 }}
@@ -191,55 +200,16 @@ export function WeightScreen() {
                 dataKey="weight"
                 stroke="var(--color-accent, #3b82f6)"
                 strokeWidth={2}
-                dot={{ r: 3 }}
-                activeDot={{ r: 5 }}
+                dot={{ r: 4 }}
+                activeDot={{ r: 6 }}
               />
             </LineChart>
           </ResponsiveContainer>
+          <p className="mt-1 text-center text-xs text-text-muted">{t("weight.chartHint")}</p>
         </Card>
       )}
 
-      {metrics.isPending ? (
-        <Skeleton className="h-20 w-full" />
-      ) : (metrics.data ?? []).length > 0 ? (
-        <Card className="overflow-hidden">
-          <ul className="divide-y divide-border">
-            {(metrics.data ?? [])
-              .toSorted((a, b) => b.recordedAt - a.recordedAt)
-              .map((m) => (
-                <li key={m.id} className="flex items-center justify-between px-4 py-3">
-                  <div className="flex flex-col">
-                    <span className="text-sm font-medium">{displayWeight(m.weightKg, unit)}</span>
-                    <span className="text-xs text-text-muted">
-                      {format(new Date(m.recordedAt), "dd MMM yyyy")}
-                    </span>
-                  </div>
-                  <div className="flex gap-1">
-                    <button
-                      type="button"
-                      className="min-h-9 min-w-9 text-sm"
-                      aria-label={t("weight.edit")}
-                      onClick={() => {
-                        const p = points.find((x) => x.id === m.id);
-                        if (p) openEdit(p);
-                      }}
-                    >
-                      ✎
-                    </button>
-                    <button
-                      type="button"
-                      aria-label={t("weight.delete")}
-                      className="min-h-9 min-w-9 text-danger"
-                      onClick={() => void handleDelete(m.id)}
-                    >
-                      ×
-                    </button>
-                  </div>
-                </li>
-              ))}
-          </ul>
-        </Card>
-      ) : null}
+
 
       <Sheet
         open={editing !== null}
@@ -274,6 +244,15 @@ export function WeightScreen() {
               {t("weight.cancel")}
             </Button>
           </div>
+          <button
+            type="button"
+            className="self-start text-sm text-danger"
+            onClick={() => {
+              if (editing) void handleDelete(editing.id).then(() => setEditing(null));
+            }}
+          >
+            {t("weight.delete")}
+          </button>
         </div>
       </Sheet>
     </section>

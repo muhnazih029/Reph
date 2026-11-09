@@ -233,6 +233,8 @@
     "back": "Kembali ke riwayat",
     "weightPlaceholder": "contoh 72.5",
     "invalid": "Masukkan berat yang valid",
-    "failed": "Gagal menyimpan, coba lagi"
+    "failed": "Gagal menyimpan, coba lagi",
+    "tapToEdit": "Ketuk untuk edit",
+    "chartHint": "Ketuk titik pada grafik untuk edit atau hapus"
   }
 }

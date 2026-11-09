@@ -233,6 +233,8 @@
     "back": "Back to history",
     "weightPlaceholder": "e.g. 72.5",
     "invalid": "Enter a valid weight",
-    "failed": "Could not save, try again"
+    "failed": "Could not save, try again",
+    "tapToEdit": "Tap to edit",
+    "chartHint": "Tap a point on the chart to edit or delete"
   }
 }

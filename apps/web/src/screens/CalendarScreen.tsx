@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "@tanstack/react-router";
 import { useCalendar, useStreak } from "../api/hooks";
-import { Button } from "../components/ui/Button";
 import { EmptyState } from "../components/ui/EmptyState";
 
 export function CalendarScreen() {

@@ -5,6 +5,7 @@ import { useExercise, useSettings, useWorkouts } from "../api/hooks";
 import { useRouter } from "@tanstack/react-router";
 import { bestSetByEpley, previousPerformance } from "../lib/stats";
 import { displayWeight } from "../lib/units";
+import { exerciseImagePath } from "../lib/exerciseImage";
 import { Card } from "../components/ui/Card";
 import { EmptyState } from "../components/ui/EmptyState";
 import { ErrorState } from "../components/ui/ErrorState";
@@ -96,6 +97,21 @@ export function ExerciseDetailScreen({ id }: { id: string }) {
         <h2 id="exercise-detail-title" className="text-xl font-medium">
           {data.name}
         </h2>
+      </div>
+
+      <div className="grid grid-cols-2 gap-2">
+        {[0, 1].map((idx) => (
+          <img
+            key={idx}
+            src={exerciseImagePath(data.name, idx as 0 | 1)}
+            alt={`${data.name} ${idx + 1}`}
+            loading="lazy"
+            className="aspect-square w-full rounded-sm border border-border object-cover"
+            onError={(event) => {
+              event.currentTarget.style.display = "none";
+            }}
+          />
+        ))}
       </div>
 
       <div className="flex flex-wrap gap-2 text-xs">

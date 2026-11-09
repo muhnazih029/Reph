@@ -245,5 +245,16 @@
     "installTitle": "Pasang Reph di HP Anda",
     "installBody": "Akses lebih cepat, layar penuh, dan bekerja offline.",
     "install": "Pasang"
+  },
+  "yearInReview": {
+    "title": "Rekap tahun",
+    "workouts": "Workout",
+    "sets": "Set",
+    "volume": "Volume",
+    "minutes": "Menit",
+    "favorite": "Paling sering diisi",
+    "topMuscleGroup": "Grup otot teratas",
+    "bestMonth": "Bulan terbaik",
+    "empty": "Belum ada workout tahun ini."
   }
 }

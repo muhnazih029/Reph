@@ -13,6 +13,7 @@ import { RoutinesScreen } from "./screens/RoutinesScreen";
 import { PhotosScreen } from "./screens/PhotosScreen";
 import { CalendarScreen } from "./screens/CalendarScreen";
 import { RoutineEditorScreen } from "./screens/RoutineEditorScreen";
+import { YearInReviewScreen } from "./screens/YearInReviewScreen";
 
 // Code-based typed route tree (docs/specs/PRD-FE.md §1). Logging routes
 // land in Task 9; detail routes in Tasks 7/10.
@@ -111,6 +112,12 @@ const weightRoute = createRoute({
   component: WeightScreen,
 });
 
+const yearInReviewRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/year-in-review",
+  component: YearInReviewScreen,
+});
+
 export const router = createRouter({
   routeTree: rootRoute.addChildren([
     todayRoute,
@@ -126,6 +133,7 @@ export const router = createRouter({
     routineEditorRoute,
     photosRoute,
     calendarRoute,
+    yearInReviewRoute,
   ]),
 });
 

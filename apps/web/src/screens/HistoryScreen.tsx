@@ -59,6 +59,12 @@ export function HistoryScreen() {
           {t("weight.weight")}
         </Link>
       </div>
+      <Link
+        to="/year-in-review"
+        className="block rounded-sm border border-border bg-surface px-3 py-2 text-center text-sm"
+      >
+        {t("yearInReview.title")}
+      </Link>
 
       {workouts.isPending ? (
         <div className="flex flex-col gap-2">

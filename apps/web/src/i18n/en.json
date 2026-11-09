@@ -245,5 +245,16 @@
     "installTitle": "Install Reph on your phone",
     "installBody": "Faster access, full screen, works offline.",
     "install": "Install"
+  },
+  "yearInReview": {
+    "title": "Year in Review",
+    "workouts": "Workouts",
+    "sets": "Sets",
+    "volume": "Volume",
+    "minutes": "Minutes",
+    "favorite": "Most logged",
+    "topMuscleGroup": "Top muscle group",
+    "bestMonth": "Best month",
+    "empty": "No workouts this year."
   }
 }

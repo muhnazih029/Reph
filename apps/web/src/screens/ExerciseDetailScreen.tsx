@@ -2,6 +2,7 @@ import type { Workout } from "@reph/contracts";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useExercise, useSettings, useWorkouts } from "../api/hooks";
+import { useRouter } from "@tanstack/react-router";
 import { bestSetByEpley, previousPerformance } from "../lib/stats";
 import { displayWeight } from "../lib/units";
 import { Card } from "../components/ui/Card";
@@ -33,6 +34,7 @@ export function ExerciseDetailScreen({ id }: { id: string }) {
   const { t } = useTranslation();
   const exercise = useExercise(id);
   const workouts = useWorkouts(200);
+  const router = useRouter();
   const settings = useSettings();
   const unit = settings.data?.weightUnit ?? "kg";
 
@@ -82,9 +84,19 @@ export function ExerciseDetailScreen({ id }: { id: string }) {
 
   return (
     <section aria-labelledby="exercise-detail-title" className="flex flex-col gap-4">
-      <h2 id="exercise-detail-title" className="text-xl font-medium">
-        {data.name}
-      </h2>
+      <div className="flex items-center gap-2">
+        <button
+          type="button"
+          aria-label={t("exercises.title")}
+          onClick={() => void router.navigate({ to: "/exercises" })}
+          className="flex h-9 w-9 items-center justify-center rounded-sm text-text-muted hover:bg-surface-2 hover:text-text"
+        >
+          ←
+        </button>
+        <h2 id="exercise-detail-title" className="text-xl font-medium">
+          {data.name}
+        </h2>
+      </div>
 
       <div className="flex flex-wrap gap-2 text-xs">
         <span className="rounded-sm bg-surface-2 px-2 py-1 text-text-muted">

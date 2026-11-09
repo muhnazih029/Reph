@@ -179,13 +179,7 @@ function RestTimerRow({
   );
 }
 
-function WeeklyGoalRow({
-  goal,
-  onChange,
-}: {
-  goal: number;
-  onChange: (next: number) => void;
-}) {
+function WeeklyGoalRow({ goal, onChange }: { goal: number; onChange: (next: number) => void }) {
   const { t } = useTranslation();
   return (
     <SettingRow label={t("settings.weeklyGoal")}>

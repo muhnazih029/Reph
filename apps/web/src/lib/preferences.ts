@@ -6,7 +6,8 @@ import i18n from "../i18n";
 // every screen. Applied from the settings screen AND once on boot from
 // the cached settings row (main.tsx). "system" follows prefers-color-scheme.
 
-const media = typeof window !== "undefined" ? window.matchMedia("(prefers-color-scheme: dark)") : null;
+const media =
+  typeof window !== "undefined" ? window.matchMedia("(prefers-color-scheme: dark)") : null;
 
 function resolveTheme(theme: Settings["theme"]): boolean {
   if (theme === "system") return media?.matches ?? true;

@@ -95,7 +95,8 @@
     "thighs": "Thighs",
     "calves": "Calves",
     "waist": "Waist",
-    "cardio": "Cardio"
+    "cardio": "Cardio",
+    "other": "Other"
   },
   "equipment": {
     "barbell": "Barbell",
@@ -130,7 +131,16 @@
     "empty": "No workouts yet",
     "setsCount_one": "{{count}} set",
     "setsCount_other": "{{count}} sets",
-    "volumeDisplay": "{{value}} kg"
+    "volumeDisplay": "{{value}} kg",
+    "insight": "Insight",
+    "log": "Log",
+    "insightWeightTitle": "Body weight",
+    "insightStatsTitle": "Stats",
+    "insightRecapTitle": "Recap {{year}}",
+    "insightLast30": "last 30 days",
+    "insightRecapMeta": "{{sets}} sets · {{minutes}} min",
+    "insightWeightEmpty": "No weigh-ins yet",
+    "view": "View"
   },
   "detail": {
     "edit": "Edit",
@@ -256,5 +266,20 @@
     "topMuscleGroup": "Top muscle group",
     "bestMonth": "Best month",
     "empty": "No workouts this year."
+  },
+  "stats": {
+    "title": "Stats",
+    "period": "Period",
+    "period.30d": "30 days",
+    "period.90d": "3 months",
+    "period.1y": "1 year",
+    "period.all": "All",
+    "empty": "No completed workouts in this period yet.",
+    "workouts": "Workouts",
+    "totalVolume": "Total volume",
+    "muscleVolume": "Volume per muscle group",
+    "strengthTrend": "Strength trend",
+    "exercise": "Exercise",
+    "e1rmHint": "Estimated 1RM from each session's best set"
   }
 }

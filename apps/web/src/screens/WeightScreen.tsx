@@ -133,7 +133,7 @@ export function WeightScreen() {
         <button
           type="button"
           aria-label={t("weight.back")}
-          onClick={() => void router.navigate({ to: "/history" })}
+          onClick={() => void router.navigate({ to: "/history", search: { view: "insight" } })}
           className="flex h-9 w-9 items-center justify-center rounded-sm text-text-muted hover:bg-surface-2 hover:text-text"
         >
           ←
@@ -192,13 +192,19 @@ export function WeightScreen() {
               data={chartData}
               margin={{ top: 8, right: 8, left: 0, bottom: 0 }}
               onClick={(e: any) => {
-                const p = e?.activePayload?.[0]?.payload as (Point & { weight: number }) | undefined;
+                const p = e?.activePayload?.[0]?.payload as
+                  | (Point & { weight: number })
+                  | undefined;
                 if (p) openEdit(p);
               }}
               style={{ cursor: "pointer" }}
             >
               <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
-              <XAxis dataKey="date" tick={{ fontSize: 11 }} tickFormatter={(v) => format(new Date(v), "dd MMM")} />
+              <XAxis
+                dataKey="date"
+                tick={{ fontSize: 11 }}
+                tickFormatter={(v) => format(new Date(v), "dd MMM")}
+              />
               <YAxis domain={["dataMin - 1", "dataMax + 1"]} tick={{ fontSize: 11 }} width={36} />
               <Tooltip
                 content={({ active, payload }) => {
@@ -227,8 +233,6 @@ export function WeightScreen() {
           <p className="mt-1 text-center text-xs text-text-muted">{t("weight.chartHint")}</p>
         </Card>
       )}
-
-
 
       {toast ? (
         <div

@@ -5,6 +5,7 @@ import { useWorkouts, useExercises, useSettings } from "../api/hooks";
 import { Card } from "../components/ui/Card";
 import { Skeleton } from "../components/ui/Skeleton";
 import { kgToLb } from "../lib/units";
+import { volumeByMuscleGroup } from "../lib/stats";
 import type { Workout } from "@reph/contracts";
 
 type Stats = {
@@ -20,11 +21,9 @@ type Stats = {
 
 function compute(workouts: Workout[], exerciseMuscleGroup: (id: string) => string): Stats {
   const done = workouts.filter((w) => w.status === "completed");
-  let volumeKg = 0;
   let sets = 0;
   let minutes = 0;
   const exerciseCount = new Map<string, number>();
-  const muscleGroupVolume = new Map<string, number>();
   const monthCount = new Map<string, number>();
 
   for (const workout of done) {
@@ -36,22 +35,22 @@ function compute(workouts: Workout[], exerciseMuscleGroup: (id: string) => strin
     monthCount.set(month, (monthCount.get(month) ?? 0) + 1);
     for (const entry of workout.entries) {
       exerciseCount.set(entry.exerciseId, (exerciseCount.get(entry.exerciseId) ?? 0) + 1);
-      const group = exerciseMuscleGroup(entry.exerciseId);
-      for (const set of entry.sets) {
-        if (!set.done) continue;
-        sets += 1;
-        const vol = (set.weightKg ?? 0) * (set.reps ?? 0);
-        volumeKg += vol;
-        muscleGroupVolume.set(group, (muscleGroupVolume.get(group) ?? 0) + vol);
-      }
+      for (const set of entry.sets) if (set.done) sets += 1;
     }
   }
 
+  const volumes = volumeByMuscleGroup(done, exerciseMuscleGroup);
+  const volumeKg = volumes.reduce((sum, row) => sum + row.volumeKg, 0);
+  const topMuscleGroup = volumes[0]?.muscleGroup ?? null;
   const favoriteExercise =
-    exerciseCount.entries().toArray().toSorted((a, b) => b[1] - a[1])[0]?.[0] ?? null;
-  const topMuscleGroup =
-    muscleGroupVolume.entries().toArray().toSorted((a, b) => b[1] - a[1])[0]?.[0] ?? null;
-  const bestMonthEntry = monthCount.entries().toArray().toSorted((a, b) => b[1] - a[1])[0];
+    exerciseCount
+      .entries()
+      .toArray()
+      .toSorted((a, b) => b[1] - a[1])[0]?.[0] ?? null;
+  const bestMonthEntry = monthCount
+    .entries()
+    .toArray()
+    .toSorted((a, b) => b[1] - a[1])[0];
 
   return {
     workouts: done.length,
@@ -94,7 +93,12 @@ export function YearInReviewScreen() {
   return (
     <section aria-labelledby="yir-title" className="flex flex-col gap-3">
       <div className="flex items-center gap-2">
-        <Link to="/history" aria-label={t("weight.back")} className="flex h-9 w-9 items-center justify-center rounded-sm text-text-muted hover:bg-surface-2 hover:text-text">
+        <Link
+          to="/history"
+          search={{ view: "insight" }}
+          aria-label={t("weight.back")}
+          className="flex h-9 w-9 items-center justify-center rounded-sm text-text-muted hover:bg-surface-2 hover:text-text"
+        >
           ←
         </Link>
         <h2 id="yir-title" className="text-xl font-medium">

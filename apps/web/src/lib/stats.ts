@@ -92,3 +92,92 @@ export function previousPerformance(
   }
   return null;
 }
+
+// ── Stats screen aggregations (all client-side, canonical kg) ─────────
+
+export type StatsPeriod = "30d" | "90d" | "1y" | "all";
+export const STATS_PERIODS: readonly StatsPeriod[] = ["30d", "90d", "1y", "all"];
+
+/** Epoch seconds-ms of the first day included in a period; null = no filter. */
+export function periodStart(period: StatsPeriod, now: number = Date.now()): number | null {
+  const DAY = 86_400_000;
+  switch (period) {
+    case "30d":
+      return now - 30 * DAY;
+    case "90d":
+      return now - 90 * DAY;
+    case "1y":
+      return now - 365 * DAY;
+    case "all":
+      return null;
+  }
+}
+
+/** Completed workouts at or after `since`, ascending by startTime. */
+export function completedSince(workouts: Workout[], since: number | null): Workout[] {
+  return workouts
+    .filter((workout) => workout.status === "completed")
+    .filter((workout) => since === null || workout.startTime >= since)
+    .toSorted((a, b) => a.startTime - b.startTime);
+}
+
+/** Σ(weight × reps) of done, non-warmup strength sets, grouped by the
+ * exercise's muscle group. Descending by volume; empty groups omitted. */
+export function volumeByMuscleGroup(
+  workouts: Workout[],
+  exerciseMuscleGroup: (id: string) => string,
+): Array<{ muscleGroup: string; volumeKg: number }> {
+  const volumes = new Map<string, number>();
+  for (const workout of workouts) {
+    for (const entry of workout.entries) {
+      const group = exerciseMuscleGroup(entry.exerciseId);
+      for (const set of entry.sets) {
+        if (set.done && set.type !== "warmup" && set.weightKg !== null && set.reps !== null) {
+          volumes.set(group, (volumes.get(group) ?? 0) + set.weightKg * set.reps);
+        }
+      }
+    }
+  }
+  return [...volumes.entries()]
+    .map(([muscleGroup, volumeKg]) => ({ muscleGroup, volumeKg }))
+    .toSorted((a, b) => b.volumeKg - a.volumeKg);
+}
+
+/** One e1RM point per workout that performed the exercise (best set by
+ * Epley). Ascending — ready for a line chart. */
+export function strengthSeries(
+  workouts: Workout[],
+  exerciseId: string,
+): Array<{ time: number; oneRM: number }> {
+  const series: Array<{ time: number; oneRM: number }> = [];
+  for (const workout of completedSince(workouts, null)) {
+    for (const entry of workout.entries) {
+      if (entry.exerciseId !== exerciseId) continue;
+      const best = bestSetByEpley(entry.sets);
+      if (best) series.push({ time: workout.startTime, oneRM: best.oneRM });
+    }
+  }
+  return series;
+}
+
+/** The exercise logged in the most workouts (ties broken by total sets). */
+export function mostPerformedExercise(workouts: Workout[]): string | null {
+  const workoutCount = new Map<string, number>();
+  const setCount = new Map<string, number>();
+  for (const workout of workouts) {
+    const seen = new Set<string>();
+    for (const entry of workout.entries) {
+      if (!seen.has(entry.exerciseId)) {
+        seen.add(entry.exerciseId);
+        workoutCount.set(entry.exerciseId, (workoutCount.get(entry.exerciseId) ?? 0) + 1);
+      }
+      const doneSets = entry.sets.filter((set) => set.done).length;
+      setCount.set(entry.exerciseId, (setCount.get(entry.exerciseId) ?? 0) + doneSets);
+    }
+  }
+  return (
+    [...workoutCount.entries()].toSorted(
+      (a, b) => b[1] - a[1] || (setCount.get(b[0]) ?? 0) - (setCount.get(a[0]) ?? 0),
+    )[0]?.[0] ?? null
+  );
+}

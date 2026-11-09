@@ -95,7 +95,8 @@
     "thighs": "Paha",
     "calves": "Betis",
     "waist": "Perut",
-    "cardio": "Kardio"
+    "cardio": "Kardio",
+    "other": "Lainnya"
   },
   "equipment": {
     "barbell": "Barbel",
@@ -130,7 +131,16 @@
     "empty": "Belum ada latihan",
     "setsCount_one": "{{count}} set",
     "setsCount_other": "{{count}} set",
-    "volumeDisplay": "{{value}} kg"
+    "volumeDisplay": "{{value}} kg",
+    "insight": "Wawasan",
+    "log": "Log",
+    "insightWeightTitle": "Berat badan",
+    "insightStatsTitle": "Statistik",
+    "insightRecapTitle": "Rekap {{year}}",
+    "insightLast30": "30 hari terakhir",
+    "insightRecapMeta": "{{sets}} set · {{minutes}} mnt",
+    "insightWeightEmpty": "Belum ada catatan berat",
+    "view": "Tampilan"
   },
   "detail": {
     "edit": "Ubah",
@@ -256,5 +266,20 @@
     "topMuscleGroup": "Grup otot teratas",
     "bestMonth": "Bulan terbaik",
     "empty": "Belum ada workout tahun ini."
+  },
+  "stats": {
+    "title": "Statistik",
+    "period": "Periode",
+    "period.30d": "30 hari",
+    "period.90d": "3 bulan",
+    "period.1y": "1 tahun",
+    "period.all": "Semua",
+    "empty": "Belum ada workout selesai pada periode ini.",
+    "workouts": "Workout",
+    "totalVolume": "Total volume",
+    "muscleVolume": "Volume per grup otot",
+    "strengthTrend": "Tren kekuatan",
+    "exercise": "Latihan",
+    "e1rmHint": "Estimasi 1RM dari set terbaik tiap sesi"
   }
 }

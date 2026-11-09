@@ -14,6 +14,7 @@ import { PhotosScreen } from "./screens/PhotosScreen";
 import { CalendarScreen } from "./screens/CalendarScreen";
 import { RoutineEditorScreen } from "./screens/RoutineEditorScreen";
 import { YearInReviewScreen } from "./screens/YearInReviewScreen";
+import { StatsScreen } from "./screens/StatsScreen";
 
 // Code-based typed route tree (docs/specs/PRD-FE.md §1). Logging routes
 // land in Task 9; detail routes in Tasks 7/10.
@@ -30,6 +31,11 @@ const historyRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/history",
   component: HistoryScreen,
+  // `?view=insight` persists the active mode so back-navigation from
+  // satellite screens (weight/stats/recap) lands on Insight, not Log.
+  validateSearch: (search): { view?: "insight" | "log" } => ({
+    view: search.view === "insight" ? "insight" : search.view === "log" ? "log" : undefined,
+  }),
 });
 
 const exercisesRoute = createRoute({
@@ -118,6 +124,12 @@ const yearInReviewRoute = createRoute({
   component: YearInReviewScreen,
 });
 
+const statsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/stats",
+  component: StatsScreen,
+});
+
 export const router = createRouter({
   routeTree: rootRoute.addChildren([
     todayRoute,
@@ -134,6 +146,7 @@ export const router = createRouter({
     photosRoute,
     calendarRoute,
     yearInReviewRoute,
+    statsRoute,
   ]),
 });
 

@@ -4,6 +4,11 @@ import { newId } from "./id";
 import {
   bestSetByEpley,
   estimate1RM,
+  completedSince,
+  mostPerformedExercise,
+  periodStart,
+  strengthSeries,
+  volumeByMuscleGroup,
   previousPerformance,
   weeklyVolumeSeries,
   workoutVolumeKg,
@@ -145,3 +150,77 @@ describe("previousPerformance", () => {
 function now(): number {
   return Date.now();
 }
+
+const groupOfFixture = (id: string) => (id.startsWith("chest") ? "chest" : "legs");
+
+describe("Stats screen aggregations", () => {
+  it("periodStart maps periods to lookback windows and null for all", () => {
+    const then = Date.UTC(2026, 5, 15, 12);
+    expect(periodStart("30d", then)).toBe(then - 30 * 86_400_000);
+    expect(periodStart("90d", then)).toBe(then - 90 * 86_400_000);
+    expect(periodStart("1y", then)).toBe(then - 365 * 86_400_000);
+    expect(periodStart("all", then)).toBeNull();
+  });
+
+  it("completedSince keeps only completed workouts at or after since, ascending", () => {
+    const t0 = Date.UTC(2026, 0, 1);
+    const workouts = [
+      workout({ entries: [], status: "completed", startTime: t0 + 20_000 }),
+      workout({ entries: [], status: "active", startTime: t0 + 10_000 }),
+      workout({ entries: [], status: "completed", startTime: t0 }),
+    ];
+    const result = completedSince(workouts, t0 + 1);
+    expect(result.map((w) => w.startTime)).toEqual([t0 + 20_000]);
+    expect(completedSince(workouts, null).map((w) => w.startTime)).toEqual([t0, t0 + 20_000]);
+  });
+
+  it("volumeByMuscleGroup sums done non-warmup strength sets per group, descending", () => {
+    const t0 = Date.UTC(2026, 0, 1);
+    const workouts = [
+      workout({
+        entries: [
+          entry("chest-1", [
+            set({ type: "normal", weightKg: 100, reps: 5 }), // 500
+            set({ type: "warmup", weightKg: 60, reps: 10 }), // ignored
+            set({ type: "normal", weightKg: null, reps: 20 }), // cardio-ish, ignored
+          ]),
+          entry("leg-1", [set({ weightKg: 200, reps: 5 })]), // 1000
+          entry("chest-2", [set({ weightKg: 80, reps: 10 })]), // 800 -> chest total 1300
+        ],
+        startTime: t0,
+      }),
+    ];
+    const groupOf = groupOfFixture;
+    expect(volumeByMuscleGroup(workouts, groupOf)).toEqual([
+      { muscleGroup: "chest", volumeKg: 1300 },
+      { muscleGroup: "legs", volumeKg: 1000 },
+    ]);
+  });
+
+  it("strengthSeries emits one e1RM point per workout performing the exercise", () => {
+    const t0 = Date.UTC(2026, 0, 1);
+    const workouts = [
+      workout({ entries: [entry("a", [set({ weightKg: 100, reps: 5 })])], startTime: t0 + 20_000 }),
+      workout({ entries: [entry("b", [set({ weightKg: 999, reps: 5 })])], startTime: t0 }), // other exercise
+      workout({ entries: [entry("a", [set({ weightKg: 120, reps: 1 })])], startTime: t0 }),
+    ];
+    const series = strengthSeries(workouts, "a");
+    expect(series.map((p) => p.time)).toEqual([t0, t0 + 20_000]);
+    expect(series[0]?.oneRM).toBe(120);
+    expect(series[1]?.oneRM).toBeCloseTo(116.6667, 4);
+  });
+
+  it("mostPerformedExercise picks the exercise in the most workouts", () => {
+    const t0 = Date.UTC(2026, 0, 1);
+    const workouts = [
+      workout({ entries: [entry("a", [set({})])], startTime: t0 }),
+      workout({
+        entries: [entry("a", [set({}), set({ position: 1 })]), entry("b", [set({})])],
+        startTime: t0 + 1,
+      }),
+      workout({ entries: [entry("b", [set({})])], startTime: t0 + 2 }),
+    ];
+    expect(mostPerformedExercise(workouts)).toBe("a");
+    expect(mostPerformedExercise([])).toBeNull();
+  });
+});

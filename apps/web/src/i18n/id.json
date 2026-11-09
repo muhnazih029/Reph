@@ -230,6 +230,9 @@
     "emptyBody": "Catat berat badan untuk melihat tren.",
     "latest": "Terbaru",
     "date": "Tanggal",
-    "back": "Kembali ke riwayat"
+    "back": "Kembali ke riwayat",
+    "weightPlaceholder": "contoh 72.5",
+    "invalid": "Masukkan berat yang valid",
+    "failed": "Gagal menyimpan, coba lagi"
   }
 }

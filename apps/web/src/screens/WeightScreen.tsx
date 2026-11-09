@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "@tanstack/react-router";
 import {
@@ -40,6 +41,7 @@ export function WeightScreen() {
   const today = new Date().toISOString().slice(0, 10);
   const [date, setDate] = useState(today);
   const [weight, setWeight] = useState("");
+  const [error, setError] = useState<string | null>(null);
   const [editing, setEditing] = useState<Point | null>(null);
   const [editWeight, setEditWeight] = useState("");
   const [editDate, setEditDate] = useState("");
@@ -65,12 +67,20 @@ export function WeightScreen() {
   const delta = latest && prev ? latest.kg - prev.kg : null;
 
   const submit = async () => {
+    setError(null);
     const n = Number(weight);
-    if (!isFinite(n) || n < 0) return;
+    if (!isFinite(n) || n < 0 || weight.trim() === "") {
+      setError(t("weight.invalid"));
+      return;
+    }
     const kg = unit === "kg" ? n : lbToKg(n);
-    await create.mutateAsync({ weightKg: kg, recordedAt: new Date(date).getTime() });
-    setWeight("");
-    setDate(new Date().toISOString().slice(0, 10));
+    try {
+      await create.mutateAsync({ weightKg: kg, recordedAt: new Date(date).getTime() });
+      setWeight("");
+      setDate(new Date().toISOString().slice(0, 10));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : t("weight.failed"));
+    }
   };
 
   const openEdit = (p: Point) => {
@@ -99,13 +109,13 @@ export function WeightScreen() {
 
   return (
     <section aria-labelledby="weight-title" className="flex flex-col gap-3">
-      <Button
-        variant="secondary"
-        className="self-start"
+      <button
+        type="button"
         onClick={() => void router.navigate({ to: "/history" })}
+        className="self-start text-sm text-text-muted hover:text-text"
       >
         ← {t("weight.back")}
-      </Button>
+      </button>
       <h2 id="weight-title" className="text-xl font-medium">
         {t("weight.weight")}
       </h2>
@@ -136,16 +146,17 @@ export function WeightScreen() {
           <Input
             type="number"
             inputMode="decimal"
-            placeholder={unit === "kg" ? "kg" : "lb"}
+            placeholder={t("weight.weightPlaceholder")}
             value={weight}
             onChange={(e) => setWeight(e.target.value)}
             className="min-h-11 flex-1"
             numeric
           />
         </div>
-        <Button onClick={() => void submit()} disabled={create.isPending || !weight.trim()}>
-          {t("weight.add")}
+        <Button onClick={() => void submit()} disabled={create.isPending}>
+          {create.isPending ? "…" : t("weight.add")}
         </Button>
+        {error ? <p className="text-sm text-danger">{error}</p> : null}
       </Card>
 
       {metrics.isPending ? (
@@ -157,7 +168,7 @@ export function WeightScreen() {
           <ResponsiveContainer width="100%" height={180}>
             <LineChart data={chartData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
-              <XAxis dataKey="date" tick={{ fontSize: 11 }} tickFormatter={(v) => v.slice(5)} />
+              <XAxis dataKey="date" tick={{ fontSize: 11 }} tickFormatter={(v) => format(new Date(v), "dd MMM")} />
               <YAxis domain={["dataMin - 1", "dataMax + 1"]} tick={{ fontSize: 11 }} width={36} />
               <Tooltip
                 content={({ active, payload }) => {
@@ -166,7 +177,7 @@ export function WeightScreen() {
                   if (!p) return null;
                   return (
                     <div className="rounded-sm border border-border bg-surface px-2 py-1 text-xs">
-                      <div>{new Date(p.date).toLocaleDateString()}</div>
+                      <div>{format(new Date(p.date), "dd MMM yyyy")}</div>
                       <div className="font-medium">{displayWeight(p.kg, unit)}</div>
                     </div>
                   );
@@ -197,7 +208,7 @@ export function WeightScreen() {
                   <div className="flex flex-col">
                     <span className="text-sm font-medium">{displayWeight(m.weightKg, unit)}</span>
                     <span className="text-xs text-text-muted">
-                      {new Date(m.recordedAt).toLocaleDateString()}
+                      {format(new Date(m.recordedAt), "dd MMM yyyy")}
                     </span>
                   </div>
                   <div className="flex gap-1">

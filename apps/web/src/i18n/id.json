@@ -122,7 +122,8 @@
     "weekVolume": "Volume (kg)",
     "weekSets": "Set",
     "recentPrs": "Rekor pribadi terbaru",
-    "recentWorkouts": "Latihan terbaru"
+    "recentWorkouts": "Latihan terbaru",
+    "weeklyGoal": "Target minggu ini"
   },
   "history": {
     "title": "Riwayat",
@@ -179,7 +180,9 @@
     "language": "Bahasa",
     "about": "Tentang",
     "ownershipNote": "Self-hosted — data latihanmu tersimpan di servermu sendiri.",
-    "themeSystem": "Ikuti sistem"
+    "themeSystem": "Ikuti sistem",
+    "weeklyGoal": "Target mingguan",
+    "weeklyGoalHint": "Jumlah workout per minggu (0 = mati)"
   },
   "routines": {
     "title": "Rutinitas",

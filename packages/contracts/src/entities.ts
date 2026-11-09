@@ -74,6 +74,7 @@ export const settingsSchema = z.object({
   weightUnit: weightUnitSchema, // display only — storage is always kg
   distanceUnit: distanceUnitSchema, // display only — storage is always meters
   restTimerSeconds: z.number().int().min(0).max(3600),
+  weeklyWorkoutGoal: z.number().int().min(0).max(7),
   theme: themeSchema,
   language: languageSchema,
   updatedAt: epochMsSchema,

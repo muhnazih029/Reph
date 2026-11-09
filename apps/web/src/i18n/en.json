@@ -122,7 +122,8 @@
     "weekVolume": "Volume (kg)",
     "weekSets": "Sets",
     "recentPrs": "Recent personal records",
-    "recentWorkouts": "Recent workouts"
+    "recentWorkouts": "Recent workouts",
+    "weeklyGoal": "This week's goal"
   },
   "history": {
     "title": "History",
@@ -179,7 +180,9 @@
     "language": "Language",
     "about": "About",
     "ownershipNote": "Self-hosted — your training data lives on your own server.",
-    "themeSystem": "System"
+    "themeSystem": "System",
+    "weeklyGoal": "Weekly goal",
+    "weeklyGoalHint": "Workouts per week (0 = off)"
   },
   "routines": {
     "title": "Routines",

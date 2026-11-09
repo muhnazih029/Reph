@@ -50,6 +50,13 @@
       "when": 1794197883656,
       "tag": "0006_sweet_lady_mastermind",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1794197941421,
+      "tag": "0007_purple_chamber",
+      "breakpoints": true
     }
   ]
 }

@@ -236,6 +236,7 @@ export const settings = pgTable("settings", {
   weightUnit: weightUnitEnum("weight_unit").notNull().default("kg"),
   distanceUnit: distanceUnitEnum("distance_unit").notNull().default("km"),
   restTimerSeconds: integer("rest_timer_seconds").notNull().default(90),
+  weeklyWorkoutGoal: integer("weekly_workout_goal").notNull().default(3),
   theme: themeEnum("theme").notNull().default("dark"),
   language: languageEnum("language").notNull().default("en"),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),

@@ -11,6 +11,7 @@ export const DEFAULT_SETTINGS: Settings = {
   weightUnit: "kg",
   distanceUnit: "km",
   restTimerSeconds: 90,
+  weeklyWorkoutGoal: 3,
   theme: "light",
   language: "en",
   updatedAt: 0,

@@ -110,6 +110,10 @@ export function SettingsScreen() {
           seconds={value.restTimerSeconds}
           onChange={(restTimerSeconds) => put({ restTimerSeconds })}
         />
+        <WeeklyGoalRow
+          goal={value.weeklyWorkoutGoal}
+          onChange={(weeklyWorkoutGoal) => put({ weeklyWorkoutGoal })}
+        />
         <SettingRow label={t("settings.language")}>
           <SegmentedControl
             label={t("settings.language")}
@@ -171,6 +175,29 @@ function RestTimerRow({
         max={600}
         onChange={onChange}
       />
+    </SettingRow>
+  );
+}
+
+function WeeklyGoalRow({
+  goal,
+  onChange,
+}: {
+  goal: number;
+  onChange: (next: number) => void;
+}) {
+  const { t } = useTranslation();
+  return (
+    <SettingRow label={t("settings.weeklyGoal")}>
+      <NumberStepper
+        label={t("settings.weeklyGoal")}
+        value={goal}
+        step={1}
+        min={0}
+        max={7}
+        onChange={onChange}
+      />
+      <p className="text-xs text-text-muted">{t("settings.weeklyGoalHint")}</p>
     </SettingRow>
   );
 }

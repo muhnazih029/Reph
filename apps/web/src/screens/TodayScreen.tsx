@@ -140,6 +140,26 @@ export function TodayScreen() {
             </div>
           </Card>
 
+          {(settings.data?.weeklyWorkoutGoal ?? 0) > 0 ? (
+            <Card className="p-3">
+              <div className="flex items-center justify-between text-xs text-text-muted">
+                <span>{t("today.weeklyGoal")}</span>
+                <span className="numeric">
+                  {Math.min(thisWeek.length, settings.data?.weeklyWorkoutGoal ?? 0)}/
+                  {settings.data?.weeklyWorkoutGoal ?? 0}
+                </span>
+              </div>
+              <div className="mt-1 h-2 overflow-hidden rounded-full bg-surface-2">
+                <div
+                  className="h-full bg-accent"
+                  style={{
+                    width: `${Math.min(100, (thisWeek.length / (settings.data?.weeklyWorkoutGoal ?? 1)) * 100)}%`,
+                  }}
+                />
+              </div>
+            </Card>
+          ) : null}
+
           {prs.length > 0 ? (
             <Card className="overflow-hidden">
               <p className="px-4 pt-3 text-xs font-medium uppercase tracking-wide text-text-muted">

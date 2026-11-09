@@ -44,7 +44,7 @@ export type WeightUnit = z.infer<typeof weightUnitSchema>;
 export const distanceUnitSchema = z.enum(["km", "mi"]);
 export type DistanceUnit = z.infer<typeof distanceUnitSchema>;
 
-export const themeSchema = z.enum(["dark", "light"]);
+export const themeSchema = z.enum(["dark", "light", "system"]);
 export type Theme = z.infer<typeof themeSchema>;
 
 export const languageSchema = z.enum(["en", "id"]);

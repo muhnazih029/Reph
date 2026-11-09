@@ -178,7 +178,8 @@
     "restTimer": "Rest timer (seconds)",
     "language": "Language",
     "about": "About",
-    "ownershipNote": "Self-hosted — your training data lives on your own server."
+    "ownershipNote": "Self-hosted — your training data lives on your own server.",
+    "themeSystem": "System"
   },
   "routines": {
     "title": "Routines",

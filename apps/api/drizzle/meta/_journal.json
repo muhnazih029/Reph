@@ -43,6 +43,13 @@
       "when": 1794192613455,
       "tag": "0005_talented_mimic",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1794197883656,
+      "tag": "0006_sweet_lady_mastermind",
+      "breakpoints": true
     }
   ]
 }

@@ -52,7 +52,7 @@ export const weightUnitEnum = pgEnum("weight_unit", ["kg", "lbs"]);
 
 export const distanceUnitEnum = pgEnum("distance_unit", ["km", "mi"]);
 
-export const themeEnum = pgEnum("theme", ["dark", "light"]);
+export const themeEnum = pgEnum("theme", ["dark", "light", "system"]);
 
 export const languageEnum = pgEnum("language", ["en", "id"]);
 

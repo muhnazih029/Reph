@@ -178,7 +178,8 @@
     "restTimer": "Timer istirahat (detik)",
     "language": "Bahasa",
     "about": "Tentang",
-    "ownershipNote": "Self-hosted — data latihanmu tersimpan di servermu sendiri."
+    "ownershipNote": "Self-hosted — data latihanmu tersimpan di servermu sendiri.",
+    "themeSystem": "Ikuti sistem"
   },
   "routines": {
     "title": "Rutinitas",

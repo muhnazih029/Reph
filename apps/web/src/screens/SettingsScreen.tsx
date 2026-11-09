@@ -79,6 +79,7 @@ export function SettingsScreen() {
             options={[
               { value: "light" satisfies Theme, label: t("settings.themeLight") },
               { value: "dark" satisfies Theme, label: t("settings.themeDark") },
+              { value: "system" satisfies Theme, label: t("settings.themeSystem") },
             ]}
             onChange={(theme) => put({ theme })}
           />

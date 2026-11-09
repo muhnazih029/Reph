@@ -31,8 +31,10 @@ function beepAndBuzz(): void {
       oscillator.start();
       oscillator.stop(context.currentTime + 0.3); // 300 ms beep
     }
-    const vibrate = (navigator as Navigator & { vibrate?: (n: number) => boolean }).vibrate;
-    vibrate?.call(navigator, 200);
+    const vibrate = (navigator as Navigator & { vibrate?: (pattern: number | number[]) => boolean })
+      .vibrate;
+    // three pulses — easy to notice in a loud gym, still short
+    vibrate?.call(navigator, [250, 120, 250, 120, 400]);
   } catch {
     // audio/vibration are optional platform capabilities
   }

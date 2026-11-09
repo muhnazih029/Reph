@@ -236,5 +236,10 @@
     "failed": "Could not save, try again",
     "tapToEdit": "Tap to edit",
     "chartHint": "Tap a point on the chart to edit or delete"
+  },
+  "pwa": {
+    "installTitle": "Install Reph on your phone",
+    "installBody": "Faster access, full screen, works offline.",
+    "install": "Install"
   }
 }

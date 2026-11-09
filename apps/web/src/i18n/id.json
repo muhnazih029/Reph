@@ -236,5 +236,10 @@
     "failed": "Gagal menyimpan, coba lagi",
     "tapToEdit": "Ketuk untuk edit",
     "chartHint": "Ketuk titik pada grafik untuk edit atau hapus"
+  },
+  "pwa": {
+    "installTitle": "Pasang Reph di HP Anda",
+    "installBody": "Akses lebih cepat, layar penuh, dan bekerja offline.",
+    "install": "Pasang"
   }
 }

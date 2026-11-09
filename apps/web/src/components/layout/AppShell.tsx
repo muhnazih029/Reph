@@ -2,6 +2,7 @@ import { Outlet } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { RestTimerBar } from "../workout/RestTimerBar";
 import { TabBar } from "./TabBar";
+import { PwaInstallPrompt } from "../pwa/PwaInstallPrompt";
 
 // Root layout: content + rest-timer bar + bottom tab bar. The rest-timer
 // bar (Task 9) mounts above the tab bar.
@@ -15,6 +16,7 @@ export function AppShell() {
         <Outlet />
       </main>
       <RestTimerBar />
+      <PwaInstallPrompt />
       <TabBar />
     </div>
   );

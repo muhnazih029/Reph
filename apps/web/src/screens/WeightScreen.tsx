@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "@tanstack/react-router";
@@ -41,7 +41,12 @@ export function WeightScreen() {
   const today = new Date().toISOString().slice(0, 10);
   const [date, setDate] = useState(today);
   const [weight, setWeight] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
+  useEffect(() => {
+    if (!toast) return;
+    const timer = setTimeout(() => setToast(null), 3000);
+    return () => clearTimeout(timer);
+  }, [toast]);
   const [editing, setEditing] = useState<Point | null>(null);
   const [editWeight, setEditWeight] = useState("");
   const [editDate, setEditDate] = useState("");
@@ -67,10 +72,10 @@ export function WeightScreen() {
   const delta = latest && prev ? latest.kg - prev.kg : null;
 
   const submit = async () => {
-    setError(null);
+    setToast(null);
     const n = Number(weight);
     if (!isFinite(n) || n < 0 || weight.trim() === "") {
-      setError(t("weight.invalid"));
+      setToast(t("weight.invalid"));
       return;
     }
     const kg = unit === "kg" ? n : lbToKg(n);
@@ -79,7 +84,7 @@ export function WeightScreen() {
       setWeight("");
       setDate(new Date().toISOString().slice(0, 10));
     } catch (e) {
-      setError(e instanceof Error ? e.message : t("weight.failed"));
+      setToast(e instanceof Error ? e.message : t("weight.failed"));
     }
   };
 
@@ -104,7 +109,22 @@ export function WeightScreen() {
 
   const handleDelete = async (id: string) => {
     if (!window.confirm(t("weight.deleteConfirm"))) return;
-    await remove.mutateAsync(id);
+    try {
+      await remove.mutateAsync(id);
+    } catch (e) {
+      setToast(e instanceof Error ? e.message : t("weight.failed"));
+    }
+  };
+
+  const renderDot = (props: { cx?: number; cy?: number; payload?: Point & { weight: number } }) => {
+    const { cx, cy, payload } = props;
+    if (cx === undefined || cy === undefined || !payload) return null;
+    return (
+      <g style={{ cursor: "pointer" }} onClick={() => openEdit(payload)}>
+        <circle cx={cx} cy={cy} r={14} fill="transparent" />
+        <circle cx={cx} cy={cy} r={4} fill="var(--color-accent, #3b82f6)" />
+      </g>
+    );
   };
 
   return (
@@ -159,7 +179,6 @@ export function WeightScreen() {
         <Button onClick={() => void submit()} disabled={create.isPending}>
           {create.isPending ? "…" : t("weight.add")}
         </Button>
-        {error ? <p className="text-sm text-danger">{error}</p> : null}
       </Card>
 
       {metrics.isPending ? (
@@ -167,7 +186,7 @@ export function WeightScreen() {
       ) : points.length === 0 ? (
         <EmptyState title={t("weight.empty")} body={t("weight.emptyBody")} />
       ) : (
-        <Card className="p-3">
+        <Card className="p-3 outline-none [&_.recharts-surface]:outline-none [&_.recharts-wrapper]:outline-none">
           <ResponsiveContainer width="100%" height={180}>
             <LineChart
               data={chartData}
@@ -200,7 +219,7 @@ export function WeightScreen() {
                 dataKey="weight"
                 stroke="var(--color-accent, #3b82f6)"
                 strokeWidth={2}
-                dot={{ r: 4 }}
+                dot={renderDot}
                 activeDot={{ r: 6 }}
               />
             </LineChart>
@@ -210,6 +229,15 @@ export function WeightScreen() {
       )}
 
 
+
+      {toast ? (
+        <div
+          role="status"
+          className="fixed bottom-4 left-1/2 z-50 -translate-x-1/2 rounded-sm border border-border bg-surface px-4 py-2 text-sm shadow-lg md:bottom-auto md:left-auto md:right-4 md:top-4 md:translate-x-0"
+        >
+          {toast}
+        </div>
+      ) : null}
 
       <Sheet
         open={editing !== null}

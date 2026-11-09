@@ -5,6 +5,7 @@ import { usePhotos, useUploadPhoto, useDeletePhoto } from "../api/hooks";
 import { EmptyState } from "../components/ui/EmptyState";
 import { Skeleton } from "../components/ui/Skeleton";
 import { compressImage } from "../lib/image";
+import { Button } from "../components/ui/Button";
 
 export function PhotosScreen() {
   const { t } = useTranslation();

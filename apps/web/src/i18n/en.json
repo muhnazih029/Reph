@@ -3,6 +3,22 @@
     "name": "Reph",
     "primaryNav": "Primary navigation"
   },
+  "account": {
+    "title": "Account",
+    "appName": "Reph",
+    "subtitle": "Self-hosted · your data, your server",
+    "server": "Server",
+    "connected": "Connected",
+    "offline": "Offline",
+    "settings": "Settings",
+    "clearCache": "Clear cache & reload",
+    "signedIn": "Signed in",
+    "devToken": "Dev token",
+    "signOut": "Sign out",
+    "signIn": "Sign in",
+    "signedInAs": "Signed in as {{name}}",
+    "syncedNow": "Synced just now"
+  },
   "tabs": {
     "today": "Today",
     "history": "History",
@@ -26,20 +42,23 @@
     "minutesShort": "min",
     "secondsShort": "s",
     "set": "set",
-    "back": "Back"
+    "back": "Back",
+    "moreActions": "More actions"
   },
   "restTimer": {
     "label": "Rest timer",
     "pause": "Pause",
     "resume": "Resume",
-    "cancel": "Cancel rest timer"
+    "cancel": "Cancel rest timer",
+    "remaining": "Rest {{time}}",
+    "skip": "Skip",
+    "done": "Rest done"
   },
   "workout": {
     "title": "Workout title",
     "titlePlaceholder": "Untitled workout",
     "finish": "Finish",
     "menu": "Workout menu",
-    "bodyWeight": "Body weight (kg)",
     "discard": "Discard workout",
     "discardConfirm": "Delete this workout and all of its sets?",
     "addExercise": "Add exercise",
@@ -83,7 +102,11 @@
     "setsCount_other": "{{count}} sets",
     "finishCelebration": "Great job! Workout complete.",
     "finishSummary": "Here's your summary",
-    "titleTab": "Workout"
+    "titleTab": "Workout",
+    "setShort": "SET",
+    "weightShort": "KG",
+    "inProgress": "In progress",
+    "resume": "Resume workout"
   },
   "muscleGroups": {
     "chest": "Chest",
@@ -124,7 +147,15 @@
     "weekSets": "Sets",
     "recentPrs": "Recent personal records",
     "recentWorkouts": "Recent workouts",
-    "weeklyGoal": "This week's goal"
+    "weeklyGoal": "This week's goal",
+    "weekVolumeShort": "Volume",
+    "weekVolumeUnit": "Volume ({{unit}})",
+    "weekGoalProgress": "{{done}} of {{goal}} workouts",
+    "endOfFeed": "You are all caught up",
+    "feedGrid": "Grid view",
+    "feedList": "List view",
+    "feedLayout": "Feed layout",
+    "feedColumns": "Feed columns"
   },
   "history": {
     "title": "History",
@@ -171,7 +202,9 @@
     "last": "Last performed",
     "sessions": "Sessions",
     "noSessions": "Not performed in any workout yet",
-    "namePlaceholder": "e.g. Bench Press"
+    "namePlaceholder": "e.g. Bench Press",
+    "endOfList": "End of the library",
+    "best": "Best"
   },
   "settings": {
     "title": "Settings",
@@ -212,7 +245,10 @@
     "addSet": "Add set",
     "addExercise": "Add exercise",
     "activeExists": "An active workout is in progress. Discard it and start this routine?",
-    "newDefault": "New routine"
+    "newDefault": "New routine",
+    "last": "Last",
+    "by": "By",
+    "newPlaceholder": "e.g. Push day"
   },
   "photos": {
     "title": "Progress photos",
@@ -281,5 +317,18 @@
     "strengthTrend": "Strength trend",
     "exercise": "Exercise",
     "e1rmHint": "Estimated 1RM from each session's best set"
+  },
+  "auth": {
+    "title": "Sign in",
+    "createTitle": "Create your account",
+    "subtitle": "Your data stays on your server.",
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "passwordHint": "At least 8 characters.",
+    "signIn": "Sign in",
+    "createAccount": "Create account",
+    "noAccountYet": "This instance has no account yet — create the first one.",
+    "backToApp": "Back to the app"
   }
 }

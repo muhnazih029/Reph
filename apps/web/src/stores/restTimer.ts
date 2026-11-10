@@ -10,6 +10,9 @@ export interface RestTimerState {
   totalSeconds: number;
   remainingSeconds: number;
   isRunning: boolean;
+  /** When the last rest ran out — the toast says "Rest selesai" for a
+   *  moment, then disappears (nothing shifts the layout). */
+  finishedAt: number | null;
   start(totalSeconds?: number): void;
   pause(): void;
   resume(): void;
@@ -49,6 +52,7 @@ export const useRestTimerStore = create<RestTimerState>()((set, get) => ({
   totalSeconds: 90,
   remainingSeconds: 0,
   isRunning: false,
+  finishedAt: null,
 
   start: (totalSeconds) => {
     // settings cache drives the default (docs/plans/phase-1-mvp.md Task 9)
@@ -58,13 +62,13 @@ export const useRestTimerStore = create<RestTimerState>()((set, get) => ({
     const total = totalSeconds ?? settings?.restTimerSeconds ?? 90;
 
     stopTicking();
-    set({ totalSeconds: total, remainingSeconds: total, isRunning: true });
+    set({ totalSeconds: total, remainingSeconds: total, isRunning: true, finishedAt: null });
 
     interval = setInterval(() => {
       const remaining = get().remainingSeconds - 1;
       if (remaining <= 0) {
         stopTicking();
-        set({ remainingSeconds: 0, isRunning: false });
+        set({ remainingSeconds: 0, isRunning: false, finishedAt: Date.now() });
         beepAndBuzz();
         return;
       }
@@ -86,7 +90,7 @@ export const useRestTimerStore = create<RestTimerState>()((set, get) => ({
       const remaining = get().remainingSeconds - 1;
       if (remaining <= 0) {
         stopTicking();
-        set({ remainingSeconds: 0, isRunning: false });
+        set({ remainingSeconds: 0, isRunning: false, finishedAt: Date.now() });
         beepAndBuzz();
         return;
       }
@@ -96,7 +100,7 @@ export const useRestTimerStore = create<RestTimerState>()((set, get) => ({
 
   cancel: () => {
     stopTicking();
-    set({ isRunning: false, remainingSeconds: 0 });
+    set({ isRunning: false, remainingSeconds: 0, finishedAt: null });
   },
 
   addSeconds: (n) => {

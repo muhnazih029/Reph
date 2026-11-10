@@ -15,13 +15,17 @@ import { displayWeight } from "../lib/units";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
 import { EmptyState } from "../components/ui/EmptyState";
+import { Icon } from "../components/ui/Icon";
 import { Skeleton } from "../components/ui/Skeleton";
-import { WorkoutRow } from "../components/history/WorkoutRow";
+import { AccountMenu } from "../components/account/AccountMenu";
+import { WorkoutFeed } from "../components/home/WorkoutFeed";
 
-// Today home — greeting + date, the primary Start/Resume CTA, a this-week
-// summary strip (completed workouts, volume, sets), up to three recent
-// personal records across the last 20 completed workouts (Epley 1RM per
-// exercise), and the five most recent workouts (Task 11).
+// Today home — greeting + date and the account avatar, the primary
+// Start/Resume CTA, a this-week summary (completed workouts, volume,
+// sets) with the weekly-goal bar, up to three recent personal records
+// across the last 20 completed workouts (Epley 1RM per exercise), and
+// the five most recent workouts. Mobile stacks; from md up the records
+// and the workout list sit side by side (pen.dev design).
 
 type Pr = { exerciseId: string; weightKg: number; reps: number; rpe: number | null };
 
@@ -84,7 +88,6 @@ export function TodayScreen() {
     0,
   );
   const prs = useMemo(() => recentPrs(completed), [completed]);
-  const recent = completed.slice(0, 5);
 
   const exerciseName = (id: string): string =>
     exercises.data?.find((exercise) => exercise.id === id)?.name ?? t("common.loading");
@@ -99,106 +102,103 @@ export function TodayScreen() {
     }
   };
 
-  return (
-    <section aria-labelledby="today-title" className="flex flex-col gap-3">
-      <div>
-        <h2 id="today-title" className="text-xl font-medium">
-          {t("today.greeting")}
-        </h2>
-        <p className="text-sm text-text-muted">{format(Date.now(), "EEEE, d MMMM")}</p>
-      </div>
+  const goal = settings.data?.weeklyWorkoutGoal ?? 0;
+  const goalDone = Math.min(thisWeek.length, goal);
+  const goalPercent = goal > 0 ? Math.min(100, (goalDone / goal) * 100) : 0;
+  const unit = settings.data?.weightUnit ?? "kg";
 
-      <Button
-        className="min-h-12 w-full text-base"
-        disabled={starting || workouts.isPending || active.isPending}
-        onClick={() => void start()}
-      >
-        {active.data ? t("today.resume") : t("today.startWorkout")}
-      </Button>
+  return (
+    <section aria-labelledby="today-title" className="flex flex-col gap-5">
+      <header className="flex flex-wrap items-center gap-3">
+        <div className="min-w-0 flex-1">
+          <h2 id="today-title" className="text-2xl font-semibold tracking-tight">
+            {t("today.greeting")}
+          </h2>
+          <p className="text-sm text-text-muted">{format(Date.now(), "EEEE, d MMMM")}</p>
+        </div>
+
+        <AccountMenu variant="avatar" />
+
+        <Button
+          className="order-last min-h-13 w-full text-base md:order-none md:w-auto md:min-h-11 md:rounded-full md:px-6 md:text-sm"
+          disabled={starting || workouts.isPending || active.isPending}
+          onClick={() => void start()}
+        >
+          {active.data ? t("today.resume") : t("today.startWorkout")}
+        </Button>
+      </header>
 
       {workouts.isPending || active.isPending ? (
         <div className="flex flex-col gap-2">
-          <Skeleton className="h-16 w-full" />
           <Skeleton className="h-24 w-full" />
+          <Skeleton className="h-16 w-full" />
         </div>
       ) : completed.length === 0 && !active.data ? (
         <EmptyState title={t("history.empty")} body={t("today.firstRunBody")} />
       ) : (
-        <>
-          <Card className="grid grid-cols-3 divide-x divide-border py-2 text-center">
-            <div className="px-1 py-1">
-              <p className="numeric text-base">{thisWeek.length}</p>
-              <p className="text-xs text-text-muted">{t("today.weekWorkouts")}</p>
+        <div className="flex flex-col gap-5">
+          <Card className="flex flex-col gap-4 p-4 md:flex-row md:items-center md:gap-8">
+            <div className="flex items-center justify-between gap-6 md:shrink-0 md:gap-12">
+              <div className="flex flex-col gap-1">
+                <p className="whitespace-nowrap text-[11px] font-medium uppercase tracking-wider text-text-muted">
+                  {t("today.weekWorkouts")}
+                </p>
+                <p className="numeric whitespace-nowrap text-2xl font-semibold">
+                  {thisWeek.length}
+                </p>
+              </div>
+              <div className="flex flex-col gap-1">
+                <p className="whitespace-nowrap text-[11px] font-medium uppercase tracking-wider text-text-muted">
+                  {t("today.weekVolumeUnit", { unit: unit === "lbs" ? "lb" : "kg" })}
+                </p>
+                <p className="numeric whitespace-nowrap text-2xl font-semibold">
+                  {displayWeight(Math.round(week?.volumeKg ?? 0), unit)}
+                </p>
+              </div>
+              <div className="flex flex-col gap-1">
+                <p className="whitespace-nowrap text-[11px] font-medium uppercase tracking-wider text-text-muted">
+                  {t("today.weekSets")}
+                </p>
+                <p className="numeric whitespace-nowrap text-2xl font-semibold">{weekSets}</p>
+              </div>
             </div>
-            <div className="px-1 py-1">
-              <p className="numeric text-base">{Math.round(week?.volumeKg ?? 0)}</p>
-              <p className="text-xs text-text-muted">{t("today.weekVolume")}</p>
-            </div>
-            <div className="px-1 py-1">
-              <p className="numeric text-base">{weekSets}</p>
-              <p className="text-xs text-text-muted">{t("today.weekSets")}</p>
+
+            <div aria-hidden="true" className="hidden h-14 w-px bg-border md:block" />
+
+            <div className="flex flex-col gap-1.5 md:min-w-0 md:flex-1">
+              <div className="flex items-center justify-between gap-3 text-xs text-text-muted">
+                <span>{t("today.weeklyGoal")}</span>
+                <span className="numeric whitespace-nowrap">
+                  {t("today.weekGoalProgress", { done: goalDone, goal })}
+                </span>
+              </div>
+              <div className="h-2 overflow-hidden rounded-full bg-surface-2">
+                <div className="h-full bg-accent" style={{ width: `${goalPercent}%` }} />
+              </div>
             </div>
           </Card>
 
-          {(settings.data?.weeklyWorkoutGoal ?? 0) > 0 ? (
-            <Card className="p-3">
-              <div className="flex items-center justify-between text-xs text-text-muted">
-                <span>{t("today.weeklyGoal")}</span>
-                <span className="numeric">
-                  {Math.min(thisWeek.length, settings.data?.weeklyWorkoutGoal ?? 0)}/
-                  {settings.data?.weeklyWorkoutGoal ?? 0}
-                </span>
-              </div>
-              <div className="mt-1 h-2 overflow-hidden rounded-full bg-surface-2">
-                <div
-                  className="h-full bg-accent"
-                  style={{
-                    width: `${Math.min(100, (thisWeek.length / (settings.data?.weeklyWorkoutGoal ?? 1)) * 100)}%`,
-                  }}
-                />
-              </div>
-            </Card>
-          ) : null}
-
           {prs.length > 0 ? (
-            <Card className="overflow-hidden">
-              <p className="px-4 pt-3 text-xs font-medium uppercase tracking-wide text-text-muted">
-                {t("today.recentPrs")}
-              </p>
-              <ul className="divide-y divide-border pt-1">
+            <div className="flex flex-col gap-2.5">
+              <h3 className="text-sm font-semibold">{t("today.recentPrs")}</h3>
+              <div className="grid gap-2 md:grid-cols-3">
                 {prs.map((pr) => (
-                  <li
-                    key={pr.exerciseId}
-                    className="flex items-center justify-between gap-3 px-4 py-2.5"
-                  >
-                    <span className="min-w-0 truncate text-sm">{exerciseName(pr.exerciseId)}</span>
-                    <span className="numeric shrink-0 text-sm text-text-muted">
-                      {displayWeight(pr.weightKg, settings.data?.weightUnit ?? "kg")} × {pr.reps}
-                      {pr.rpe !== null ? ` @ ${pr.rpe} RPE` : ""}
+                  <Card key={pr.exerciseId} className="flex items-center gap-2.5 p-3">
+                    <Icon name="award" size={18} className="shrink-0 text-accent" />
+                    <span className="min-w-0 flex-1 truncate text-sm">
+                      {exerciseName(pr.exerciseId)}
                     </span>
-                  </li>
+                    <span className="numeric shrink-0 text-sm font-semibold">
+                      {displayWeight(pr.weightKg, unit)} × {pr.reps}
+                    </span>
+                  </Card>
                 ))}
-              </ul>
-            </Card>
+              </div>
+            </div>
           ) : null}
 
-          {recent.length > 0 ? (
-            <>
-              <p className="mt-1 px-1 text-xs font-medium uppercase tracking-wide text-text-muted">
-                {t("today.recentWorkouts")}
-              </p>
-              <Card className="overflow-hidden">
-                <ul className="divide-y divide-border">
-                  {recent.map((workout) => (
-                    <li key={workout.id}>
-                      <WorkoutRow workout={workout} />
-                    </li>
-                  ))}
-                </ul>
-              </Card>
-            </>
-          ) : null}
-        </>
+          <WorkoutFeed />
+        </div>
       )}
     </section>
   );

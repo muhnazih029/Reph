@@ -10,6 +10,7 @@ import { create } from "zustand";
 import type { ApiError } from "../api/client";
 import { apiGet, apiSend } from "../api/client";
 import { queryClient } from "../api/queryClient";
+import { queryKeys } from "../api/queryKeys";
 import { newId } from "../lib/id";
 
 // Server-backed active-workout store — the single owner of the in-session
@@ -62,6 +63,17 @@ function invalidateList() {
   void queryClient.invalidateQueries({
     predicate: (query) => query.queryKey[0] === "workouts",
   });
+}
+
+/**
+ * Drop the cached "active workout" row. The Today screen reads it to
+ * decide between "Start workout" and "Resume" — when a workout is
+ * discarded or finished the cache must go with it, otherwise Home keeps
+ * offering to resume a workout that no longer exists.
+ */
+function clearActiveCache() {
+  queryClient.setQueryData(queryKeys.workoutActive, null);
+  void queryClient.invalidateQueries({ queryKey: queryKeys.workoutActive });
 }
 
 function emptySet(type: SetType): WorkoutSet {
@@ -237,6 +249,7 @@ export const useActiveWorkoutStore = create<ActiveWorkoutState>()((set, get) => 
         workoutSchema,
       );
       set({ workout: null });
+      clearActiveCache();
       invalidateList();
       return finished.id;
     },
@@ -245,6 +258,7 @@ export const useActiveWorkoutStore = create<ActiveWorkoutState>()((set, get) => 
       const workout = requireWorkout();
       await apiSend("DELETE", `/workouts/${workout.id}`, undefined, z.void());
       set({ workout: null });
+      clearActiveCache();
       invalidateList();
     },
   };

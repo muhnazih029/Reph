@@ -26,3 +26,11 @@ docker-compose.override.yml
 *.apkm
 *.apks
 *.aab
+
+# Agent skills (machine-local, install via bunx skills)
+.agents/
+skills-lock.json
+
+# Taste-skill browser checks and screenshots (machine-local)
+.taste-skill/
+shots/

@@ -219,7 +219,12 @@ describe("WorkoutDetailScreen", () => {
 
     await render(() => createElement(WorkoutDetailScreen, { id: detailWorkout!.id }), "/history");
 
-    // enter edit mode → save
+    // enter edit mode → save (Edit lives in the ⋯ menu)
+    const menuButton = document.querySelector<HTMLButtonElement>('button[aria-haspopup="menu"]');
+    expect(menuButton).toBeTruthy();
+    if (menuButton) menuButton.click();
+    await flush();
+
     const editButton = Array.from(document.querySelectorAll("button")).find(
       (button) => button.textContent === "Edit",
     );

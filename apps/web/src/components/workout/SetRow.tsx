@@ -7,14 +7,27 @@ import { displayWeight, lbToKg } from "../../lib/units";
 import { Input } from "../ui/Input";
 import { Sheet } from "../ui/Sheet";
 import { Button } from "../ui/Button";
+import { Icon } from "../ui/Icon";
 
 // One set line rendered as a compact table row (Hevy-style):
-//   SET | PREVIOUS | <unit> | REPS | RPE | ✓
+//   SET | PREVIOUS | <unit> | REPS | ✓
 // Green row + green check when done. Three modes:
 //   live    — commits to the active-workout store
 //   edit    — workout-detail inline edit (patches go to the caller's draft)
 //   readOnly— history display through displayWeight
 // Weights display in the user's unit but always commit canonical kg.
+
+// One grid template for the header and every row, so the columns line up
+// exactly (the design's fixed column widths: set · previous · weight ·
+// reps · check). `minmax(0,1fr)` keeps the two flexible columns from
+// pushing the trailing columns out of the card. Cardio has one extra
+// column (calories), so it gets its own template. From md up the value
+// columns take fixed widths so the table does not stretch across a wide
+// desktop card.
+const SET_GRID =
+  "grid-cols-[2.5rem_minmax(0,1fr)_minmax(0,1fr)_3.5rem_2.25rem] md:grid-cols-[2.5rem_minmax(0,1fr)_9rem_5rem_2.5rem]";
+const CARDIO_GRID =
+  "grid-cols-[2.5rem_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_3.5rem_2.25rem] md:grid-cols-[2.5rem_minmax(0,1fr)_7rem_7rem_3.5rem_2.5rem]";
 
 type WeightUnit = "kg" | "lbs";
 type DistanceUnit = "km" | "mi";
@@ -68,9 +81,10 @@ export function SetRow({
 
   // ---- readOnly: display-only compact row (matches the live table columns) ----
   if (readOnly) {
+    const grid = exerciseType === "strength" ? SET_GRID : CARDIO_GRID;
     return (
       <div
-        className={`grid grid-cols-[2.5rem_1fr_1fr_2rem] items-center gap-2 px-4 py-2 text-sm ${
+        className={`grid ${grid} items-center gap-2 px-4 py-2 text-sm ${
           done ? "bg-success/10" : ""
         }`}
       >
@@ -78,16 +92,21 @@ export function SetRow({
         {exerciseType === "strength" ? (
           <>
             <span className="numeric text-text-muted">{previousLabel}</span>
-            <span className="numeric">
+            <span className="numeric col-span-2 text-center">
               {displayWeight(set.weightKg, weightUnit)} × {set.reps ?? "–"}
             </span>
-            <span className="numeric text-center">{done ? "✓" : "○"}</span>
+            <span className="flex justify-center text-accent">
+              <Icon name="check" size={16} className={done ? "" : "opacity-40"} />
+            </span>
           </>
         ) : (
           <>
             <span className="numeric text-text-muted">{previousLabel}</span>
             <span className="numeric col-span-3">
               {cardioSummary(set, distanceUnit, t("common.minutesShort"))}
+            </span>
+            <span className="flex justify-center text-accent">
+              <Icon name="check" size={16} className={done ? "" : "opacity-40"} />
             </span>
           </>
         )}
@@ -96,9 +115,10 @@ export function SetRow({
   }
 
   // ---- live / edit: interactive table row ----
+  const grid = exerciseType === "strength" ? SET_GRID : CARDIO_GRID;
   return (
     <div
-      className={`grid grid-cols-[2.5rem_1fr_1fr_auto_auto] items-center gap-2 px-4 py-2 ${
+      className={`grid ${grid} items-center gap-2 px-4 py-2 ${
         done ? "bg-success/10" : ""
       } ${set.type !== "normal" ? "border-l-2 border-accent" : ""}`}
     >
@@ -178,9 +198,9 @@ export function SetRow({
           type="button"
           aria-label={t("workout.deleteSet")}
           onClick={onRemove}
-          className="min-h-9 min-w-7 rounded-sm text-danger"
+          className="flex h-9 w-9 items-center justify-center rounded-sm text-danger"
         >
-          ×
+          <Icon name="x" size={16} />
         </button>
       ) : null}
 
@@ -195,13 +215,13 @@ export function SetRow({
             patch({ done: next });
             if (next) useRestTimerStore.getState().start();
           }}
-          className={`flex h-8 w-8 items-center justify-center rounded-full border text-sm ${
+          className={`flex h-9 w-9 items-center justify-center rounded-full border transition-colors ${
             done
-              ? "border-success bg-success text-accent-contrast"
+              ? "border-accent bg-accent text-accent-contrast"
               : "border-border bg-surface-2 text-text-muted"
           }`}
         >
-          ✓
+          <Icon name="check" size={16} />
         </button>
       ) : null}
 
@@ -229,16 +249,24 @@ export function ColumnHeader({
     exerciseType === "strength"
       ? weightUnit.toUpperCase()
       : `${t("common.minutesShort")}/${distanceUnit}`;
+  const grid = exerciseType === "strength" ? SET_GRID : CARDIO_GRID;
   return (
     <div
-      className="grid grid-cols-[2.5rem_1fr_1fr_auto_auto] items-center gap-2 border-b border-border bg-surface-2/50 px-4 py-1 text-[0.65rem] font-medium uppercase tracking-wide text-text-muted"
+      className={`grid ${grid} items-center gap-2 border-b border-border bg-surface-2/50 px-4 py-1 text-[0.65rem] font-medium uppercase tracking-wide text-text-muted`}
       aria-hidden="true"
     >
       <span>SET</span>
       <span>{t("workout.previousShort")}</span>
-      <span>{unitLabel}</span>
-      <span>{t("workout.repsShort")}</span>
-      <span className="w-8 text-center">✓</span>
+      <span className="text-center">{unitLabel}</span>
+      {exerciseType === "strength" ? (
+        <span className="text-center">{t("workout.repsShort")}</span>
+      ) : (
+        <>
+          <span className="text-center">{t("workout.distance")}</span>
+          <span className="text-center">{t("workout.calories")}</span>
+        </>
+      )}
+      <span className="text-center">✓</span>
     </div>
   );
 }

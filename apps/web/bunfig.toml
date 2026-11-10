@@ -1,6 +1,11 @@
 # Web workspace: happy-dom preload for component tests (bunfig applies
 # when bun test runs with this file's package.json as its cwd).
 # Repo-wide config lives in the root bunfig.toml.
+#
+# The preload points at our own registrar (src/test/dom.ts) instead of the
+# "happy-dom" package entry: bun 1.4 does not run a package's main file as
+# a preload, so the globals were never installed and every DOM test failed
+# with "document is not defined".
 
 [test]
-preload = ["happy-dom"]
+preload = ["./src/test/dom.ts"]

@@ -47,7 +47,7 @@ export function PwaInstallPrompt() {
   return (
     <div
       role="status"
-      className="fixed inset-x-0 bottom-20 z-40 mx-auto max-w-2xl px-4 md:bottom-4"
+      className="fixed inset-x-0 bottom-24 z-40 mx-auto max-w-2xl px-4 md:bottom-4"
     >
       <div className="flex items-center gap-3 rounded-radius border border-border bg-surface px-4 py-3 shadow-lg">
         <div className="min-w-0 flex-1">

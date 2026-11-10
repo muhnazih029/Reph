@@ -104,6 +104,15 @@ mockHooks({
     error: null,
     refetch: () => Promise.resolve({} as never),
   }),
+  useWorkoutFeed: () => ({
+    data: { pages: [historyWorkouts], pageParams: [null] },
+    isPending: false,
+    isError: false,
+    error: null,
+    hasNextPage: false,
+    isFetchingNextPage: false,
+    fetchNextPage: () => Promise.resolve({}),
+  }),
   useActiveWorkout: () => ({
     data: hasActive ? ({ id: "active-1", entries: [] } as unknown as Workout) : null,
     isPending: false,

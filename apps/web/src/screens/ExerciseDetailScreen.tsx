@@ -84,29 +84,32 @@ export function ExerciseDetailScreen({ id }: { id: string }) {
   }
 
   return (
-    <section aria-labelledby="exercise-detail-title" className="flex flex-col gap-4">
+    <section
+      aria-labelledby="exercise-detail-title"
+      className="flex flex-col gap-4 md:max-w-[720px]"
+    >
       <div className="flex items-center gap-2">
         <button
           type="button"
-          aria-label={t("exercises.title")}
-          onClick={() => void router.navigate({ to: "/exercises" })}
-          className="flex h-9 w-9 items-center justify-center rounded-sm text-text-muted hover:bg-surface-2 hover:text-text"
+          aria-label={t("common.back")}
+          onClick={() => void router.navigate({ to: "/workout", search: { tab: "exercises" } })}
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-sm border border-border bg-surface text-text-muted hover:text-text"
         >
           ←
         </button>
-        <h2 id="exercise-detail-title" className="text-xl font-medium">
+        <h2 id="exercise-detail-title" className="min-w-0 flex-1 truncate text-xl font-semibold">
           {data.name}
         </h2>
       </div>
 
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-2 gap-3">
         {[0, 1].map((idx) => (
           <img
             key={idx}
             src={exerciseImagePath(data.name, idx as 0 | 1)}
             alt={`${data.name} ${idx + 1}`}
             loading="lazy"
-            className="aspect-square w-full rounded-sm border border-border object-cover"
+            className="aspect-square w-full rounded-sm border border-border bg-surface-2 object-cover"
             onError={(event) => {
               event.currentTarget.style.display = "none";
             }}
@@ -114,30 +117,30 @@ export function ExerciseDetailScreen({ id }: { id: string }) {
         ))}
       </div>
 
-      <div className="flex flex-wrap gap-2 text-xs">
-        <span className="rounded-sm bg-surface-2 px-2 py-1 text-text-muted">
+      <div className="flex flex-wrap gap-2">
+        <span className="rounded-[6px] bg-surface-2 px-2.5 py-1 text-[11px] font-medium text-text-muted">
           {t(`muscleGroups.${data.muscleGroup}`)}
         </span>
-        <span className="rounded-sm bg-surface-2 px-2 py-1 text-text-muted">
+        <span className="rounded-[6px] bg-surface-2 px-2.5 py-1 text-[11px] font-medium text-text-muted">
           {t(`equipment.${data.equipment}`)}
         </span>
-        <span className="rounded-sm bg-surface-2 px-2 py-1 text-text-muted">
+        <span className="rounded-[6px] bg-surface-2 px-2.5 py-1 text-[11px] font-medium text-text-muted">
           {t(`exerciseType.${data.type}`)}
         </span>
         {data.isCustom ? (
-          <span className="rounded-sm bg-surface-2 px-2 py-1 text-text-muted">
+          <span className="rounded-[6px] bg-surface-2 px-2.5 py-1 text-[11px] font-medium text-text-muted">
             {t("exercises.custom")}
           </span>
         ) : null}
       </div>
 
       <Card className="flex flex-col gap-2 p-4">
-        <h3 className="text-sm font-medium text-text">{t("exercises.prTitle")}</h3>
+        <h3 className="text-[13px] font-medium text-text">{t("exercises.prTitle")}</h3>
         {personalRecord ? (
           <>
-            <p className="numeric text-2xl">
+            <p className="numeric text-2xl font-semibold">
               {displayWeight(personalRecord.weightKg, unit)} × {personalRecord.reps}
-              <span className="ml-2 text-sm text-text-muted">
+              <span className="ml-2 text-[13px] font-normal text-text-muted">
                 e1RM {displayWeight(Math.round(personalRecord.oneRM * 10) / 10, unit)}
               </span>
             </p>
@@ -146,10 +149,10 @@ export function ExerciseDetailScreen({ id }: { id: string }) {
             </p>
           </>
         ) : (
-          <p className="text-sm text-text-muted">{t("exercises.noPr")}</p>
+          <p className="text-[13px] text-text-muted">{t("exercises.noPr")}</p>
         )}
         {lastPerformed ? (
-          <p className="text-sm text-text-muted">
+          <p className="text-[13px] text-text-muted">
             {t("exercises.last")}: {displayWeight(lastPerformed.weightKg, unit)} ×{" "}
             {lastPerformed.reps}
             {lastPerformed.rpe !== null ? ` @ ${lastPerformed.rpe} RPE` : ""}
@@ -167,7 +170,7 @@ export function ExerciseDetailScreen({ id }: { id: string }) {
               const sessionBest = bestSetByEpley(entry.sets);
               return (
                 <li key={workout.id} className="px-4 py-3">
-                  <p className="text-sm">
+                  <p className="text-sm font-medium">
                     {new Date(workout.startTime).toLocaleDateString(undefined, {
                       dateStyle: "medium",
                     })}
@@ -185,7 +188,7 @@ export function ExerciseDetailScreen({ id }: { id: string }) {
                       .join(" · ")}
                   </p>
                   {sessionBest ? (
-                    <p className="numeric mt-1 text-xs font-medium text-accent">
+                    <p className="numeric mt-1 text-xs font-semibold text-accent">
                       {t("exercises.best")}: {displayWeight(sessionBest.weightKg, unit)} ×{" "}
                       {sessionBest.reps}
                     </p>

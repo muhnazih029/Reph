@@ -102,3 +102,18 @@ Every data-driven view implements all four:
   destructive/primary actions.
 - Live regions: rest-timer completion announces via `aria-live="polite"`.
 - All icon-only buttons carry `aria-label`.
+
+---
+
+## 7. Account panel
+
+The header's avatar (initial on an `accent/15` circle) opens a **popover**
+anchored under it — **not** a bottom sheet. The popover carries:
+
+- identity block: avatar + name + email;
+- a **Sign out** row on a `danger/10` tint with **neutral text** (the tint
+  carries the destructive semantics; the text stays readable on dark).
+
+Desktop has no avatar in the header: the sidebar's bottom chip opens the
+same menu as a dropdown (`Account · Settings · Sign out`). Sign out is the
+only destructive action in the menu and uses the same danger-tint row.

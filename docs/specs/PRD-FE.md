@@ -35,8 +35,27 @@ updated: 2026-10-29
 | `/stats`          | Stats          | Volume/muscle/body-weight dashboards                        | 3     |
 
 Router: TanStack Router (code-based route tree, typed params). The
-bottom `TabBar` shows: **Today · History · Exercises · Settings** (Phase 2
-adds **Progress** as a fifth tab).
+bottom `TabBar` shows: **Home · Workout · History · Settings** (Phase 2
+adds **Progress** as a fifth tab). The `Workout` tab hosts the
+`Routines | Exercises` segmented control; the `Exercises` route remains
+reachable for deep links.
+
+## 7. Account & auth
+
+- **`/login`** — sign in (email + password) or, when the instance has
+  no account yet, "Create your account" (name + email + password). The
+  first account becomes the owner and takes the legacy `OWNER_USER_ID`,
+  so existing data stays attached.
+- The session token (from `/api/v1/auth/login`) is stored in
+  `localStorage` (`reph.session`) and sent as `Authorization: Bearer`.
+  When absent, the app falls back to the `VITE_REPH_TOKEN` dev token;
+  with neither, the app renders the login screen instead of the shell.
+- **Account panel** — mobile: avatar (initial) in the Today header opens
+  a popover with identity (name + email) and a **Sign out** row (danger
+  tint + neutral text). Desktop: the sidebar's bottom chip opens the
+  same menu as a dropdown (`Account · Settings · Sign out`).
+- **Sign out** calls `POST /api/v1/auth/logout`, clears the token, and
+  returns to the login screen.
 
 ## 2. Data flow
 

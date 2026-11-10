@@ -1,7 +1,7 @@
 import type { Equipment, Exercise, ExerciseType, MuscleGroup } from "@reph/contracts";
-import { useMemo, useEffect, useState } from "react";
+import { useMemo, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useCreateExercise, useExercises, type ExerciseFilters } from "../api/hooks";
+import { useCreateExercise, useExerciseFeed, type ExerciseFilters } from "../api/hooks";
 import { muscleGroupSchema, equipmentSchema } from "@reph/contracts";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
@@ -12,9 +12,11 @@ import { SegmentedControl } from "../components/ui/SegmentedControl";
 import { Sheet } from "../components/ui/Sheet";
 import { Skeleton } from "../components/ui/Skeleton";
 import { ExerciseListItem } from "../components/exercise/ExerciseListItem";
+import { Icon } from "../components/ui/Icon";
 
-// Library browser — search (debounced 200 ms), muscle-group filter via
-// bottom-sheet, sticky group headers, FAB create form (Task 7).
+// Library browser — search (debounced 200 ms) with the icon inside the
+// field, muscle-group filter chips, sticky group headers, infinite scroll
+// and a FAB create form (Task 7).
 
 const ALL_GROUP = "all" as const;
 type GroupFilter = typeof ALL_GROUP | MuscleGroup;
@@ -24,8 +26,8 @@ export function ExercisesScreen() {
   const [search, setSearch] = useState("");
   const [query, setQuery] = useState("");
   const [group, setGroup] = useState<GroupFilter>(ALL_GROUP);
-  const [filterOpen, setFilterOpen] = useState(false);
   const [createOpen, setCreateOpen] = useState(false);
+  const sentinel = useRef<HTMLDivElement | null>(null);
 
   // Debounce the search field into the server query param.
   useEffect(() => {
@@ -40,49 +42,88 @@ export function ExercisesScreen() {
     }),
     [query, group],
   );
-  const exercises = useExercises(filters);
+  const exercises = useExerciseFeed(filters);
 
+  // Pull the next page when the sentinel nears the viewport.
+  useEffect(() => {
+    const node = sentinel.current;
+    if (!node) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries[0]?.isIntersecting) return;
+        if (exercises.hasNextPage && !exercises.isFetchingNextPage) {
+          void exercises.fetchNextPage();
+        }
+      },
+      { rootMargin: "600px" },
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [exercises.hasNextPage, exercises.isFetchingNextPage, exercises.fetchNextPage]);
+
+  const all = useMemo(() => (exercises.data?.pages ?? []).flat(), [exercises.data]);
+
+  // The library is paged; group what has loaded so far so a group that
+  // continues on the next page keeps one header.
   const groups = useMemo(() => {
     const map = new Map<MuscleGroup, Exercise[]>();
-    for (const exercise of exercises.data ?? []) {
+    for (const exercise of all) {
       const list = map.get(exercise.muscleGroup) ?? [];
       list.push(exercise);
       map.set(exercise.muscleGroup, list);
     }
     return Array.from(map.entries());
-  }, [exercises.data]);
+  }, [all]);
 
   return (
-    <section aria-labelledby="exercises-title">
-      <h2 id="exercises-title" className="mb-4 text-xl font-medium">
-        {t("exercises.title")}
-      </h2>
-
-      <div className="sticky top-0 z-20 -mx-4 mb-3 flex gap-2 bg-background px-4 py-2">
-        <Input
-          aria-label={t("exercises.search")}
-          type="search"
-          placeholder={t("exercises.search")}
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
-        />
-        <Button variant="secondary" onClick={() => setFilterOpen(true)}>
-          {t("exercises.filter")}
-        </Button>
-      </div>
-
-      {group !== ALL_GROUP ? (
-        <div className="mb-3 flex items-center gap-2 text-xs text-text-muted">
-          <span>{t(`muscleGroups.${group}`)}</span>
-          <button
-            type="button"
-            onClick={() => setGroup(ALL_GROUP)}
-            className="min-h-9 rounded-sm border border-border px-2 text-text-muted"
+    <section aria-label={t("exercises.title")}>
+      {/* Sticky search + filter chips. The top padding stays at 0 so the
+          gap to the segmented control matches the Routines side. */}
+      <div className="sticky top-0 z-20 -mx-4 mb-2 flex flex-col gap-2 bg-background px-4 pb-1 pt-0">
+        <div className="relative">
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-text-muted"
           >
-            {t("common.cancel")}
-          </button>
+            <Icon name="search" size={16} />
+          </span>
+          <Input
+            aria-label={t("exercises.search")}
+            type="search"
+            placeholder={t("exercises.search")}
+            className="pl-9"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+          />
         </div>
-      ) : null}
+
+        <div
+          className="flex gap-2 overflow-x-auto pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          role="group"
+          aria-label={t("muscleGroups.title")}
+        >
+          {(
+            [ALL_GROUP, "chest", "back", "shoulders", "thighs", "hips", "cardio"] as GroupFilter[]
+          ).map((option) => {
+            const selected = option === group;
+            return (
+              <button
+                key={option}
+                type="button"
+                aria-pressed={selected}
+                onClick={() => setGroup(option)}
+                className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
+                  selected
+                    ? "border-accent bg-accent text-accent-contrast"
+                    : "border-border text-text-muted"
+                }`}
+              >
+                {option === ALL_GROUP ? t("exercises.all") : t(`muscleGroups.${option}`)}
+              </button>
+            );
+          })}
+        </div>
+      </div>
 
       {exercises.isPending ? (
         <div className="flex flex-col gap-2">
@@ -116,58 +157,21 @@ export function ExercisesScreen() {
         </Card>
       )}
 
-      {/* FAB — bottom-right, above the tab bar */}
+      <div ref={sentinel} aria-hidden="true" />
+      {exercises.isFetchingNextPage ? <Skeleton className="h-12 w-full" /> : null}
+
+      {/* FAB — bottom-right, just above the tab bar on mobile */}
       <button
         type="button"
         aria-label={t("exercises.create")}
         onClick={() => setCreateOpen(true)}
-        className="fixed bottom-24 right-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-accent text-2xl text-accent-contrast shadow-lg"
+        className="fixed bottom-20 right-5 z-40 flex h-13 w-13 items-center justify-center rounded-full bg-accent text-accent-contrast transition-colors hover:bg-accent/90 md:bottom-6 md:right-6"
       >
-        +
+        <Icon name="plus" size={22} />
       </button>
 
       <CreateExerciseSheet open={createOpen} onOpenChange={setCreateOpen} />
-      <FilterSheet
-        open={filterOpen}
-        onOpenChange={setFilterOpen}
-        value={group}
-        onValueChange={setGroup}
-      />
     </section>
-  );
-}
-
-function FilterSheet({
-  open,
-  onOpenChange,
-  value,
-  onValueChange,
-}: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  value: GroupFilter;
-  onValueChange: (value: GroupFilter) => void;
-}) {
-  const { t } = useTranslation();
-  return (
-    <Sheet open={open} onOpenChange={onOpenChange} title={t("exercises.filter")}>
-      <SegmentedControl<GroupFilter>
-        label={t("muscleGroups.title")}
-        className="max-h-80 flex-wrap overflow-y-auto"
-        options={[
-          { value: ALL_GROUP, label: t("exercises.all") },
-          ...muscleGroupSchema.options.map((group) => ({
-            value: group,
-            label: t(`muscleGroups.${group}`),
-          })),
-        ]}
-        value={value}
-        onChange={(next) => {
-          onValueChange(next);
-          onOpenChange(false);
-        }}
-      />
-    </Sheet>
   );
 }
 

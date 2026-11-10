@@ -11,7 +11,12 @@ import "./i18n";
 import "./app.css";
 
 registerSW({ immediate: true });
-void useActiveWorkoutStore.getState().hydrate(); // mirror the server's active row on boot
+// mirror the server's active row on boot (a signed-out instance answers
+// 401 — that is not an error the app should shout about)
+void useActiveWorkoutStore
+  .getState()
+  .hydrate()
+  .catch(() => undefined);
 
 // apply the cached theme class + app language as soon as the settings row
 // arrives (docs/plans/phase-1-mvp.md Task 11); the settings screen keeps

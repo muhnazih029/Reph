@@ -28,6 +28,7 @@ Hono app served by `Bun.serve`, modular routers under
 | Module    | Path prefix         | Responsibility                                 | Phase |
 | --------- | ------------------- | ---------------------------------------------- | ----- |
 | health    | `/health`           | Liveness + DB ping for compose probes          | 1     |
+| auth      | `/api/v1/auth`      | Register/login/logout/session (single account) | 1     |
 | exercises | `/api/v1/exercises` | Library listing/search, custom CRUD            | 1     |
 | workouts  | `/api/v1/workouts`  | Session CRUD, active workout, finish           | 1     |
 | settings  | `/api/v1/settings`  | Per-user preferences (single row)              | 1     |
@@ -38,9 +39,19 @@ Hono app served by `Bun.serve`, modular routers under
 ## 2. Conventions
 
 - **Base path:** `/api/v1`. Breaking changes bump the prefix.
-- **Auth:** `Authorization: Bearer <REPH_API_TOKEN>` (from env). Missing/
-  wrong token → `401`. Disabled when the env var is empty (local dev).
-  Single-user for now; the token is the seam for real accounts later.
+- **Auth:** two accepted bearer forms:
+  1. `REPH_API_TOKEN` (env, dev shortcut): when set, the token itself
+     authenticates every request as the owner. Empty env var disables
+     auth entirely (local dev).
+  2. A session token from `POST /api/v1/auth/login` (30-day, stored in
+     the `sessions` table). `POST /api/v1/auth/logout` drops it.
+  Missing/invalid token → `401`. The token is the seam that the
+  account feature (Phase 4) now implements; the instance keeps a single
+  owner account.
+- **Single-account rule:** an instance registers at most one account.
+  `POST /api/v1/auth/register` returns `409 conflict` when an account
+  already exists. The first account takes the legacy `OWNER_USER_ID`,
+  so pre-existing rows stay attached.
 - **Validation:** every request body/query validated with the Zod schema
   from [contracts](./contracts.md). Validation failure → `400` with
   field-level details. DB constraints remain the final authority.
@@ -67,6 +78,27 @@ Codes: `bad_request`, `unauthorized`, `not_found`, `conflict`,
 ## 3. Endpoint index
 
 Status: ⬜ planned · 🟩 implemented.
+
+### Auth
+
+| Method | Path                          | Description                                                | Status |
+| ------ | ----------------------------- | ---------------------------------------------------------- | ------ |
+| GET    | `/api/v1/auth/status`         | `{ accountExists: boolean }` — public, no auth             | 🟩     |
+| POST   | `/api/v1/auth/register`       | Create the owner account (only when none exists) → `201`   | 🟩     |
+| POST   | `/api/v1/auth/login`          | Verify email + password → `{ user, token }`                | 🟩     |
+| POST   | `/api/v1/auth/logout`         | Drop the current session → `204`                           | 🟩     |
+| GET    | `/api/v1/auth/me`             | Signed-in account `{ id, email, name, createdAt }`         | 🟩     |
+
+**Session semantics.** Login mints an opaque token stored in `sessions`
+with a 30-day expiry; logout deletes the row. The token is sent as
+`Authorization: Bearer <token>`. Expired/unknown tokens → `401`. The
+account is the only one on the instance (single-account rule above), and
+the account's `id` is the legacy `OWNER_USER_ID`, so every existing
+`user_id` row belongs to it without a migration.
+
+**Pagination note.** `GET /api/v1/exercises` now accepts `?limit=` and
+`?offset=` (default 50, max 200) in addition to the filters. Workouts
+keep `?limit=&before=` (cursor on `start_time`).
 
 ### Health
 

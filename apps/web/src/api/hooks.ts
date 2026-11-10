@@ -1,4 +1,7 @@
 import {
+  accountUserSchema,
+  authResponseSchema,
+  authStatusSchema,
   createWorkoutRequestSchema,
   exerciseSchema,
   finishWorkoutRequestSchema,
@@ -6,11 +9,16 @@ import {
   updateSettingsRequestSchema,
   updateWorkoutRequestSchema,
   workoutSchema,
+  type AccountUser,
+  type AuthResponse,
+  type AuthStatus,
   type CreateExerciseInput,
   type Equipment,
   type Exercise,
+  type LoginRequest,
   type MuscleGroup,
   type BodyMetric,
+  type RegisterRequest,
   type Settings,
   type UpdateWorkoutInput,
   type Workout,
@@ -20,29 +28,23 @@ import {
   type RoutineFolder,
 } from "@reph/contracts";
 import {
+  useInfiniteQuery,
   useMutation,
   useQuery,
   useQueryClient,
+  type UseInfiniteQueryResult,
   type UseMutationResult,
   type UseQueryResult,
 } from "@tanstack/react-query";
-import { apiGet, apiSend } from "./client";
+import { apiGet, apiSend, clearSessionToken, setSessionToken } from "./client";
+import { queryKeys } from "./queryKeys";
+import { sessionToken } from "../stores/session";
 import type { ApiError } from "./client";
 
 // Query/mutation hooks — the only server-state seam for screens
 // (docs/guides/DEVELOPMENT.md §5.1). Keys are stable and documented.
 
-export const queryKeys = {
-  exercises: (filters?: ExerciseFilters) => ["exercises", filters ?? null] as const,
-  exercise: (id: string) => ["exercise", id] as const,
-  workouts: (limit?: number) => ["workouts", limit ?? 0] as const,
-  workout: (id: string) => ["workout", id] as const,
-  workoutActive: ["workout-active"] as const,
-  settings: ["settings"] as const,
-  routines: ["routines"] as const,
-  routine: (id: string) => ["routine", id] as const,
-  routineFolders: ["routine-folders"] as const,
-};
+export { queryKeys };
 
 /** Query-string filters supported by GET /exercises (PRD-API §3). */
 export type ExerciseFilters = {
@@ -51,21 +53,145 @@ export type ExerciseFilters = {
   equipment?: Equipment;
 };
 
+/** Shared query-string builder for the exercise endpoints. */
+function exerciseQuery(filters: ExerciseFilters, limit: number, offset: number): string {
+  const params = new URLSearchParams();
+  if (filters.q) params.set("q", filters.q);
+  if (filters.muscleGroup) params.set("muscleGroup", filters.muscleGroup);
+  if (filters.equipment) params.set("equipment", filters.equipment);
+  params.set("limit", String(limit));
+  if (offset > 0) params.set("offset", String(offset));
+  return params.toString();
+}
+
 /** Invalidates every query whose key starts with `prefix[0]` — used because
  * functional keys (exercises(filters), workouts(limit)) carry parameters. */
 function invalidatePrefix(client: ReturnType<typeof useQueryClient>, prefix: string): void {
   void client.invalidateQueries({ predicate: (query) => query.queryKey[0] === prefix });
 }
 
-export function useExercises(filters?: ExerciseFilters): UseQueryResult<Exercise[], ApiError> {
+/** Does this instance already have an owner account? (public route) */
+export function useAccountStatus(): UseQueryResult<AuthStatus, ApiError> {
+  return useQuery({
+    queryKey: queryKeys.authStatus,
+    queryFn: () => apiGet("/auth/status", authStatusSchema),
+    staleTime: 60_000,
+  });
+}
+
+/** The signed-in account, or a 401 when this browser has no session. */
+export function useAccount(): UseQueryResult<AccountUser, ApiError> {
+  return useQuery({
+    queryKey: queryKeys.account,
+    queryFn: async () => {
+      const token = sessionToken();
+      try {
+        return await apiGet("/auth/me", accountUserSchema);
+      } catch (error) {
+        // A 401 only ends the session when it is still the token that
+        // failed — a sign-in that landed while the old request was in
+        // flight must not sign the fresh session out.
+        const unauthorized = (error as ApiError).code === "unauthorized";
+        if (unauthorized && token && token === sessionToken()) clearSessionToken();
+        throw error;
+      }
+    },
+    retry: false,
+    staleTime: 60_000,
+    refetchOnWindowFocus: false,
+  });
+}
+
+export function useLogin(): UseMutationResult<AuthResponse, ApiError, LoginRequest> {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (input) => apiSend("POST", "/auth/login", input, authResponseSchema),
+    onSuccess: (response) => {
+      setSessionToken(response.token);
+      void client.invalidateQueries({ queryKey: queryKeys.account });
+    },
+  });
+}
+
+export function useRegister(): UseMutationResult<AuthResponse, ApiError, RegisterRequest> {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (input) => apiSend("POST", "/auth/register", input, authResponseSchema),
+    onSuccess: (response) => {
+      setSessionToken(response.token);
+      void client.invalidateQueries({ queryKey: queryKeys.account });
+      void client.invalidateQueries({ queryKey: queryKeys.authStatus });
+    },
+  });
+}
+
+export function useLogout(): UseMutationResult<void, ApiError, void> {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: () => apiSend("POST", "/auth/logout", undefined, z.void()),
+    onSettled: () => {
+      clearSessionToken();
+      // Drop the cached account — react-query keeps the last successful
+      // data on error, so an invalidated query would still show the user.
+      client.removeQueries({ queryKey: queryKeys.account });
+      void client.invalidateQueries({ queryKey: queryKeys.authStatus });
+    },
+  });
+}
+
+export function useExercises(
+  filters?: ExerciseFilters,
+  page?: { limit?: number; offset?: number },
+): UseQueryResult<Exercise[], ApiError> {
   const params = new URLSearchParams();
   if (filters?.q) params.set("q", filters.q);
   if (filters?.muscleGroup) params.set("muscleGroup", filters.muscleGroup);
   if (filters?.equipment) params.set("equipment", filters.equipment);
+  const limit = page?.limit ?? 200;
+  const offset = page?.offset ?? 0;
+  params.set("limit", String(limit));
+  if (offset > 0) params.set("offset", String(offset));
   const qs = params.toString();
   return useQuery({
-    queryKey: queryKeys.exercises(filters),
-    queryFn: () => apiGet(`/exercises${qs ? `?${qs}` : ""}`, z.array(exerciseSchema)),
+    queryKey: queryKeys.exercises(filters, limit, offset),
+    queryFn: () => apiGet(`/exercises?${qs}`, z.array(exerciseSchema)),
+  });
+}
+
+/** The exercise library, paged — one screenful at a time (the library
+ *  holds ~150 rows, and the feed only asks for what is on screen). */
+export function useExerciseFeed(
+  filters: ExerciseFilters,
+  pageSize = 40,
+): UseInfiniteQueryResult<{ pages: Exercise[][]; pageParams: number[] }, ApiError> {
+  return useInfiniteQuery({
+    queryKey: queryKeys.exerciseFeed(filters, pageSize),
+    initialPageParam: 0,
+    queryFn: ({ pageParam }) =>
+      apiGet(`/exercises?${exerciseQuery(filters, pageSize, pageParam)}`, z.array(exerciseSchema)),
+    getNextPageParam: (last, pages) =>
+      last.length < pageSize ? undefined : pages.length * pageSize,
+  });
+}
+
+/** The workout feed — newest first, cursor-paged on start_time
+ *  (docs/specs/PRD-API.md §2: `before`). */
+export function useWorkoutFeed(
+  pageSize = 10,
+): UseInfiniteQueryResult<{ pages: Workout[][]; pageParams: (number | null)[] }, ApiError> {
+  return useInfiniteQuery({
+    queryKey: queryKeys.workoutFeed(pageSize),
+    initialPageParam: null as number | null,
+    queryFn: ({ pageParam }) => {
+      const qs = new URLSearchParams({ limit: String(pageSize) });
+      if (pageParam !== null) qs.set("before", String(pageParam));
+      return apiGet(`/workouts?${qs}`, z.array(workoutSchema));
+    },
+    getNextPageParam: (last, _pages) => {
+      if (last.length < pageSize) return undefined;
+      const oldest = last[last.length - 1];
+      return oldest ? oldest.startTime : undefined;
+    },
   });
 }
 

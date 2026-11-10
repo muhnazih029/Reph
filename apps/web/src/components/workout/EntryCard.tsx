@@ -9,6 +9,7 @@ import { displayWeight } from "../../lib/units";
 import { Input } from "../ui/Input";
 import { Sheet } from "../ui/Sheet";
 import { Button } from "../ui/Button";
+import { Icon } from "../ui/Icon";
 import { ColumnHeader, SetRow } from "./SetRow";
 import { ExercisePicker } from "./ExercisePicker";
 
@@ -109,10 +110,10 @@ export function EntryCard({
           <button
             type="button"
             aria-label={t("workout.entryMenu")}
-            className="min-h-11 min-w-9 text-text-muted"
+            className="flex h-9 w-9 items-center justify-center rounded-sm text-text-muted"
             onClick={() => setMenuOpen(true)}
           >
-            ⋯
+            <Icon name="more-horizontal" size={18} />
           </button>
         ) : null}
       </header>
@@ -165,11 +166,11 @@ export function EntryCard({
       ) : null}
 
       {!readOnly ? (
-        <div className="flex gap-2 px-4 py-3">
+        <div className="flex items-center gap-2 px-4 py-2">
           {entry.notes === "" && !notesOpen ? (
             <button
               type="button"
-              className="min-h-11 rounded-sm px-3 text-sm text-text-muted disabled:opacity-50"
+              className="min-h-11 rounded-sm px-2 text-sm text-text-muted disabled:opacity-50"
               disabled={disabled}
               onClick={() => setNotesOpen(true)}
             >
@@ -178,10 +179,11 @@ export function EntryCard({
           ) : null}
           <button
             type="button"
-            className="min-h-11 flex-1 rounded-sm border border-dashed border-border text-sm text-text-muted disabled:opacity-50"
+            className="flex min-h-11 flex-1 items-center justify-center gap-2 rounded-sm text-sm text-text-muted disabled:opacity-50"
             disabled={disabled}
             onClick={() => void addSet()}
           >
+            <Icon name="plus" size={14} />
             {t("workout.addSet")}
           </button>
         </div>

@@ -57,6 +57,13 @@
       "when": 1794197941421,
       "tag": "0007_purple_chamber",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1794299834033,
+      "tag": "0008_spooky_kat_farrell",
+      "breakpoints": true
     }
   ]
 }

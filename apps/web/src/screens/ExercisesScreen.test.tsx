@@ -24,6 +24,18 @@ mockHooks({
       refetch: () => Promise.resolve({} as never),
     };
   },
+  useExerciseFeed: (filters: { q?: string; muscleGroup?: string; equipment?: string }) => {
+    exercisesCalls.push(filters);
+    return {
+      data: { pages: [library], pageParams: [0] },
+      isPending: false,
+      isError: false,
+      error: null,
+      hasNextPage: false,
+      isFetchingNextPage: false,
+      fetchNextPage: () => Promise.resolve({}),
+    };
+  },
   useCreateExercise: () => ({
     mutate: (
       input: Record<string, unknown>,

@@ -16,6 +16,7 @@ import type { ApiError } from "../api/client";
 import { workoutVolumeKg } from "../lib/stats";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
+import { Icon } from "../components/ui/Icon";
 import { Input } from "../components/ui/Input";
 import { Sheet } from "../components/ui/Sheet";
 import { Skeleton } from "../components/ui/Skeleton";
@@ -91,6 +92,7 @@ export function WorkoutDetailScreen({ id }: { id: string }) {
   const [draft, setDraft] = useState<Workout | null>(null);
   const [conflict, setConflict] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [previewPhoto, setPreviewPhoto] = useState<string | null>(null);
 
   if (workout.isPending) {
@@ -209,7 +211,7 @@ export function WorkoutDetailScreen({ id }: { id: string }) {
             }
             void router.navigate({ to: "/history" });
           }}
-          className="min-h-9 min-w-9 text-lg text-text-muted"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-sm text-text-muted hover:bg-surface-2 hover:text-text"
         >
           ←
         </button>
@@ -220,32 +222,18 @@ export function WorkoutDetailScreen({ id }: { id: string }) {
             onBlur={(event) =>
               setDraft((current) => (current ? { ...current, title: event.target.value } : current))
             }
+            className="flex-1"
           />
         ) : (
-          <h2 id="workout-detail-title" className="min-w-0 flex-1 truncate text-xl font-medium">
+          <h2 id="workout-detail-title" className="min-w-0 flex-1 truncate text-xl font-semibold">
             {data.title === "" ? t("workout.titlePlaceholder") : data.title}
           </h2>
         )}
         {editing ? (
-          <>
+          <div className="flex shrink-0 items-center gap-2">
             <Button variant="secondary" onClick={() => photoInputRef.current?.click()}>
               {t("photos.upload")}
             </Button>
-            <input
-              ref={photoInputRef}
-              type="file"
-              accept="image/*"
-              capture="environment"
-              className="hidden"
-              onChange={(e) => {
-                const f = e.target.files?.[0];
-                if (f)
-                  void compressImage(f).then((cf) =>
-                    uploadPhoto.mutateAsync({ file: cf, workoutId: id }),
-                  );
-                e.target.value = "";
-              }}
-            />
             <Button
               variant="secondary"
               onClick={() => {
@@ -258,18 +246,92 @@ export function WorkoutDetailScreen({ id }: { id: string }) {
             <Button loading={update.isPending} onClick={saveDraft}>
               {t("common.save")}
             </Button>
-          </>
+          </div>
         ) : (
-          <>
-            <Button variant="secondary" onClick={startEditing}>
-              {t("detail.edit")}
-            </Button>
-            <Button variant="danger" onClick={() => setDeleteOpen(true)}>
-              {t("common.delete")}
-            </Button>
-          </>
+          <div className="relative shrink-0">
+            <button
+              type="button"
+              aria-label={t("common.moreActions")}
+              aria-expanded={menuOpen}
+              aria-haspopup="menu"
+              onClick={() => setMenuOpen((open) => !open)}
+              className="flex h-9 w-9 items-center justify-center rounded-sm border border-border bg-surface text-text-muted hover:text-text"
+            >
+              <Icon name="more-horizontal" size={18} />
+            </button>
+            {menuOpen ? (
+              <>
+                <button
+                  type="button"
+                  aria-hidden="true"
+                  tabIndex={-1}
+                  onClick={() => setMenuOpen(false)}
+                  className="fixed inset-0 z-30 cursor-default"
+                />
+                <div
+                  role="menu"
+                  className="absolute right-0 top-11 z-40 w-48 overflow-hidden rounded-radius border border-border bg-surface p-1"
+                >
+                  <button
+                    type="button"
+                    role="menuitem"
+                    onClick={() => {
+                      setMenuOpen(false);
+                      startEditing();
+                    }}
+                    className="flex w-full items-center gap-2 rounded-sm px-3 py-2 text-sm text-text hover:bg-surface-2"
+                  >
+                    <Icon name="pencil" size={16} className="text-accent" />
+                    {t("detail.edit")}
+                  </button>
+                  <button
+                    type="button"
+                    role="menuitem"
+                    onClick={() => {
+                      setMenuOpen(false);
+                      setDeleteOpen(true);
+                    }}
+                    className="flex w-full items-center gap-2 rounded-sm bg-accent/10 px-3 py-2 text-sm text-text hover:bg-accent/20"
+                  >
+                    <Icon name="trash-2" size={16} className="text-accent" />
+                    {t("common.delete")}
+                  </button>
+                </div>
+              </>
+            ) : null}
+          </div>
         )}
       </div>
+
+      {editing ? (
+        <Input
+          aria-label={t("workout.notes")}
+          defaultValue={draft?.notes ?? ""}
+          placeholder={t("workout.notes")}
+          onBlur={(event) =>
+            setDraft((current) => (current ? { ...current, notes: event.target.value } : current))
+          }
+          onKeyDown={(event) => {
+            if (event.key === "Enter") event.currentTarget.blur();
+          }}
+        />
+      ) : null}
+
+      <input
+        ref={photoInputRef}
+        type="file"
+        accept="image/*"
+        capture="environment"
+        className="hidden"
+        onChange={(e) => {
+          const f = e.target.files?.[0];
+          if (f)
+            void compressImage(f).then((cf) =>
+              uploadPhoto.mutateAsync({ file: cf, workoutId: id }),
+            );
+          e.target.value = "";
+        }}
+      />
 
       <Card className="grid grid-cols-4 divide-x divide-border overflow-hidden py-2 text-center">
         <StatCell
@@ -293,21 +355,7 @@ export function WorkoutDetailScreen({ id }: { id: string }) {
         />
       ))}
 
-      {editing ? (
-        <div className="flex flex-col gap-3">
-          <Input
-            aria-label={t("workout.notes")}
-            defaultValue={draft?.notes ?? ""}
-            placeholder={t("workout.notes")}
-            onBlur={(event) =>
-              setDraft((current) => (current ? { ...current, notes: event.target.value } : current))
-            }
-            onKeyDown={(event) => {
-              if (event.key === "Enter") event.currentTarget.blur();
-            }}
-          />
-        </div>
-      ) : data.notes !== "" ? (
+      {data.notes !== "" ? (
         <Card className="p-4 text-sm text-text-muted">{data.notes}</Card>
       ) : null}
 
@@ -316,7 +364,7 @@ export function WorkoutDetailScreen({ id }: { id: string }) {
           <p className="px-1 text-xs font-medium uppercase tracking-wide text-text-muted">
             {t("photos.title")}
           </p>
-          <div className="grid grid-cols-4 gap-2">
+          <div className="grid grid-cols-4 gap-2 md:max-w-[480px]">
             {(photos.data ?? []).map((p) => (
               <div key={p.id} className="relative">
                 <button

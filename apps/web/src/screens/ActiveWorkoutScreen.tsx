@@ -7,29 +7,18 @@ import { useActiveWorkoutStore } from "../stores/activeWorkout";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
 import { Input } from "../components/ui/Input";
-import { Sheet } from "../components/ui/Sheet";
 import { EmptyState } from "../components/ui/EmptyState";
 import { Skeleton } from "../components/ui/Skeleton";
+import { Icon } from "../components/ui/Icon";
 import { compressImage } from "../lib/image";
 import { EntryCard } from "../components/workout/EntryCard";
 import { ExercisePicker } from "../components/workout/ExercisePicker";
+import { RestTimerBadge } from "../components/workout/RestTimer";
+import { useElapsedTick } from "../lib/useElapsedTick";
 
 // Active workout screen — sticky header (editable title, elapsed ticker,
 // Finish, ⋯ → body weight + discard), EntryCards, offline banner
 // (writes blocked while offline, PRD-FE §4) — Task 9.
-
-/** Elapsed mm:ss since workout start, re-rendered every second. */
-function useElapsedTick(startTime: number): string {
-  const [, setTick] = useState(0);
-  useEffect(() => {
-    const timer = setInterval(() => setTick((value) => value + 1), 1000);
-    return () => clearInterval(timer);
-  }, []);
-  const elapsed = Math.max(0, Math.floor((Date.now() - startTime) / 1000));
-  const minutes = Math.floor(elapsed / 60);
-  const seconds = elapsed % 60;
-  return `${minutes}:${String(seconds).padStart(2, "0")}`;
-}
 
 export function ActiveWorkoutScreen() {
   const { t } = useTranslation();
@@ -40,8 +29,6 @@ export function ActiveWorkoutScreen() {
   const online = useOnlineStatus();
   const [hydrated, setHydrated] = useState(false);
   const [pickerOpen, setPickerOpen] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [discardOpen, setDiscardOpen] = useState(false);
   const [finishOpen, setFinishOpen] = useState(false);
   const [finishTitle, setFinishTitle] = useState("");
   const [finishNotes, setFinishNotes] = useState("");
@@ -210,31 +197,35 @@ export function ActiveWorkoutScreen() {
 
       <StickyHeader
         workout={workout}
-        onMenu={() => setMenuOpen(true)}
+        onBack={() => void router.navigate({ to: "/" })}
         onFinish={() => {
           setFinishTitle(workout.title);
           setFinishOpen(true);
         }}
       />
 
-      {workout.entries.map((entry) => (
-        <EntryCard
-          key={entry.id}
-          entry={entry}
-          exercise={exercisesById.get(entry.exerciseId)}
-          entries={workout.entries}
-          weightUnit={settings.data?.weightUnit ?? "kg"}
-          distanceUnit={settings.data?.distanceUnit ?? "km"}
-          disabled={!online}
-        />
-      ))}
+      {/* From md up the entry cards sit side by side (pen.dev design). */}
+      <div className="grid gap-3 md:grid-cols-2 md:items-start">
+        {workout.entries.map((entry) => (
+          <EntryCard
+            key={entry.id}
+            entry={entry}
+            exercise={exercisesById.get(entry.exerciseId)}
+            entries={workout.entries}
+            weightUnit={settings.data?.weightUnit ?? "kg"}
+            distanceUnit={settings.data?.distanceUnit ?? "km"}
+            disabled={!online}
+          />
+        ))}
+      </div>
 
       <button
         type="button"
         aria-label={t("workout.addExercise")}
         onClick={() => setPickerOpen(true)}
-        className="min-h-12 rounded-radius border border-dashed border-border text-sm text-text-muted"
+        className="flex min-h-12 items-center justify-center gap-2 rounded-radius bg-surface-2 text-sm font-medium text-text"
       >
+        <Icon name="plus" size={16} />
         {t("workout.addExercise")}
       </button>
 
@@ -251,53 +242,17 @@ export function ActiveWorkoutScreen() {
         onOpenChange={setPickerOpen}
         onSelect={(exerciseId) => void useActiveWorkoutStore.getState().addExercise(exerciseId)}
       />
-
-      <WorkoutMenuSheet
-        open={menuOpen}
-        onOpenChange={setMenuOpen}
-        workout={workout}
-        onDiscard={() => {
-          setMenuOpen(false);
-          setDiscardOpen(true);
-        }}
-      />
-
-      <Sheet open={discardOpen} onOpenChange={setDiscardOpen} title={t("workout.discard")}>
-        <div className="flex flex-col gap-3 pb-3">
-          <p className="text-sm text-text-muted">{t("workout.discardConfirm")}</p>
-          <div className="flex gap-2">
-            <Button variant="secondary" className="flex-1" onClick={() => setDiscardOpen(false)}>
-              {t("common.cancel")}
-            </Button>
-            <Button
-              variant="danger"
-              className="flex-1"
-              onClick={() => {
-                void useActiveWorkoutStore
-                  .getState()
-                  .discardWorkout()
-                  .then(() => {
-                    setDiscardOpen(false);
-                    void router.navigate({ to: "/" });
-                  });
-              }}
-            >
-              {t("workout.discard")}
-            </Button>
-          </div>
-        </div>
-      </Sheet>
     </section>
   );
 }
 
 function StickyHeader({
   workout,
-  onMenu,
+  onBack,
   onFinish,
 }: {
   workout: Workout;
-  onMenu: () => void;
+  onBack: () => void;
   onFinish: () => void;
 }) {
   const { t } = useTranslation();
@@ -331,32 +286,43 @@ function StickyHeader({
 
   return (
     <div className="sticky top-0 z-20 -mx-4 bg-background px-4 pb-2 pt-1">
-      <div className="flex items-center gap-2">
-        <Input
-          aria-label={t("workout.title")}
-          defaultValue={workout.title === "" ? "" : workout.title}
-          placeholder={t("workout.titlePlaceholder")}
-          className="min-w-0 flex-1 border-transparent bg-transparent text-lg font-medium focus:border-border focus:bg-surface"
-          onBlur={(event) => commitTitle(event.target.value.trim())}
-          onKeyDown={(event) => {
-            if (event.key === "Enter") event.currentTarget.blur();
-          }}
-        />
-        <Button onClick={onFinish}>{t("workout.finish")}</Button>
-        <button
-          type="button"
-          aria-label={t("workout.menu")}
-          onClick={onMenu}
-          className="min-h-11 min-w-9 text-lg text-text-muted"
-        >
-          ⋯
-        </button>
-      </div>
-      <div className="mt-1 flex items-center gap-5">
-        <Stat label={t("detail.duration")} value={elapsed} />
-        <Stat label={t("detail.volume")} value={`${Math.round(volume)}`} />
-        <Stat label={t("detail.sets")} value={String(sets)} />
-        <Stat label={t("detail.reps")} value={String(reps)} />
+      {/* Mobile: back + title + Finish on the first row, stats on the left
+          and the elapsed clock on the right of the second row. From md up
+          everything dissolves into one bar (back · title · clock · Finish). */}
+      <div className="flex flex-wrap items-center gap-2">
+        <div className="flex w-full items-center gap-2 md:contents">
+          <button
+            type="button"
+            aria-label={t("common.back")}
+            onClick={onBack}
+            className="order-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-sm text-text-muted"
+          >
+            <Icon name="arrow-left" size={18} />
+          </button>
+          <Input
+            aria-label={t("workout.title")}
+            defaultValue={workout.title === "" ? "" : workout.title}
+            placeholder={t("workout.titlePlaceholder")}
+            className="order-2 min-w-0 flex-1 font-medium focus:border-accent md:max-w-md"
+            onBlur={(event) => commitTitle(event.target.value.trim())}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") event.currentTarget.blur();
+            }}
+          />
+          <Button className="order-3 ml-auto rounded-full md:order-6" onClick={onFinish}>
+            {t("workout.finish")}
+          </Button>
+        </div>
+
+        <div className="order-4 flex w-full items-center gap-4 md:order-4 md:contents">
+          <div className="order-1 flex items-center gap-4 text-xs text-text-muted md:hidden">
+            <Stat label={t("detail.volume")} value={`${Math.round(volume)}`} />
+            <Stat label={t("detail.sets")} value={String(sets)} />
+            <Stat label={t("detail.reps")} value={String(reps)} />
+          </div>
+          <RestTimerBadge className="order-2 md:order-4" />
+          <span className="numeric order-3 ml-auto text-xl font-medium md:order-5">{elapsed}</span>
+        </div>
       </div>
     </div>
   );
@@ -368,7 +334,7 @@ function Stat({ label, value }: { label: string; value: string }) {
       <span className="text-[0.65rem] font-medium uppercase tracking-wide text-text-muted">
         {label}
       </span>
-      <span className="numeric text-sm font-medium text-accent">{value}</span>
+      <span className="numeric text-sm font-medium">{value}</span>
     </span>
   );
 }
@@ -387,51 +353,4 @@ function useOnlineStatus(): boolean {
     };
   }, []);
   return online;
-}
-
-function WorkoutMenuSheet({
-  open,
-  onOpenChange,
-  workout,
-  onDiscard,
-}: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  workout: Workout;
-  onDiscard: () => void;
-}) {
-  const { t } = useTranslation();
-  const [bodyWeight, setBodyWeight] = useState<string | null>(null);
-
-  const commit = () => {
-    if (bodyWeight === null) return;
-    const parsed = bodyWeight.trim() === "" ? null : Number(bodyWeight.replace(",", "."));
-    void useActiveWorkoutStore
-      .getState()
-      .setBodyWeight(Number.isFinite(parsed as number) ? (parsed as number) : null);
-    setBodyWeight(null);
-  };
-
-  return (
-    <Sheet open={open} onOpenChange={onOpenChange} title={t("workout.menu")}>
-      <div className="flex flex-col gap-3 pb-3">
-        <label className="flex flex-col gap-1 text-sm text-text-muted">
-          {t("workout.bodyWeight")}
-          <Input
-            aria-label={t("workout.bodyWeight")}
-            numeric
-            defaultValue={workout.bodyWeightKg === null ? "" : String(workout.bodyWeightKg)}
-            onChange={(event) => setBodyWeight(event.target.value)}
-            onBlur={commit}
-            onKeyDown={(event) => {
-              if (event.key === "Enter") event.currentTarget.blur();
-            }}
-          />
-        </label>
-        <Button variant="danger" onClick={onDiscard}>
-          {t("workout.discard")}
-        </Button>
-      </div>
-    </Sheet>
-  );
 }

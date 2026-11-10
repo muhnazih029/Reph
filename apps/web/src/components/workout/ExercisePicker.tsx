@@ -80,16 +80,23 @@ export function ExercisePicker({
   const searching = query !== "";
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange} title={t("workout.addExercise")}>
-      <Input
-        aria-label={t("exercises.search")}
-        type="search"
-        placeholder={t("exercises.search")}
-        className="sticky top-0 z-10 mb-3 bg-surface"
-        value={search}
-        onChange={(event) => setSearch(event.target.value)}
-      />
-
+    <Sheet
+      open={open}
+      onOpenChange={onOpenChange}
+      title={t("workout.addExercise")}
+      header={
+        <div>
+          <h2 className="mb-2 text-base font-medium">{t("workout.addExercise")}</h2>
+          <Input
+            aria-label={t("exercises.search")}
+            type="search"
+            placeholder={t("exercises.search")}
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+          />
+        </div>
+      }
+    >
       {exercises.isPending ? (
         <div className="flex flex-col gap-2">
           {[0, 1, 2, 3].map((row) => (
@@ -101,7 +108,7 @@ export function ExercisePicker({
           <h4 className="px-2 pb-1 text-xs font-medium uppercase tracking-wide text-text-muted">
             {t("workout.recent")}
           </h4>
-          <ul className="grid grid-cols-2 gap-1">
+          <ul className="divide-y divide-border">
             {recent.map((exercise) => (
               <li key={exercise.id}>
                 <button
@@ -110,9 +117,12 @@ export function ExercisePicker({
                     onSelect(exercise.id);
                     onOpenChange(false);
                   }}
-                  className="min-h-11 w-full truncate rounded-sm bg-surface-2 px-3 py-2 text-left text-sm"
+                  className="flex min-h-11 w-full items-center px-2 py-3 text-left text-sm"
                 >
-                  {exercise.name}
+                  <span className="min-w-0 flex-1 truncate">{exercise.name}</span>
+                  <span className="ml-auto shrink-0 text-xs text-text-muted">
+                    {t(`muscleGroups.${exercise.muscleGroup}`)}
+                  </span>
                 </button>
               </li>
             ))}

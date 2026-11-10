@@ -296,12 +296,19 @@ describe("lifecycle", () => {
     expect(store().workout).toBeNull();
     expect(id).toBeTruthy();
     expect(invalidated.length).toBeGreaterThan(0);
+    // list queries are invalidated through a predicate, the active-workout
+    // key through queryKey — both must be present.
     expect(
-      invalidated.some((option) =>
-        (option as { predicate: (q: { queryKey: string[] }) => boolean }).predicate({
-          queryKey: ["workouts"],
-        }),
-      ),
+      invalidated.some((option) => {
+        const candidate = option as {
+          predicate?: (q: { queryKey: string[] }) => boolean;
+          queryKey?: unknown[];
+        };
+        if (candidate.predicate) {
+          return candidate.predicate({ queryKey: ["workouts"] });
+        }
+        return JSON.stringify(candidate.queryKey) === JSON.stringify(["workout-active"]);
+      }),
     ).toBe(true);
   });
 
@@ -312,5 +319,20 @@ describe("lifecycle", () => {
     expect(store().workout).toBeNull();
     expect(active).toBeNull();
     expect(id).toBeTruthy();
+  });
+
+  it("discardWorkout clears the cached active workout (no stale Resume on Home)", async () => {
+    await store().startWorkout();
+    await store().discardWorkout();
+    // The Today screen reads ["workout-active"] to decide Start vs Resume —
+    // a discarded workout must not linger in that cache.
+    expect(mockedQueryClient.cached.get(JSON.stringify(["workout-active"]))).toBeNull();
+    expect(
+      invalidated.some(
+        (option) =>
+          JSON.stringify((option as { queryKey: unknown[] }).queryKey) ===
+          JSON.stringify(["workout-active"]),
+      ),
+    ).toBe(true);
   });
 });

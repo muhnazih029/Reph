@@ -3,6 +3,22 @@
     "name": "Reph",
     "primaryNav": "Navigasi utama"
   },
+  "account": {
+    "title": "Akun",
+    "appName": "Reph",
+    "subtitle": "Terpasang sendiri · data kamu, server kamu",
+    "server": "Server",
+    "connected": "Terhubung",
+    "offline": "Luring",
+    "settings": "Pengaturan",
+    "clearCache": "Bersihkan cache & muat ulang",
+    "signedIn": "Masuk",
+    "devToken": "Token dev",
+    "signOut": "Keluar",
+    "signIn": "Masuk",
+    "signedInAs": "Masuk sebagai {{name}}",
+    "syncedNow": "Sinkron barusan"
+  },
   "tabs": {
     "today": "Hari ini",
     "history": "Riwayat",
@@ -26,20 +42,23 @@
     "minutesShort": "mnt",
     "secondsShort": "dtk",
     "set": "set",
-    "back": "Kembali"
+    "back": "Kembali",
+    "moreActions": "Tindakan lainnya"
   },
   "restTimer": {
     "label": "Timer istirahat",
     "pause": "Jeda",
     "resume": "Lanjut",
-    "cancel": "Batalkan timer istirahat"
+    "cancel": "Batalkan timer istirahat",
+    "remaining": "Istirahat {{time}}",
+    "skip": "Lewati",
+    "done": "Istirahat selesai"
   },
   "workout": {
     "title": "Judul latihan",
     "titlePlaceholder": "Latihan tanpa judul",
     "finish": "Selesai",
     "menu": "Menu latihan",
-    "bodyWeight": "Berat badan (kg)",
     "discard": "Buang latihan",
     "discardConfirm": "Hapus latihan ini beserta semua setnya?",
     "addExercise": "Tambah latihan",
@@ -83,7 +102,11 @@
     "setsCount_other": "{{count}} set",
     "finishCelebration": "Kerja bagus! Latihan selesai.",
     "finishSummary": "Ini ringkasan latihan Anda",
-    "titleTab": "Latihan"
+    "titleTab": "Latihan",
+    "setShort": "SET",
+    "weightShort": "KG",
+    "inProgress": "Berjalan",
+    "resume": "Lanjutkan latihan"
   },
   "muscleGroups": {
     "chest": "Dada",
@@ -124,7 +147,15 @@
     "weekSets": "Set",
     "recentPrs": "Rekor pribadi terbaru",
     "recentWorkouts": "Latihan terbaru",
-    "weeklyGoal": "Target minggu ini"
+    "weeklyGoal": "Target minggu ini",
+    "weekVolumeShort": "Volume",
+    "weekVolumeUnit": "Volume ({{unit}})",
+    "weekGoalProgress": "{{done}} dari {{goal}} latihan",
+    "endOfFeed": "Udah sampai sini",
+    "feedGrid": "Tampilan grid",
+    "feedList": "Tampilan daftar",
+    "feedLayout": "Tata letak feed",
+    "feedColumns": "Kolom feed"
   },
   "history": {
     "title": "Riwayat",
@@ -171,7 +202,9 @@
     "last": "Terakhir dilakukan",
     "sessions": "Sesi",
     "noSessions": "Belum pernah dilakukan dalam latihan",
-    "namePlaceholder": "mis. Bench Press"
+    "namePlaceholder": "mis. Bench Press",
+    "endOfList": "Habis daftar",
+    "best": "Terbaik"
   },
   "settings": {
     "title": "Pengaturan",
@@ -212,7 +245,10 @@
     "addSet": "Tambah set",
     "addExercise": "Tambah latihan",
     "activeExists": "Ada latihan aktif. Buang dan mulai rutinitas ini?",
-    "newDefault": "Rutinitas baru"
+    "newDefault": "Rutinitas baru",
+    "last": "Terakhir",
+    "by": "Oleh",
+    "newPlaceholder": "mis. Push day"
   },
   "photos": {
     "title": "Foto progres",
@@ -281,5 +317,18 @@
     "strengthTrend": "Tren kekuatan",
     "exercise": "Latihan",
     "e1rmHint": "Estimasi 1RM dari set terbaik tiap sesi"
+  },
+  "auth": {
+    "title": "Masuk",
+    "createTitle": "Buat akun kamu",
+    "subtitle": "Data kamu tetap tinggal di server kamu.",
+    "name": "Nama",
+    "email": "Email",
+    "password": "Kata sandi",
+    "passwordHint": "Minimal 8 karakter.",
+    "signIn": "Masuk",
+    "createAccount": "Buat akun",
+    "noAccountYet": "Instance ini belum punya akun — buat yang pertama.",
+    "backToApp": "Kembali ke aplikasi"
   }
 }

@@ -38,6 +38,8 @@ export function exercisesModule({ db }: { db: DrizzleDb }) {
     const q = context.req.query("q");
     const rawMuscleGroup = context.req.query("muscleGroup");
     const rawEquipment = context.req.query("equipment");
+    const limit = Math.min(Number(context.req.query("limit") ?? 50), 200);
+    const offset = Math.max(Number(context.req.query("offset") ?? 0), 0);
 
     const filters = [or(isNull(exercises.userId), eq(exercises.userId, OWNER_USER_ID))];
     if (rawMuscleGroup) {
@@ -54,7 +56,9 @@ export function exercisesModule({ db }: { db: DrizzleDb }) {
       .select()
       .from(exercises)
       .where(and(...filters))
-      .orderBy(asc(exercises.name));
+      .orderBy(asc(exercises.name))
+      .limit(limit)
+      .offset(offset);
 
     return context.json(rows.map(toExerciseDTO));
   });

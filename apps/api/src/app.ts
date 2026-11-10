@@ -5,6 +5,7 @@ import type { ApiEnv } from "./env";
 import { createAuthMiddleware } from "./lib/auth";
 import { ApiError, errorPayload } from "./lib/errors";
 import { bodyMetricsModule } from "./modules/bodyMetrics";
+import { authModule } from "./modules/auth";
 import { exercisesModule } from "./modules/exercises";
 import { healthModule } from "./modules/health";
 import { photosModule } from "./modules/photos";
@@ -41,9 +42,9 @@ export function createApp({ db, env }: AppDeps) {
 
   app.route("/", healthModule({ db }));
 
-  const api = new Hono();
+  const api = new Hono<{ Variables: { userId: string; sessionToken: string } }>();
   if (env.rephApiToken) {
-    api.use("*", createAuthMiddleware(env.rephApiToken));
+    api.use("*", createAuthMiddleware({ db, rephApiToken: env.rephApiToken }));
   }
   api.route("/body-metrics", bodyMetricsModule({ db }));
   api.route("/exercises", exercisesModule({ db }));
@@ -53,6 +54,10 @@ export function createApp({ db, env }: AppDeps) {
   api.route("/stats", statsModule({ db }));
   api.route("/settings", settingsModule({ db }));
   app.route("/api/v1", api);
+
+  // Accounts sit outside the bearer middleware: register and login are the
+  // way in, logout and /me resolve the session themselves.
+  app.route("/api/v1/auth", authModule({ db }));
 
   return app;
 }

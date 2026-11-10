@@ -1,15 +1,14 @@
-import { createRootRoute, createRoute, createRouter, useParams } from "@tanstack/react-router";
+import { createRootRoute, createRoute, createRouter, redirect, useParams } from "@tanstack/react-router";
 import { AppShell } from "./components/layout/AppShell";
 import { ActiveWorkoutScreen } from "./screens/ActiveWorkoutScreen";
 import { ExerciseDetailScreen } from "./screens/ExerciseDetailScreen";
 import { WorkoutDetailScreen } from "./screens/WorkoutDetailScreen";
-import { ExercisesScreen } from "./screens/ExercisesScreen";
 import { HistoryScreen } from "./screens/HistoryScreen";
 import { SettingsScreen } from "./screens/SettingsScreen";
+import { LoginScreen } from "./screens/LoginScreen";
 import { WeightScreen } from "./screens/WeightScreen";
 import { TodayScreen } from "./screens/TodayScreen";
 import { WorkoutScreen } from "./screens/WorkoutScreen";
-import { RoutinesScreen } from "./screens/RoutinesScreen";
 import { PhotosScreen } from "./screens/PhotosScreen";
 import { CalendarScreen } from "./screens/CalendarScreen";
 import { RoutineEditorScreen } from "./screens/RoutineEditorScreen";
@@ -38,10 +37,14 @@ const historyRoute = createRoute({
   }),
 });
 
+// The exercise library lives inside the Workout tab (Routines | Exercises),
+// so /exercises only redirects there — old links and PWA shortcuts still work.
 const exercisesRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/exercises",
-  component: ExercisesScreen,
+  beforeLoad: () => {
+    throw redirect({ to: "/workout" });
+  },
 });
 
 const exerciseDetailRoute = createRoute({
@@ -58,6 +61,14 @@ const settingsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/settings",
   component: SettingsScreen,
+});
+
+// Sign in — the shell renders it (AppShell) so it covers the whole
+// viewport; the route exists so navigation can reach it.
+const loginRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/login",
+  component: LoginScreen,
 });
 
 // Redirect guard (Task 9): no active workout → home. The screen hydrates
@@ -78,10 +89,13 @@ const workoutDetailRoute = createRoute({
   },
 });
 
+// Routines live inside the Workout tab, so /routines only redirects there.
 const routinesRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/routines",
-  component: RoutinesScreen,
+  beforeLoad: () => {
+    throw redirect({ to: "/workout" });
+  },
 });
 
 const routineEditorRoute = createRoute({
@@ -110,6 +124,11 @@ const workoutRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/workout",
   component: WorkoutScreen,
+  // `?tab=exercises` keeps the library segment active, so back-navigation
+  // from an exercise detail lands on Exercises, not on Routines.
+  validateSearch: (search): { tab?: "routines" | "exercises" } => ({
+    tab: search.tab === "exercises" ? "exercises" : search.tab === "routines" ? "routines" : undefined,
+  }),
 });
 
 const weightRoute = createRoute({
@@ -139,6 +158,7 @@ export const router = createRouter({
     exercisesRoute,
     exerciseDetailRoute,
     settingsRoute,
+    loginRoute,
     activeWorkoutRoute,
     workoutDetailRoute,
     routinesRoute,

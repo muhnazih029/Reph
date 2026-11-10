@@ -241,3 +241,33 @@ export const settings = pgTable("settings", {
   language: languageEnum("language").notNull().default("en"),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
+
+/** The account that owns this instance — one row per installation
+ *  (self-hosted, single user; PRD-API §2 "real accounts replace the token
+ *  seam"). The id is the legacy owner id so existing rows stay attached. */
+export const users = pgTable(
+  "users",
+  {
+    id: uuid("id").primaryKey(),
+    email: text("email").notNull(),
+    name: text("name").notNull(),
+    passwordHash: text("password_hash").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("users_email_unique").on(t.email)],
+);
+
+/** Login sessions — opaque token, hashed at rest is not needed for a
+ *  single-user instance; the row expires and is dropped on logout. */
+export const sessions = pgTable(
+  "sessions",
+  {
+    token: text("token").primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+  },
+  (t) => [index("sessions_user_id_idx").on(t.userId)],
+);

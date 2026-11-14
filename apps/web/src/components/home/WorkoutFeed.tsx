@@ -60,7 +60,7 @@ export function WorkoutFeed({ pageSize = 10 }: { pageSize?: number }) {
   return (
     <section className="flex flex-col gap-3">
       <div className="flex items-center justify-between gap-3">
-        <h3 className="text-sm font-semibold">{t("today.recentWorkouts")}</h3>
+        <h3 className="text-[15px] font-semibold">{t("today.recentWorkouts")}</h3>
 
         <div className="flex items-center gap-2">
           <div className="relative" data-feed-columns>
@@ -74,10 +74,8 @@ export function WorkoutFeed({ pageSize = 10 }: { pageSize?: number }) {
                 setView("grid");
                 setColumnsOpen((value) => !value);
               }}
-              className={`flex h-8 w-8 items-center justify-center rounded-sm border transition-colors ${
-                view === "grid"
-                  ? "border-accent bg-accent/15 text-accent"
-                  : "border-border text-text-muted"
+              className={`flex h-8 w-8 items-center justify-center rounded-[6px] transition-colors ${
+                view === "grid" ? "bg-accent/15 text-accent" : "text-text-muted hover:bg-surface-2"
               }`}
             >
               <Icon name="layout-grid" size={15} />
@@ -102,10 +100,10 @@ export function WorkoutFeed({ pageSize = 10 }: { pageSize?: number }) {
                         setColumns(count);
                         setColumnsOpen(false);
                       }}
-                      className={`numeric flex h-8 min-w-9 items-center justify-center rounded-sm border px-2 text-xs transition-colors ${
+                      className={`numeric flex h-8 min-w-9 items-center justify-center rounded-[6px] px-2 text-xs transition-colors ${
                         columns === count
-                          ? "border-accent bg-accent/15 font-medium text-accent"
-                          : "border-border text-text-muted hover:bg-surface-2"
+                          ? "bg-accent/15 font-medium text-accent"
+                          : "text-text-muted hover:bg-surface-2"
                       }`}
                     >
                       {count}
@@ -124,10 +122,8 @@ export function WorkoutFeed({ pageSize = 10 }: { pageSize?: number }) {
               setView("list");
               setColumnsOpen(false);
             }}
-            className={`flex h-8 w-8 items-center justify-center rounded-sm border transition-colors ${
-              view === "list"
-                ? "border-accent bg-accent/15 text-accent"
-                : "border-border text-text-muted"
+            className={`flex h-8 w-8 items-center justify-center rounded-[6px] transition-colors ${
+              view === "list" ? "bg-accent/15 text-accent" : "text-text-muted hover:bg-surface-2"
             }`}
           >
             <Icon name="layout-list" size={15} />

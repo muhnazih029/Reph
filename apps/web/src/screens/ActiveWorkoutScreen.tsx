@@ -1,17 +1,17 @@
 import type { Workout } from "@reph/contracts";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "@tanstack/react-router";
 import { useExercises, useSettings, useUploadPhoto } from "../api/hooks";
 import { useActiveWorkoutStore } from "../stores/activeWorkout";
 import { Button } from "../components/ui/Button";
-import { Card } from "../components/ui/Card";
 import { Input } from "../components/ui/Input";
 import { EmptyState } from "../components/ui/EmptyState";
 import { Skeleton } from "../components/ui/Skeleton";
 import { Icon } from "../components/ui/Icon";
 import { compressImage } from "../lib/image";
 import { EntryCard } from "../components/workout/EntryCard";
+import { FinishSummary } from "../components/workout/FinishSummary";
 import { ExercisePicker } from "../components/workout/ExercisePicker";
 import { RestTimerBadge } from "../components/workout/RestTimer";
 import { useElapsedTick } from "../lib/useElapsedTick";
@@ -33,7 +33,6 @@ export function ActiveWorkoutScreen() {
   const [finishTitle, setFinishTitle] = useState("");
   const [finishNotes, setFinishNotes] = useState("");
   const [finishPhoto, setFinishPhoto] = useState<File | null>(null);
-  const photoInputRef = useRef<HTMLInputElement>(null);
   const uploadPhoto = useUploadPhoto();
 
   // boot: hydrate the server row; no active workout → redirected home
@@ -90,90 +89,28 @@ export function ActiveWorkoutScreen() {
       0,
     );
     return (
-      <section aria-labelledby="finish-title" className="flex flex-col gap-4">
-        <h2 id="finish-title" className="text-2xl font-medium">
-          {t("workout.finishCelebration")}
-        </h2>
-        <p className="text-sm text-text-muted">{t("workout.finishSummary")}</p>
-        <Card className="grid grid-cols-3 gap-2 py-3 text-center">
-          <div>
-            <p className="numeric text-xl">{sets}</p>
-            <p className="text-xs text-text-muted">{t("detail.sets")}</p>
-          </div>
-          <div>
-            <p className="numeric text-xl">{Math.round(volume)}</p>
-            <p className="text-xs text-text-muted">{t("detail.volume")}</p>
-          </div>
-          <div>
-            <p className="numeric text-xl">{reps}</p>
-            <p className="text-xs text-text-muted">{t("detail.reps")}</p>
-          </div>
-        </Card>
-        <ul className="flex flex-col gap-1 text-sm">
-          {workout.entries.map((e) => {
-            const ex = exercisesById.get(e.exerciseId);
-            const doneSets = e.sets.filter((s) => s.done).length;
-            return (
-              <li
-                key={e.id}
-                className="flex justify-between rounded-sm border border-border bg-surface px-3 py-2"
-              >
-                <span>{ex?.name ?? e.exerciseId}</span>
-                <span className="numeric text-text-muted">
-                  {doneSets} {t("routines.sets")}
-                </span>
-              </li>
-            );
-          })}
-        </ul>
-        <label className="flex flex-col gap-1 text-sm text-text-muted">
-          {t("workout.title")}
-          <Input
-            aria-label={t("workout.title")}
-            value={finishTitle}
-            onChange={(e) => setFinishTitle(e.target.value)}
-            placeholder={t("workout.titlePlaceholder")}
-          />
-        </label>
-        <label className="flex flex-col gap-1 text-sm text-text-muted">
-          {t("workout.notes")}
-          <Input
-            aria-label={t("workout.notes")}
-            value={finishNotes}
-            onChange={(e) => setFinishNotes(e.target.value)}
-            placeholder={t("workout.notesPlaceholder")}
-          />
-        </label>
-        <div className="flex flex-col gap-1 text-sm text-text-muted">
-          {t("photos.title")}
-          <input
-            ref={photoInputRef}
-            type="file"
-            accept="image/*"
-            capture="environment"
-            className="hidden"
-            onChange={(e) => {
-              const f = e.target.files?.[0];
-              if (f) void compressImage(f).then((cf) => setFinishPhoto(cf));
-              e.target.value = "";
-            }}
-          />
-          <Button variant="secondary" onClick={() => photoInputRef.current?.click()}>
-            {finishPhoto ? finishPhoto.name : t("photos.upload")}
-          </Button>
-          {finishPhoto ? (
-            <img src={URL.createObjectURL(finishPhoto)} alt="" className="mt-2 max-h-40 rounded" />
-          ) : null}
-        </div>
-        <div className="flex gap-2">
-          <Button variant="secondary" className="flex-1" onClick={() => setFinishOpen(false)}>
-            {t("common.cancel")}
-          </Button>
-          <Button className="flex-1" loading={uploadPhoto.isPending} onClick={() => void finish()}>
-            {t("workout.finish")}
-          </Button>
-        </div>
-      </section>
+      <FinishSummary
+        sets={sets}
+        volume={volume}
+        reps={reps}
+        exercises={workout.entries.map((entry) => ({
+          id: entry.id,
+          name: exercisesById.get(entry.exerciseId)?.name ?? entry.exerciseId,
+          doneSets: entry.sets.filter((set) => set.done).length,
+        }))}
+        title={finishTitle}
+        notes={finishNotes}
+        photo={finishPhoto}
+        uploading={uploadPhoto.isPending}
+        onTitleChange={setFinishTitle}
+        onNotesChange={setFinishNotes}
+        onPhotoChange={(file) => {
+          if (file) void compressImage(file).then(setFinishPhoto);
+          else setFinishPhoto(null);
+        }}
+        onCancel={() => setFinishOpen(false)}
+        onFinish={() => void finish()}
+      />
     );
   }
 
@@ -188,7 +125,7 @@ export function ActiveWorkoutScreen() {
   }
 
   return (
-    <section aria-labelledby="workout-title" className="flex flex-col gap-3">
+    <section aria-labelledby="workout-title" className="flex flex-col gap-7">
       {!online ? (
         <div role="status" className="rounded-sm bg-warning/10 px-3 py-2 text-sm text-warning">
           {t("common.offlineWrite")}
@@ -205,7 +142,7 @@ export function ActiveWorkoutScreen() {
       />
 
       {/* From md up the entry cards sit side by side (pen.dev design). */}
-      <div className="grid gap-3 md:grid-cols-2 md:items-start">
+      <div className="grid gap-4 md:grid-cols-2 md:items-start">
         {workout.entries.map((entry) => (
           <EntryCard
             key={entry.id}
@@ -223,7 +160,7 @@ export function ActiveWorkoutScreen() {
         type="button"
         aria-label={t("workout.addExercise")}
         onClick={() => setPickerOpen(true)}
-        className="flex min-h-12 items-center justify-center gap-2 rounded-radius bg-surface-2 text-sm font-medium text-text"
+        className="flex min-h-[50px] items-center justify-center gap-2 rounded-radius bg-surface-2 text-[15px] font-medium text-text"
       >
         <Icon name="plus" size={16} />
         {t("workout.addExercise")}
@@ -289,7 +226,7 @@ function StickyHeader({
       {/* Mobile: back + title + Finish on the first row, stats on the left
           and the elapsed clock on the right of the second row. From md up
           everything dissolves into one bar (back · title · clock · Finish). */}
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2 md:gap-3">
         <div className="flex w-full items-center gap-2 md:contents">
           <button
             type="button"
@@ -303,25 +240,31 @@ function StickyHeader({
             aria-label={t("workout.title")}
             defaultValue={workout.title === "" ? "" : workout.title}
             placeholder={t("workout.titlePlaceholder")}
-            className="order-2 min-w-0 flex-1 font-medium focus:border-accent md:max-w-md"
+            className="order-2 min-w-0 flex-1 text-[15px] font-medium focus:border-accent md:w-[420px] md:max-w-none md:flex-none md:text-base"
             onBlur={(event) => commitTitle(event.target.value.trim())}
             onKeyDown={(event) => {
               if (event.key === "Enter") event.currentTarget.blur();
             }}
           />
-          <Button className="order-3 ml-auto rounded-full md:order-6" onClick={onFinish}>
+          <Button
+            className="order-3 ml-auto min-h-10 rounded-full px-[18px] text-sm md:order-7 md:min-h-11 md:px-[22px] md:text-[15px]"
+            onClick={onFinish}
+            disabled={sets === 0}
+            title={sets === 0 ? t("workout.finishNeedsSets") : undefined}
+          >
             {t("workout.finish")}
           </Button>
         </div>
 
         <div className="order-4 flex w-full items-center gap-4 md:order-4 md:contents">
-          <div className="order-1 flex items-center gap-4 text-xs text-text-muted md:hidden">
+          <div className="order-1 flex items-center gap-3.5 text-text-muted md:order-4">
             <Stat label={t("detail.volume")} value={`${Math.round(volume)}`} />
             <Stat label={t("detail.sets")} value={String(sets)} />
             <Stat label={t("detail.reps")} value={String(reps)} />
           </div>
-          <RestTimerBadge className="order-2 md:order-4" />
-          <span className="numeric order-3 ml-auto text-xl font-medium md:order-5">{elapsed}</span>
+          <RestTimerBadge className="order-2 md:order-3" />
+          <span className="hidden h-5 w-px bg-border md:order-5 md:block" />
+          <span className="numeric order-3 ml-auto text-xl md:order-6">{elapsed}</span>
         </div>
       </div>
     </div>
@@ -331,10 +274,10 @@ function StickyHeader({
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <span className="flex flex-col">
-      <span className="text-[0.65rem] font-medium uppercase tracking-wide text-text-muted">
+      <span className="text-[10px] font-medium uppercase tracking-wide text-text-muted">
         {label}
       </span>
-      <span className="numeric text-sm font-medium">{value}</span>
+      <span className="numeric text-xs font-medium md:text-[13px]">{value}</span>
     </span>
   );
 }

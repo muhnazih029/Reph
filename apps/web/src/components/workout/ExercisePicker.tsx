@@ -105,7 +105,7 @@ export function ExercisePicker({
         </div>
       ) : !searching && recent.length > 0 ? (
         <div className="mb-3">
-          <h4 className="px-2 pb-1 text-xs font-medium uppercase tracking-wide text-text-muted">
+          <h4 className="px-2 pb-1 text-[11px] font-medium uppercase tracking-[0.5px] text-text-muted">
             {t("workout.recent")}
           </h4>
           <ul className="divide-y divide-border">
@@ -157,7 +157,7 @@ export function ExercisePicker({
           <div className="overflow-y-auto">
             {grouped.map(([group, list]) => (
               <div key={group}>
-                <h4 className="px-2 pt-3 text-xs font-medium uppercase tracking-wide text-text-muted">
+                <h4 className="px-2 pt-3 text-[11px] font-medium uppercase tracking-[0.5px] text-text-muted">
                   {t(`muscleGroups.${group}`)}
                 </h4>
                 <ul className="divide-y divide-border">

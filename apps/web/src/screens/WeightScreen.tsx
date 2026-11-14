@@ -25,6 +25,7 @@ import { Skeleton } from "../components/ui/Skeleton";
 import { Input } from "../components/ui/Input";
 import { Sheet } from "../components/ui/Sheet";
 import { displayWeight, kgToLb, lbToKg } from "../lib/units";
+import { Icon } from "../components/ui/Icon";
 
 type Point = { date: string; kg: number; id: string };
 
@@ -128,29 +129,31 @@ export function WeightScreen() {
   };
 
   return (
-    <section aria-labelledby="weight-title" className="flex flex-col gap-3">
-      <div className="flex items-center gap-2">
+    <section aria-labelledby="weight-title" className="flex flex-col gap-4">
+      <div className="flex items-center gap-2.5">
         <button
           type="button"
           aria-label={t("weight.back")}
           onClick={() => void router.navigate({ to: "/history", search: { view: "insight" } })}
-          className="flex h-9 w-9 items-center justify-center rounded-sm text-text-muted hover:bg-surface-2 hover:text-text"
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-sm text-text-muted hover:bg-surface-2 hover:text-text"
         >
-          ←
+          <Icon name="arrow-left" size={16} />
         </button>
-        <h2 id="weight-title" className="text-xl font-medium">
+        <h2 id="weight-title" className="text-2xl font-semibold">
           {t("weight.weight")}
         </h2>
       </div>
 
       {latest ? (
-        <Card className="flex items-center justify-between p-4">
-          <div className="flex flex-col">
-            <span className="text-xs text-text-muted">{t("weight.latest")}</span>
-            <span className="text-2xl font-semibold">{displayWeight(latest.kg, unit)}</span>
+        <Card className="flex items-center gap-3 px-4 py-3.5">
+          <div className="flex flex-col gap-0.5">
+            <span className="text-[10px] font-medium uppercase tracking-[0.5px] text-text-muted">
+              {t("weight.latest")}
+            </span>
+            <span className="numeric text-2xl font-semibold">{displayWeight(latest.kg, unit)}</span>
           </div>
           {delta !== null ? (
-            <span className={`text-sm ${delta <= 0 ? "text-accent" : "text-danger"}`}>
+            <span className={`text-[13px] ${delta <= 0 ? "text-accent" : "text-danger"}`}>
               {delta > 0 ? "+" : ""}
               {displayWeight(Math.abs(delta), unit)}
             </span>
@@ -158,25 +161,42 @@ export function WeightScreen() {
         </Card>
       ) : null}
 
-      <Card className="flex flex-col gap-2 p-4">
+      <Card className="flex flex-col gap-2 px-4 py-3.5">
         <div className="flex gap-2">
-          <Input
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            className="min-h-11 flex-1"
-          />
-          <Input
-            type="number"
-            inputMode="decimal"
-            placeholder={t("weight.weightPlaceholder")}
-            value={weight}
-            onChange={(e) => setWeight(e.target.value)}
-            className="min-h-11 flex-1"
-            numeric
-          />
+          <div className="relative min-w-0 flex-1">
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-text-muted"
+            >
+              <Icon name="calendar" size={14} />
+            </span>
+            <Input
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              className="min-h-11 pl-9 text-[13px]"
+            />
+          </div>
+          <div className="relative min-w-0 flex-1">
+            <Input
+              type="number"
+              inputMode="decimal"
+              placeholder={t("weight.weightPlaceholder")}
+              value={weight}
+              onChange={(e) => setWeight(e.target.value)}
+              className="min-h-11 pr-10 text-[13px]"
+              numeric
+            />
+            <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[13px] text-text-muted">
+              {unit === "kg" ? "kg" : "lb"}
+            </span>
+          </div>
         </div>
-        <Button onClick={() => void submit()} disabled={create.isPending}>
+        <Button
+          className="min-h-13 text-base"
+          onClick={() => void submit()}
+          disabled={create.isPending}
+        >
           {create.isPending ? "…" : t("weight.add")}
         </Button>
       </Card>
@@ -187,7 +207,7 @@ export function WeightScreen() {
         <EmptyState title={t("weight.empty")} body={t("weight.emptyBody")} />
       ) : (
         <Card className="p-3 outline-none [&_.recharts-surface]:outline-none [&_.recharts-wrapper]:outline-none">
-          <ResponsiveContainer width="100%" height={180}>
+          <ResponsiveContainer width="100%" height={200}>
             <LineChart
               data={chartData}
               margin={{ top: 8, right: 8, left: 0, bottom: 0 }}
@@ -202,10 +222,10 @@ export function WeightScreen() {
               <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
               <XAxis
                 dataKey="date"
-                tick={{ fontSize: 11 }}
+                tick={{ fontSize: 10 }}
                 tickFormatter={(v) => format(new Date(v), "dd MMM")}
               />
-              <YAxis domain={["dataMin - 1", "dataMax + 1"]} tick={{ fontSize: 11 }} width={36} />
+              <YAxis domain={["dataMin - 1", "dataMax + 1"]} tick={{ fontSize: 10 }} width={30} />
               <Tooltip
                 content={({ active, payload }) => {
                   if (!active || !payload?.length) return null;
@@ -230,7 +250,7 @@ export function WeightScreen() {
               />
             </LineChart>
           </ResponsiveContainer>
-          <p className="mt-1 text-center text-xs text-text-muted">{t("weight.chartHint")}</p>
+          <p className="mt-1 text-center text-[11px] text-text-muted">{t("weight.chartHint")}</p>
         </Card>
       )}
 

@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Link } from "@tanstack/react-router";
 import { useWorkouts, useExercises, useSettings } from "../api/hooks";
 import { Card } from "../components/ui/Card";
+import { Icon } from "../components/ui/Icon";
 import { Skeleton } from "../components/ui/Skeleton";
 import { kgToLb } from "../lib/units";
 import { volumeByMuscleGroup } from "../lib/stats";
@@ -91,33 +92,39 @@ export function YearInReviewScreen() {
   const favoriteName = stats.favoriteExercise ? exerciseName(stats.favoriteExercise) : null;
 
   return (
-    <section aria-labelledby="yir-title" className="flex flex-col gap-3">
-      <div className="flex items-center gap-2">
+    <section aria-labelledby="yir-title" className="flex flex-col gap-4">
+      <div className="flex items-center gap-2.5">
         <Link
           to="/history"
           search={{ view: "insight" }}
           aria-label={t("weight.back")}
-          className="flex h-9 w-9 items-center justify-center rounded-sm text-text-muted hover:bg-surface-2 hover:text-text"
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-sm text-text-muted hover:bg-surface-2 hover:text-text"
         >
-          ←
+          <Icon name="arrow-left" size={16} />
         </Link>
-        <h2 id="yir-title" className="text-xl font-medium">
+        <h2 id="yir-title" className="text-2xl font-semibold">
           {t("yearInReview.title")}
         </h2>
       </div>
 
-      <div className="flex items-center justify-between">
-        <button type="button" onClick={() => setYear(year - 1)} className="min-h-9 min-w-9">
-          ‹
-        </button>
-        <span className="text-lg font-semibold">{year}</span>
+      <div className="flex items-center justify-center gap-4">
         <button
           type="button"
+          aria-label={t("common.previous")}
+          onClick={() => setYear(year - 1)}
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-2 text-text-muted hover:text-text"
+        >
+          <Icon name="chevron-right" size={16} className="rotate-180" />
+        </button>
+        <span className="numeric min-w-[58px] text-center text-2xl font-semibold">{year}</span>
+        <button
+          type="button"
+          aria-label={t("common.next")}
           onClick={() => setYear(Math.min(thisYear, year + 1))}
-          className="min-h-9 min-w-9 disabled:opacity-30"
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-2 text-text-muted hover:text-text disabled:opacity-30"
           disabled={year >= thisYear}
         >
-          ›
+          <Icon name="chevron-right" size={16} />
         </button>
       </div>
 
@@ -130,50 +137,52 @@ export function YearInReviewScreen() {
         <Card className="p-4 text-sm text-text-muted">{t("yearInReview.empty")}</Card>
       ) : (
         <>
-          <Card className="grid grid-cols-2 gap-3 p-4 text-center">
-            <div>
-              <p className="numeric text-2xl font-semibold">{stats.workouts}</p>
-              <p className="text-xs text-text-muted">{t("yearInReview.workouts")}</p>
-            </div>
-            <div>
-              <p className="numeric text-2xl font-semibold">{stats.sets}</p>
-              <p className="text-xs text-text-muted">{t("yearInReview.sets")}</p>
-            </div>
-            <div>
-              <p className="numeric text-2xl font-semibold">
-                {Math.round(unit === "kg" ? stats.volumeKg : kgToLb(stats.volumeKg))}
-                <span className="text-sm"> {unit === "kg" ? "kg" : "lb"}</span>
-              </p>
-              <p className="text-xs text-text-muted">{t("yearInReview.volume")}</p>
-            </div>
-            <div>
-              <p className="numeric text-2xl font-semibold">{stats.minutes}</p>
-              <p className="text-xs text-text-muted">{t("yearInReview.minutes")}</p>
-            </div>
-          </Card>
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+            <YearTile value={stats.workouts} label={t("yearInReview.workouts")} />
+            <YearTile value={stats.sets} label={t("yearInReview.sets")} />
+            <YearTile
+              value={`${Math.round(unit === "kg" ? stats.volumeKg : kgToLb(stats.volumeKg)).toLocaleString()} ${unit === "kg" ? "kg" : "lb"}`}
+              label={t("yearInReview.volume")}
+            />
+            <YearTile value={stats.minutes.toLocaleString()} label={t("yearInReview.minutes")} />
+          </div>
 
-          <Card className="flex flex-col gap-2 p-4 text-sm">
-            <div className="flex items-baseline justify-between gap-3">
-              <span className="text-text-muted">{t("yearInReview.favorite")}</span>
-              <span className="min-w-0 truncate font-medium">
-                {favoriteName ?? t("common.loading")}
-              </span>
-            </div>
-            <div className="flex items-baseline justify-between gap-3">
-              <span className="text-text-muted">{t("yearInReview.topMuscleGroup")}</span>
-              <span className="font-medium">
-                {stats.topMuscleGroup ? t(`muscleGroups.${stats.topMuscleGroup}`) : "—"}
-              </span>
-            </div>
-            <div className="flex items-baseline justify-between gap-3">
-              <span className="text-text-muted">{t("yearInReview.bestMonth")}</span>
-              <span className="font-medium">
-                {stats.bestMonth ? `${stats.bestMonth} · ${stats.bestMonthWorkouts}` : "—"}
-              </span>
-            </div>
+          <Card className="divide-y divide-border">
+            <HighlightRow
+              label={t("yearInReview.favorite")}
+              value={favoriteName ?? t("common.loading")}
+            />
+            <HighlightRow
+              label={t("yearInReview.topMuscleGroup")}
+              value={stats.topMuscleGroup ? t(`muscleGroups.${stats.topMuscleGroup}`) : "—"}
+            />
+            <HighlightRow
+              label={t("yearInReview.bestMonth")}
+              value={stats.bestMonth ? `${stats.bestMonth} · ${stats.bestMonthWorkouts}` : "—"}
+            />
           </Card>
         </>
       )}
     </section>
+  );
+}
+
+function YearTile({ value, label }: { value: string | number; label: string }) {
+  return (
+    <Card className="flex flex-col gap-0.5 p-4">
+      <span className="numeric text-2xl font-semibold">{value}</span>
+      <span className="text-[10px] font-medium uppercase tracking-[0.5px] text-text-muted">
+        {label}
+      </span>
+    </Card>
+  );
+}
+
+function HighlightRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-center justify-between gap-3 px-4 py-3.5">
+      <span className="text-[13px] text-text-muted">{label}</span>
+      <span className="min-w-0 truncate text-[13px] font-medium">{value}</span>
+    </div>
   );
 }

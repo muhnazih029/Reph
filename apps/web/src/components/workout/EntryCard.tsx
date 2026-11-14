@@ -89,13 +89,13 @@ export function EntryCard({
 
   return (
     <div className="rounded-radius border border-border bg-surface">
-      <header className="flex items-center gap-2 px-4 py-2.5">
+      <header className="flex min-h-[46px] items-center gap-2 px-4 md:min-h-[52px] md:px-[18px]">
         {readOnly ? (
-          <span className="truncate text-base font-medium">{exercise.name}</span>
+          <span className="truncate text-[15px] font-medium md:text-lg">{exercise.name}</span>
         ) : (
           <button
             type="button"
-            className="min-h-11 flex-1 truncate text-left text-base font-medium"
+            className="min-h-11 flex-1 truncate text-left text-[15px] font-medium md:text-lg"
             onClick={() => setPreviousOpen(true)}
           >
             {exercise.name}
@@ -110,7 +110,7 @@ export function EntryCard({
           <button
             type="button"
             aria-label={t("workout.entryMenu")}
-            className="flex h-9 w-9 items-center justify-center rounded-sm text-text-muted"
+            className="flex h-7 w-7 items-center justify-center rounded-sm text-text-muted md:h-8 md:w-8"
             onClick={() => setMenuOpen(true)}
           >
             <Icon name="more-horizontal" size={18} />
@@ -166,11 +166,11 @@ export function EntryCard({
       ) : null}
 
       {!readOnly ? (
-        <div className="flex items-center gap-2 px-4 py-2">
+        <div className="flex items-center gap-2 px-4 py-2 md:px-[18px]">
           {entry.notes === "" && !notesOpen ? (
             <button
               type="button"
-              className="min-h-11 rounded-sm px-2 text-sm text-text-muted disabled:opacity-50"
+              className="min-h-11 rounded-sm px-2 text-[13px] text-text-muted disabled:opacity-50 md:text-sm"
               disabled={disabled}
               onClick={() => setNotesOpen(true)}
             >
@@ -179,7 +179,7 @@ export function EntryCard({
           ) : null}
           <button
             type="button"
-            className="flex min-h-11 flex-1 items-center justify-center gap-2 rounded-sm text-sm text-text-muted disabled:opacity-50"
+            className="flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-sm text-[13px] text-text-muted disabled:opacity-50 md:min-h-12 md:text-sm"
             disabled={disabled}
             onClick={() => void addSet()}
           >

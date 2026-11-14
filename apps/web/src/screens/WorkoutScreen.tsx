@@ -78,7 +78,7 @@ export function WorkoutScreen() {
 
   return (
     <section aria-labelledby="workout-title" className="flex flex-col gap-4">
-      <h2 id="workout-title" className="text-2xl font-semibold tracking-tight md:text-3xl">
+      <h2 id="workout-title" className="text-2xl font-semibold md:text-3xl">
         {t("workout.titleTab")}
       </h2>
 
@@ -110,7 +110,7 @@ export function WorkoutScreen() {
             />
             <Button
               variant="secondary"
-              className="shrink-0 px-4 text-[13px] font-semibold"
+              className="shrink-0 border-0 bg-surface-2 px-4 text-[13px] font-semibold"
               onClick={() => void createR()}
               disabled={createRoutine.isPending || name.trim() === ""}
             >

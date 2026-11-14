@@ -51,7 +51,10 @@ export function Sheet({
         {/* Sticky header — full-bleed so scrolled content never shows
             through the drag handle, the title or the search field. */}
         <div className="sticky top-0 z-20 bg-surface px-4 pt-3 pb-2">
-          <div aria-hidden="true" className="mx-auto mb-3 h-1 w-10 rounded-full bg-border md:hidden" />
+          <div
+            aria-hidden="true"
+            className="mx-auto mb-3 h-1 w-10 rounded-full bg-border md:hidden"
+          />
           {header ? header : title ? <h2 className="mb-3 text-base font-medium">{title}</h2> : null}
         </div>
         <div className="px-4">{children}</div>

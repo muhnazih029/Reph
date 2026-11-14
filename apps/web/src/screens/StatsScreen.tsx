@@ -3,8 +3,6 @@ import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { format } from "date-fns";
 import {
-  Bar,
-  BarChart,
   CartesianGrid,
   Line,
   LineChart,
@@ -18,6 +16,7 @@ import { Card } from "../components/ui/Card";
 import { Skeleton } from "../components/ui/Skeleton";
 import { EmptyState } from "../components/ui/EmptyState";
 import { SegmentedControl } from "../components/ui/SegmentedControl";
+import { Icon } from "../components/ui/Icon";
 import { displayWeight, kgToLb } from "../lib/units";
 import {
   STATS_PERIODS,
@@ -97,24 +96,26 @@ export function StatsScreen() {
     name: t(`muscleGroups.${row.muscleGroup}`),
     volume: volumeDisplay(row.volumeKg),
   }));
+  const maxVolume = barData.reduce((max, row) => Math.max(max, row.volume), 0);
 
   return (
-    <section aria-labelledby="stats-title" className="flex flex-col gap-3">
-      <div className="flex items-center gap-2">
+    <section aria-labelledby="stats-title" className="flex flex-col gap-4">
+      <div className="flex items-center gap-2.5">
         <Link
           to="/history"
           search={{ view: "insight" }}
           aria-label={t("weight.back")}
-          className="flex h-9 w-9 items-center justify-center rounded-sm text-text-muted hover:bg-surface-2 hover:text-text"
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-sm text-text-muted hover:bg-surface-2 hover:text-text"
         >
-          ←
+          <Icon name="arrow-left" size={16} />
         </Link>
-        <h2 id="stats-title" className="text-xl font-medium">
+        <h2 id="stats-title" className="text-2xl font-semibold">
           {t("stats.title")}
         </h2>
       </div>
 
       <SegmentedControl
+        variant="period"
         label={t("stats.period")}
         value={period}
         onChange={setPeriod}
@@ -135,67 +136,53 @@ export function StatsScreen() {
         </Card>
       ) : (
         <>
-          <Card className="flex flex-wrap gap-4 p-4 text-sm">
-            <div>
-              <p className="numeric text-lg font-semibold">{completed.length}</p>
-              <p className="text-xs text-text-muted">{t("stats.workouts")}</p>
-            </div>
-            <div>
-              <p className="numeric text-lg font-semibold">
-                {totalVolume}
-                <span className="text-xs"> {unitLabel}</span>
+          <Card className="flex items-center gap-8 p-4">
+            <div className="flex flex-1 flex-col gap-0.5">
+              <p className="numeric text-xl font-semibold">{completed.length}</p>
+              <p className="text-[10px] font-medium uppercase tracking-[0.5px] text-text-muted">
+                {t("stats.workouts")}
               </p>
-              <p className="text-xs text-text-muted">{t("stats.totalVolume")}</p>
+            </div>
+            <span className="h-9 w-px bg-border" />
+            <div className="flex flex-1 flex-col gap-0.5">
+              <p className="numeric text-xl font-semibold">
+                {totalVolume.toLocaleString()}
+                <span className="text-[13px] font-normal text-text-muted"> {unitLabel}</span>
+              </p>
+              <p className="text-[10px] font-medium uppercase tracking-[0.5px] text-text-muted">
+                {t("stats.totalVolume")}
+              </p>
             </div>
           </Card>
 
-          <Card className="p-3">
-            <h3 className="px-1 pb-2 text-sm font-medium text-text">{t("stats.muscleVolume")}</h3>
-            <div style={{ height: `${barData.length * 32 + 8}px` }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={barData} layout="vertical" margin={{ left: 4, right: 12 }}>
-                  <CartesianGrid strokeDasharray="3 3" opacity={0.3} horizontal={false} />
-                  <XAxis type="number" hide />
-                  <YAxis
-                    type="category"
-                    dataKey="name"
-                    width={92}
-                    axisLine={false}
-                    tickLine={false}
-                    tick={{ fontSize: 12 }}
+          <Card className="flex flex-col gap-2.5 p-3">
+            <h3 className="text-[13px] font-medium text-text">{t("stats.muscleVolume")}</h3>
+            {barData.map((row) => (
+              <div key={row.name} className="flex items-center gap-2.5">
+                <span className="w-[110px] shrink-0 truncate text-[13px] text-text-muted">
+                  {row.name}
+                </span>
+                <span className="h-2.5 flex-1 overflow-hidden rounded-full bg-surface-2">
+                  <span
+                    className="block h-full rounded-full bg-accent"
+                    style={{ width: `${maxVolume > 0 ? (row.volume / maxVolume) * 100 : 0}%` }}
                   />
-                  <Tooltip
-                    cursor={{ fill: "var(--color-surface-2, rgba(0,0,0,0.05))" }}
-                    content={({ active, payload }) => {
-                      if (!active || !payload?.length) return null;
-                      const row = payload[0]?.payload as
-                        | { name: string; volume: number }
-                        | undefined;
-                      if (!row) return null;
-                      return (
-                        <div className="rounded-sm border border-border bg-surface px-2 py-1 text-xs">
-                          <div>{row.name}</div>
-                          <div className="font-medium">
-                            {row.volume} {unitLabel}
-                          </div>
-                        </div>
-                      );
-                    }}
-                  />
-                  <Bar dataKey="volume" radius={[0, 4, 4, 0]} fill="var(--color-accent, #3b82f6)" />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+                </span>
+                <span className="numeric w-[70px] shrink-0 text-right text-[13px] text-text-muted">
+                  {row.volume.toLocaleString()}
+                </span>
+              </div>
+            ))}
           </Card>
 
-          <Card className="flex flex-col gap-2 p-3">
-            <h3 className="px-1 text-sm font-medium text-text">{t("stats.strengthTrend")}</h3>
-            <label className="flex flex-col gap-1 px-1 text-xs text-text-muted">
-              {t("stats.exercise")}
+          <Card className="flex flex-col gap-2.5 p-3">
+            <h3 className="text-[13px] font-medium text-text">{t("stats.strengthTrend")}</h3>
+            <div className="relative">
               <select
+                aria-label={t("stats.exercise")}
                 value={selected ?? ""}
                 onChange={(event) => setExerciseId(event.target.value)}
-                className="min-h-9 rounded-sm border border-border bg-surface px-2 text-sm text-text"
+                className="min-h-11 w-full appearance-none rounded-sm border-0 bg-surface-2 px-3 pr-9 text-[13px] text-text"
               >
                 {performedIds.map((id) => (
                   <option key={id} value={id}>
@@ -203,23 +190,26 @@ export function StatsScreen() {
                   </option>
                 ))}
               </select>
-            </label>
+              <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-text-muted">
+                <Icon name="chevron-right" size={14} className="rotate-90" />
+              </span>
+            </div>
             {series.length === 0 ? (
               <p className="px-1 pb-2 text-sm text-text-muted">{t("stats.empty")}</p>
             ) : (
-              <ResponsiveContainer width="100%" height={180}>
+              <ResponsiveContainer width="100%" height={200}>
                 <LineChart data={series}>
                   <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
                   <XAxis
                     dataKey="time"
-                    tick={{ fontSize: 11 }}
+                    tick={{ fontSize: 10 }}
                     tickFormatter={(v) => format(new Date(v), "dd MMM")}
                   />
                   <YAxis
                     type="number"
                     domain={["dataMin - 2", "dataMax + 2"]}
-                    tick={{ fontSize: 11 }}
-                    width={40}
+                    tick={{ fontSize: 10 }}
+                    width={32}
                   />
                   <Tooltip
                     content={({ active, payload }) => {
@@ -249,7 +239,7 @@ export function StatsScreen() {
               </ResponsiveContainer>
             )}
             {series.length > 0 ? (
-              <p className="px-1 pb-1 text-center text-xs text-text-muted">{t("stats.e1rmHint")}</p>
+              <p className="text-center text-[11px] text-text-muted">{t("stats.e1rmHint")}</p>
             ) : null}
           </Card>
         </>

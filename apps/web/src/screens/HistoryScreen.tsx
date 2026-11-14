@@ -318,7 +318,7 @@ export function HistoryScreen() {
   const router = useRouter();
   const search = useSearch({ from: "/history" });
   const view = search.view ?? "log";
-  const [showPhotos, setShowPhotos] = useState(true);
+  const [showPhotos, setShowPhotos] = useState(false);
   const workouts = useWorkouts(200);
 
   const completed = useMemo(

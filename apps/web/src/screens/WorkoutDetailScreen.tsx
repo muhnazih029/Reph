@@ -364,7 +364,7 @@ export function WorkoutDetailScreen({ id }: { id: string }) {
           <p className="px-1 text-xs font-medium uppercase tracking-wide text-text-muted">
             {t("photos.title")}
           </p>
-          <div className="grid grid-cols-3 gap-2 md:grid-cols-4 md:max-w-[640px]">
+          <div className="grid grid-cols-3 gap-2 md:grid-cols-4">
             {(photos.data ?? []).map((p) => (
               <div key={p.id} className="relative">
                 <button

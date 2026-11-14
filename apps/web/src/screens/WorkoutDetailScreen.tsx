@@ -345,17 +345,19 @@ export function WorkoutDetailScreen({ id }: { id: string }) {
         <StatCell label={t("detail.reps")} value={String(totalReps)} />
       </Card>
 
-      {(editing ? (draft?.entries ?? []) : data.entries).map((entry) => (
-        <DetailEntry
-          key={entry.id}
-          entry={entry}
-          weightUnit={settings.data?.weightUnit ?? "kg"}
-          distanceUnit={settings.data?.distanceUnit ?? "km"}
-          readOnly={!editing}
-          onSetPatch={editing ? patchDraftSet : undefined}
-          onRemoveSet={editing ? removeDraftSet : undefined}
-        />
-      ))}
+      <div className="grid gap-4 md:grid-cols-2">
+        {(editing ? (draft?.entries ?? []) : data.entries).map((entry) => (
+          <DetailEntry
+            key={entry.id}
+            entry={entry}
+            weightUnit={settings.data?.weightUnit ?? "kg"}
+            distanceUnit={settings.data?.distanceUnit ?? "km"}
+            readOnly={!editing}
+            onSetPatch={editing ? patchDraftSet : undefined}
+            onRemoveSet={editing ? removeDraftSet : undefined}
+          />
+        ))}
+      </div>
 
       {data.notes !== "" ? <Card className="p-4 text-sm text-text-muted">{data.notes}</Card> : null}
 

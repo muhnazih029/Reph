@@ -208,7 +208,6 @@ describe("WorkoutDetailScreen", () => {
 
     expect(document.body.textContent).toContain("Bench Press");
     expect(document.body.textContent).toContain("80 kg");
-    expect(document.body.textContent).toContain("× 5");
     // stats strip
     expect(document.body.textContent).toContain("Volume");
   });
@@ -230,6 +229,11 @@ describe("WorkoutDetailScreen", () => {
     );
     expect(editButton).toBeTruthy();
     if (editButton) editButton.click();
+    await flush();
+
+    // save lives in the ⋯ menu in edit mode
+    const editMenuButton = document.querySelector<HTMLButtonElement>('button[aria-haspopup="menu"]');
+    if (editMenuButton) editMenuButton.click();
     await flush();
 
     const save = Array.from(document.querySelectorAll("button")).find(

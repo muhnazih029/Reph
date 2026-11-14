@@ -99,7 +99,7 @@ export function ExercisesScreen() {
         </div>
 
         <div
-          className="flex w-full flex-nowrap gap-2 overflow-x-auto pb-0.5 touch-pan-x [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="flex min-w-0 flex-nowrap gap-2 overflow-x-auto pb-0.5 touch-pan-x [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           role="group"
           aria-label={t("muscleGroups.title")}
         >
@@ -198,6 +198,7 @@ function CreateExerciseSheet({
     equipment: "barbell",
     type: "strength",
   });
+  const [imageData, setImageData] = useState<string[]>([]);
 
   const nameError = draft.name.trim().length === 0;
   const nameTooLong = draft.name.length > 60;
@@ -211,6 +212,7 @@ function CreateExerciseSheet({
         muscleGroup: draft.muscleGroup,
         equipment: draft.equipment,
         type: draft.type,
+        imageData: imageData.length ? imageData : null,
       },
       { onSuccess: () => onOpenChange(false) },
     );
@@ -220,6 +222,7 @@ function CreateExerciseSheet({
   useEffect(() => {
     if (open) {
       setDraft({ name: "", muscleGroup: "chest", equipment: "barbell", type: "strength" });
+      setImageData([]);
     }
   }, [open]);
 
@@ -257,13 +260,47 @@ function CreateExerciseSheet({
         {draft.name.trim() !== "" ? (
           <div className="grid grid-cols-2 gap-2">
             {[0, 1].map((idx) => (
-              <img
-                key={idx}
-                src={exerciseImagePath(draft.name.trim(), idx as 0 | 1)}
-                alt={`${draft.name} ${idx + 1}`}
-                className="aspect-[354/300] w-full rounded-radius bg-surface-2 object-cover"
-                loading="lazy"
-              />
+              <div key={idx} className="relative">
+                {imageData[idx] ? (
+                  <img
+                    src={imageData[idx]}
+                    alt={`${draft.name} ${idx + 1}`}
+                    className="aspect-[354/300] w-full rounded-radius object-cover"
+                  />
+                ) : (
+                  <div className="relative">
+                    <img
+                      src={exerciseImagePath(draft.name.trim(), idx as 0 | 1)}
+                      alt={`${draft.name} ${idx + 1}`}
+                      className="aspect-[354/300] w-full rounded-radius bg-surface-2 object-cover"
+                      loading="lazy"
+                    />
+                    <label className="absolute inset-0 flex cursor-pointer items-center justify-center bg-black/30 text-xs text-white opacity-0 transition-opacity hover:opacity-100">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(event) => {
+                          const file = event.target.files?.[0];
+                          if (!file) return;
+                          const reader = new FileReader();
+                          reader.onload = () => {
+                            const url = String(reader.result ?? "");
+                            setImageData((prev) => {
+                              const next = [...prev];
+                              next[idx] = url;
+                              return next;
+                            });
+                          };
+                          reader.readAsDataURL(file);
+                          event.target.value = "";
+                        }}
+                      />
+                      Upload
+                    </label>
+                  </div>
+                )}
+              </div>
             ))}
           </div>
         ) : null}

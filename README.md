@@ -41,7 +41,7 @@ bun run db:seed
 bun run dev
 ```
 
-Web: http://localhost:3000 · API: http://localhost:8787
+Web: http://localhost:3000 · API: http://localhost:3001
 
 ## Environment
 

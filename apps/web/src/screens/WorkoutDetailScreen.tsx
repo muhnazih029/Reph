@@ -79,8 +79,8 @@ function StatCell({ label, value }: { label: string; value: string }) {
 export function WorkoutDetailScreen({ id }: { id: string }) {
   const { t } = useTranslation();
   const router = useRouter();
-  const search = useSearch({ from: "/workouts/$id" });
-  const backTo = search.from === "home" ? "/" : "/history";
+  const search = useSearch({ strict: false });
+  const backTo = (search as { from?: string }).from === "home" ? "/" : "/history";
   const workout = useWorkout(id);
   const settings = useSettings();
   const update = useUpdateWorkout(id);

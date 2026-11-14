@@ -33,7 +33,7 @@ export function PhotosScreen() {
           {t("photos.title")}
         </h2>
         <Button
-          className="shrink-0 min-h-13 rounded-radius px-6 text-base"
+          className="shrink-0 min-h-11 rounded-full px-5 text-sm"
           onClick={() => inputRef.current?.click()}
           disabled={upload.isPending}
         >

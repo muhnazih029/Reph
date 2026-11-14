@@ -51,15 +51,16 @@ DATABASE_URL=postgres://...
 
 ## Deploy to your server
 
-See [docs/guides/DEVELOPMENT.md](docs/guides/DEVELOPMENT.md) for production build & deployment notes. In short:
+Build the web and API, then run behind a reverse proxy:
 
 ```bash
-bun run build          # builds web + api
+bun run build
 # serve apps/web/dist as static files
-# run apps/api (bun) behind a reverse proxy (nginx/caddy)
+# run the API: bun apps/api/src/index.ts (with DATABASE_URL set)
+# apply migrations: bun run db:migrate
 ```
 
-Set `WEB_PORT` / `DATABASE_URL` and run migrations against the production DB before starting.
+Set `DATABASE_URL` and `REPH_DATA_DIR` in the environment. See [docs/guides/DEVELOPMENT.md](docs/guides/DEVELOPMENT.md).
 
 ## License
 

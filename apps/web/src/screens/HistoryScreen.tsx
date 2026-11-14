@@ -394,21 +394,21 @@ export function HistoryScreen() {
             />
           ) : (
             <>
-              <div className="flex items-center justify-end">
-                <button
-                  type="button"
-                  onClick={() => setShowPhotos((v) => !v)}
-                  className="flex items-center gap-1.5 rounded-[8px] bg-surface-2 px-3 py-1.5 text-[12px] text-text-muted hover:text-text"
-                >
-                  <Icon name={showPhotos ? "image" : "x"} size={13} />
-                  {showPhotos ? t("history.hidePhotos") : t("history.showPhotos")}
-                </button>
-              </div>
               {groups.map((group) => (
                 <div key={group.label} className="flex flex-col gap-2">
-                  <h3 className="px-1 text-[11px] font-medium uppercase tracking-[0.5px] text-text-muted">
-                    {group.label}
-                  </h3>
+                  <div className="flex items-center justify-between gap-3">
+                    <h3 className="px-1 text-[11px] font-medium uppercase tracking-[0.5px] text-text-muted">
+                      {group.label}
+                    </h3>
+                    <button
+                      type="button"
+                      onClick={() => setShowPhotos((v) => !v)}
+                      className="flex items-center gap-1.5 rounded-[8px] bg-surface-2 px-3 py-1.5 text-[12px] text-text-muted hover:text-text"
+                    >
+                      <Icon name={showPhotos ? "image" : "x"} size={13} />
+                      {showPhotos ? t("history.hidePhotos") : t("history.showPhotos")}
+                    </button>
+                  </div>
                   <Card className="overflow-hidden">
                     <ul className="divide-y divide-border">
                       {group.workouts.map((workout) => (

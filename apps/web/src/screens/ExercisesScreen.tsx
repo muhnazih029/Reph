@@ -99,7 +99,7 @@ export function ExercisesScreen() {
         </div>
 
         <div
-          className="flex gap-2 overflow-x-auto pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="flex w-full flex-nowrap gap-2 overflow-x-auto pb-0.5 touch-pan-x [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           role="group"
           aria-label={t("muscleGroups.title")}
         >

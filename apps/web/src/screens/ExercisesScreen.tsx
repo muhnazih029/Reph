@@ -83,7 +83,7 @@ export function ExercisesScreen() {
         <div className="relative">
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-text-muted"
+            className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted"
           >
             <Icon name="search" size={16} />
           </span>
@@ -91,7 +91,7 @@ export function ExercisesScreen() {
             aria-label={t("exercises.search")}
             type="search"
             placeholder={t("exercises.search")}
-            className="pl-9"
+            className="pl-10"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
           />
@@ -103,7 +103,7 @@ export function ExercisesScreen() {
           aria-label={t("muscleGroups.title")}
         >
           {(
-            [ALL_GROUP, "chest", "back", "shoulders", "thighs", "hips", "cardio"] as GroupFilter[]
+            [ALL_GROUP, ...muscleGroupSchema.options] as GroupFilter[]
           ).map((option) => {
             const selected = option === group;
             return (
@@ -112,7 +112,7 @@ export function ExercisesScreen() {
                 type="button"
                 aria-pressed={selected}
                 onClick={() => setGroup(option)}
-                className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
+                className={`shrink-0 rounded-full border px-3.5 py-[7px] text-xs font-medium transition-colors ${
                   selected
                     ? "border-accent bg-accent text-accent-contrast"
                     : "border-border text-text-muted"
@@ -142,7 +142,7 @@ export function ExercisesScreen() {
         <Card className="overflow-hidden">
           {groups.map(([muscleGroup, list]) => (
             <div key={muscleGroup}>
-              <h3 className="sticky top-0 z-10 bg-surface px-4 pt-2 text-xs font-medium uppercase tracking-wide text-text-muted">
+              <h3 className="sticky top-0 z-10 bg-surface px-4 pb-1 pt-2 text-xs font-medium uppercase tracking-wide text-text-muted">
                 {t(`muscleGroups.${muscleGroup}`)}
               </h3>
               <ul className="divide-y divide-border">

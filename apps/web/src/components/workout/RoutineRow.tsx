@@ -37,19 +37,25 @@ export function RoutineRow({
     .join(" · ");
 
   return (
-    <Card className="flex items-center gap-3 p-3">
-      <button type="button" onClick={onOpen} className="min-w-0 flex-1 text-left">
-        <span className="block truncate text-[15px] font-semibold">{routine.name}</span>
-        <span className="block text-xs text-text-muted">{meta}</span>
-      </button>
-      <button
-        type="button"
-        onClick={onStart}
-        className="inline-flex min-h-9 shrink-0 items-center gap-1.5 rounded-sm bg-accent/15 px-3 text-xs font-semibold text-accent transition-colors hover:bg-accent/25"
-      >
-        <Icon name="play" size={12} />
-        {startLabel}
-      </button>
+    <Card className="flex flex-col gap-1.5 p-3">
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={onOpen}
+          className="min-w-0 flex-1 cursor-pointer truncate text-left text-[15px] font-semibold"
+        >
+          {routine.name}
+        </button>
+        <button
+          type="button"
+          onClick={onStart}
+          className="inline-flex min-h-9 shrink-0 items-center gap-1.5 rounded-sm bg-accent/15 px-3 text-xs font-semibold text-accent transition-colors hover:bg-accent/25"
+        >
+          <Icon name="play" size={12} />
+          {startLabel}
+        </button>
+      </div>
+      <span className="text-xs text-text-muted">{meta}</span>
     </Card>
   );
 }

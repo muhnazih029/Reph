@@ -24,6 +24,7 @@ export const exerciseSchema = z.object({
   equipment: equipmentSchema,
   type: exerciseTypeSchema,
   isCustom: z.boolean(),
+  imageData: z.array(z.string()).nullable().optional(),
   createdAt: epochMsSchema,
 });
 export type Exercise = z.infer<typeof exerciseSchema>;

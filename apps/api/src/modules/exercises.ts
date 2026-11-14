@@ -24,6 +24,7 @@ export function toExerciseDTO(row: ExerciseRow): Exercise {
     equipment: row.equipment,
     type: row.type,
     isCustom: row.isCustom,
+    imageData: row.imageData,
     createdAt: epochMs(row.createdAt),
   };
 }

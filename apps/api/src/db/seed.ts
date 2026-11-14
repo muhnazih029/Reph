@@ -231,6 +231,7 @@ export async function seedExercises(db: DrizzleDb): Promise<number> {
     equipment: ex.equipment,
     type: ex.type,
     isCustom: false,
+    imageData: null,
   }));
 
   for (let i = 0; i < rows.length; i += INSERT_CHUNK) {

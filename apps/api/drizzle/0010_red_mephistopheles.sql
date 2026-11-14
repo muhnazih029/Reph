@@ -1,0 +1,1 @@
+ALTER TABLE "exercises" ALTER COLUMN "image_data" SET DATA TYPE text[] USING CASE WHEN image_data IS NULL THEN NULL ELSE ARRAY[image_data] END;

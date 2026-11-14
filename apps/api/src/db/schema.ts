@@ -67,6 +67,7 @@ export const exercises = pgTable(
     equipment: equipmentEnum("equipment").notNull(),
     type: exerciseTypeEnum("type").notNull(),
     isCustom: boolean("is_custom").notNull().default(false),
+    imageData: text("image_data").array(),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [

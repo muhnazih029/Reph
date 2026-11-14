@@ -64,6 +64,20 @@
       "when": 1794299834033,
       "tag": "0008_spooky_kat_farrell",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1794626857537,
+      "tag": "0009_fixed_harpoon",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1794626874468,
+      "tag": "0010_red_mephistopheles",
+      "breakpoints": true
     }
   ]
 }

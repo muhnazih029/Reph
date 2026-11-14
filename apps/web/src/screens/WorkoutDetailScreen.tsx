@@ -335,57 +335,15 @@ export function WorkoutDetailScreen({ id }: { id: string }) {
         }}
       />
 
-      <div className="flex flex-col gap-4 md:flex-row md:items-start">
-        <Card className="grid grid-cols-4 divide-x divide-border overflow-hidden py-2 text-center md:flex-1">
-          <StatCell
-            label={t("detail.duration")}
-            value={formatDuration(data, t("common.minutesShort"))}
-          />
-          <StatCell label={t("detail.volume")} value={String(Math.round(workoutVolumeKg(data)))} />
-          <StatCell label={t("detail.sets")} value={String(totalSets)} />
-          <StatCell label={t("detail.reps")} value={String(totalReps)} />
-        </Card>
-
-        {(photos.data ?? []).length > 0 ? (
-          <div className="flex flex-col gap-2 md:w-[260px] md:shrink-0">
-            <p className="px-1 text-xs font-medium uppercase tracking-wide text-text-muted">
-              {t("photos.title")}
-            </p>
-            <div className="grid grid-cols-4 gap-2 md:grid-cols-3">
-              {(photos.data ?? []).map((p) => (
-                <div key={p.id} className="relative">
-                  <button
-                    type="button"
-                    onClick={() => setPreviewPhoto(p.id)}
-                    className="block w-full"
-                  >
-                    <img
-                      src={`/api/v1/photos/${p.id}/image`}
-                      alt=""
-                      className="aspect-square w-full rounded-lg object-cover"
-                      loading="lazy"
-                    />
-                  </button>
-                  {editing ? (
-                    <button
-                      type="button"
-                      aria-label={t("photos.delete")}
-                      onClick={() => {
-                        const ok = window.confirm(t("photos.deleteConfirm"));
-                        if (!ok) return;
-                        void deletePhoto.mutateAsync(p.id);
-                      }}
-                      className="absolute right-1.5 top-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-black/60 text-xs text-white"
-                    >
-                      ×
-                    </button>
-                  ) : null}
-                </div>
-              ))}
-            </div>
-          </div>
-        ) : null}
-      </div>
+      <Card className="grid grid-cols-4 divide-x divide-border overflow-hidden py-2 text-center">
+        <StatCell
+          label={t("detail.duration")}
+          value={formatDuration(data, t("common.minutesShort"))}
+        />
+        <StatCell label={t("detail.volume")} value={String(Math.round(workoutVolumeKg(data)))} />
+        <StatCell label={t("detail.sets")} value={String(totalSets)} />
+        <StatCell label={t("detail.reps")} value={String(totalReps)} />
+      </Card>
 
       {(editing ? (draft?.entries ?? []) : data.entries).map((entry) => (
         <DetailEntry
@@ -400,6 +358,46 @@ export function WorkoutDetailScreen({ id }: { id: string }) {
       ))}
 
       {data.notes !== "" ? <Card className="p-4 text-sm text-text-muted">{data.notes}</Card> : null}
+
+      {(photos.data ?? []).length > 0 ? (
+        <div className="flex flex-col gap-2">
+          <p className="px-1 text-xs font-medium uppercase tracking-wide text-text-muted">
+            {t("photos.title")}
+          </p>
+          <div className="grid grid-cols-3 gap-2 md:grid-cols-4">
+            {(photos.data ?? []).map((p) => (
+              <div key={p.id} className="relative">
+                <button
+                  type="button"
+                  onClick={() => setPreviewPhoto(p.id)}
+                  className="block w-full"
+                >
+                  <img
+                    src={`/api/v1/photos/${p.id}/image`}
+                    alt=""
+                    className="aspect-square w-full rounded-lg object-cover"
+                    loading="lazy"
+                  />
+                </button>
+                {editing ? (
+                  <button
+                    type="button"
+                    aria-label={t("photos.delete")}
+                    onClick={() => {
+                      const ok = window.confirm(t("photos.deleteConfirm"));
+                      if (!ok) return;
+                      void deletePhoto.mutateAsync(p.id);
+                    }}
+                    className="absolute right-1.5 top-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-black/60 text-xs text-white"
+                  >
+                    ×
+                  </button>
+                ) : null}
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : null}
 
       {previewPhoto ? (
         <div

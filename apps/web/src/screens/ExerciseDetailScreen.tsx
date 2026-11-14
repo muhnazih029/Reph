@@ -88,12 +88,12 @@ export function ExerciseDetailScreen({ id }: { id: string }) {
       aria-labelledby="exercise-detail-title"
       className="flex flex-col gap-4 md:max-w-[720px]"
     >
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-3">
         <button
           type="button"
           aria-label={t("common.back")}
           onClick={() => void router.navigate({ to: "/workout", search: { tab: "exercises" } })}
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-sm border border-border bg-surface text-text-muted hover:text-text"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-sm bg-surface text-text-muted hover:text-text"
         >
           ←
         </button>
@@ -109,7 +109,10 @@ export function ExerciseDetailScreen({ id }: { id: string }) {
             src={exerciseImagePath(data.name, idx as 0 | 1)}
             alt={`${data.name} ${idx + 1}`}
             loading="lazy"
-            className="aspect-square w-full rounded-sm border border-border bg-surface-2 object-cover"
+            draggable={false}
+            onDragStart={(event) => event.preventDefault()}
+            onContextMenu={(event) => event.preventDefault()}
+            className="aspect-[354/300] w-full select-none rounded-radius bg-surface-2 object-cover"
             onError={(event) => {
               event.currentTarget.style.display = "none";
             }}
@@ -118,29 +121,29 @@ export function ExerciseDetailScreen({ id }: { id: string }) {
       </div>
 
       <div className="flex flex-wrap gap-2">
-        <span className="rounded-[6px] bg-surface-2 px-2.5 py-1 text-[11px] font-medium text-text-muted">
+        <span className="rounded-[6px] bg-surface-2 px-3 py-1.5 text-xs font-medium text-text-muted">
           {t(`muscleGroups.${data.muscleGroup}`)}
         </span>
-        <span className="rounded-[6px] bg-surface-2 px-2.5 py-1 text-[11px] font-medium text-text-muted">
+        <span className="rounded-[6px] bg-surface-2 px-3 py-1.5 text-xs font-medium text-text-muted">
           {t(`equipment.${data.equipment}`)}
         </span>
-        <span className="rounded-[6px] bg-surface-2 px-2.5 py-1 text-[11px] font-medium text-text-muted">
+        <span className="rounded-[6px] bg-surface-2 px-3 py-1.5 text-xs font-medium text-text-muted">
           {t(`exerciseType.${data.type}`)}
         </span>
         {data.isCustom ? (
-          <span className="rounded-[6px] bg-surface-2 px-2.5 py-1 text-[11px] font-medium text-text-muted">
+          <span className="rounded-[6px] bg-surface-2 px-3 py-1.5 text-xs font-medium text-text-muted">
             {t("exercises.custom")}
           </span>
         ) : null}
       </div>
 
-      <Card className="flex flex-col gap-2 p-4">
-        <h3 className="text-[13px] font-medium text-text">{t("exercises.prTitle")}</h3>
+      <Card className="flex flex-col gap-1.5 p-4">
+        <h3 className="text-sm font-medium text-text">{t("exercises.prTitle")}</h3>
         {personalRecord ? (
           <>
-            <p className="numeric text-2xl font-semibold">
+            <p className="numeric flex items-baseline gap-2.5 text-xl font-semibold">
               {displayWeight(personalRecord.weightKg, unit)} × {personalRecord.reps}
-              <span className="ml-2 text-[13px] font-normal text-text-muted">
+              <span className="text-sm font-normal text-text-muted">
                 e1RM {displayWeight(Math.round(personalRecord.oneRM * 10) / 10, unit)}
               </span>
             </p>
@@ -169,13 +172,13 @@ export function ExerciseDetailScreen({ id }: { id: string }) {
             {sessions.map(({ workout, entry }) => {
               const sessionBest = bestSetByEpley(entry.sets);
               return (
-                <li key={workout.id} className="px-4 py-3">
-                  <p className="text-sm font-medium">
+                <li key={workout.id} className="px-[18px] py-[14px]">
+                  <p className="text-[15px] font-medium">
                     {new Date(workout.startTime).toLocaleDateString(undefined, {
                       dateStyle: "medium",
                     })}
                   </p>
-                  <p className="mt-1 text-xs text-text-muted">
+                  <p className="mt-1.5 text-xs text-text-muted">
                     {entry.sets
                       .filter((set) => set.done)
                       .map((set) =>

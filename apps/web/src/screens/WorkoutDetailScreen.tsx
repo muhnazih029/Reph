@@ -360,11 +360,11 @@ export function WorkoutDetailScreen({ id }: { id: string }) {
       {data.notes !== "" ? <Card className="p-4 text-sm text-text-muted">{data.notes}</Card> : null}
 
       {(photos.data ?? []).length > 0 ? (
-        <div>
+        <div className="flex flex-col gap-2">
           <p className="px-1 text-xs font-medium uppercase tracking-wide text-text-muted">
             {t("photos.title")}
           </p>
-          <div className="grid grid-cols-4 gap-2 md:max-w-[480px]">
+          <div className="grid grid-cols-3 gap-2 md:grid-cols-4 md:max-w-[640px]">
             {(photos.data ?? []).map((p) => (
               <div key={p.id} className="relative">
                 <button
@@ -375,7 +375,7 @@ export function WorkoutDetailScreen({ id }: { id: string }) {
                   <img
                     src={`/api/v1/photos/${p.id}/image`}
                     alt=""
-                    className="aspect-square w-full rounded object-cover"
+                    className="aspect-square w-full rounded-lg object-cover"
                     loading="lazy"
                   />
                 </button>
@@ -388,7 +388,7 @@ export function WorkoutDetailScreen({ id }: { id: string }) {
                       if (!ok) return;
                       void deletePhoto.mutateAsync(p.id);
                     }}
-                    className="absolute right-1 top-1 rounded-full bg-black/60 px-2 text-xs text-white"
+                    className="absolute right-1.5 top-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-black/60 text-xs text-white"
                   >
                     ×
                   </button>

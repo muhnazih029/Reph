@@ -1,5 +1,7 @@
 # Reph
 
+![Reph logo](apps/web/public/favicon.svg)
+
 A self-hosted workout tracking web app. Log workouts, track exercises, body weight, progress photos, and personal records — all on your own server.
 
 ## Features

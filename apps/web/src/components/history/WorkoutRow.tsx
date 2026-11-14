@@ -9,7 +9,7 @@ import { workoutVolumeKg } from "../../lib/stats";
 // links to the workout detail. Shared by HistoryScreen and TodayScreen
 // (docs/plans/phase-1-mvp.md Task 10/11).
 
-export function WorkoutRow({ workout }: { workout: Workout }) {
+export function WorkoutRow({ workout, showPhotos = true }: { workout: Workout; showPhotos?: boolean }) {
   const { t } = useTranslation();
   const photos = usePhotos(4, 0, workout.id);
   const sets = workout.entries.reduce(
@@ -25,26 +25,24 @@ export function WorkoutRow({ workout }: { workout: Workout }) {
     <Link
       to="/workouts/$id"
       params={{ id: workout.id }}
-      className="flex min-h-14 flex-col gap-2 px-4 py-3 active:bg-surface-2"
+      className="flex min-h-14 flex-col gap-1 px-4 py-3 active:bg-surface-2"
     >
       <div className="flex items-center justify-between gap-3">
-        <span className="flex min-w-0 flex-col">
-          <span className="truncate text-sm font-medium">
-            {workout.title === "" ? t("workout.titlePlaceholder") : workout.title}
-          </span>
-          <span className="text-xs text-text-muted">
-            {format(workout.startTime, "d MMM")} · {t("history.setsCount", { count: sets })} ·{" "}
-            {t("history.volumeDisplay", { value: Math.round(workoutVolumeKg(workout)) })}
-          </span>
-          {workout.notes !== "" ? (
-            <span className="truncate text-xs text-text-muted">{workout.notes}</span>
-          ) : null}
+        <span className="min-w-0 truncate text-sm font-medium">
+          {workout.title === "" ? t("workout.titlePlaceholder") : workout.title}
         </span>
-        <span className="numeric shrink-0 text-sm text-text-muted">
+        <span className="numeric shrink-0 text-xs text-text-muted">
           {minutes} {t("common.minutesShort")}
         </span>
       </div>
-      {(photos.data ?? []).length > 0 ? (
+      <span className="truncate text-xs text-text-muted">
+        {format(workout.startTime, "d MMM")} · {t("history.setsCount", { count: sets })} ·{" "}
+        {t("history.volumeDisplay", { value: Math.round(workoutVolumeKg(workout)) })}
+      </span>
+      {workout.notes !== "" ? (
+        <span className="truncate text-xs text-text-muted">{workout.notes}</span>
+      ) : null}
+      {showPhotos && (photos.data ?? []).length > 0 ? (
         <div className="grid grid-cols-4 gap-1">
           {(photos.data ?? []).map((p) => (
             <img

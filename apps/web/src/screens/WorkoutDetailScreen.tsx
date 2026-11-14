@@ -232,70 +232,64 @@ export function WorkoutDetailScreen({ id }: { id: string }) {
           </h2>
         )}
         {editing ? (
-          <div className="relative shrink-0">
-            <button
-              type="button"
-              aria-label={t("common.moreActions")}
-              aria-expanded={menuOpen}
-              aria-haspopup="menu"
-              onClick={() => setMenuOpen((open) => !open)}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-surface text-text-muted hover:text-text"
-            >
-              <Icon name="more-horizontal" size={18} />
-            </button>
-            {menuOpen ? (
-              <>
-                <button
-                  type="button"
-                  aria-hidden="true"
-                  tabIndex={-1}
-                  onClick={() => setMenuOpen(false)}
-                  className="fixed inset-0 z-30 cursor-default"
-                />
-                <div
-                  role="menu"
-                  className="absolute right-0 top-11 z-40 w-48 overflow-hidden rounded-radius border border-border bg-surface p-1"
-                >
+          <div className="flex shrink-0 items-center gap-2">
+            <Button variant="secondary" className="rounded-full" onClick={() => photoInputRef.current?.click()}>
+              {t("photos.upload")}
+            </Button>
+            <div className="relative">
+              <button
+                type="button"
+                aria-label={t("common.moreActions")}
+                aria-expanded={menuOpen}
+                aria-haspopup="menu"
+                onClick={() => setMenuOpen((open) => !open)}
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-surface text-text-muted hover:text-text"
+              >
+                <Icon name="more-horizontal" size={18} />
+              </button>
+              {menuOpen ? (
+                <>
                   <button
                     type="button"
-                    role="menuitem"
-                    onClick={() => {
-                      setMenuOpen(false);
-                      void photoInputRef.current?.click();
-                    }}
-                    className="flex w-full items-center gap-2 rounded-sm px-3 py-2 text-sm text-text hover:bg-surface-2"
+                    aria-hidden="true"
+                    tabIndex={-1}
+                    onClick={() => setMenuOpen(false)}
+                    className="fixed inset-0 z-30 cursor-default"
+                  />
+                  <div
+                    role="menu"
+                    className="absolute right-0 top-11 z-40 w-48 overflow-hidden rounded-radius border border-border bg-surface p-1"
                   >
-                    {t("photos.upload")}
-                  </button>
-                  <button
-                    type="button"
-                    role="menuitem"
-                    disabled={update.isPending}
-                    onClick={() => {
-                      setMenuOpen(false);
-                      saveDraft();
-                    }}
-                    className="flex w-full items-center gap-2 rounded-sm px-3 py-2 text-sm text-text hover:bg-surface-2 disabled:opacity-60"
-                  >
-                    {t("common.save")}
-                  </button>
-                  <button
-                    type="button"
-                    role="menuitem"
-                    onClick={() => {
-                      setMenuOpen(false);
-                      const ok = window.confirm(t("detail.discardChanges"));
-                      if (!ok) return;
-                      setEditing(false);
-                      setDraft(data);
-                    }}
-                    className="flex w-full items-center gap-2 rounded-sm px-3 py-2 text-sm text-text hover:bg-surface-2"
-                  >
-                    {t("common.cancel")}
-                  </button>
-                </div>
-              </>
-            ) : null}
+                    <button
+                      type="button"
+                      role="menuitem"
+                      disabled={update.isPending}
+                      onClick={() => {
+                        setMenuOpen(false);
+                        saveDraft();
+                      }}
+                      className="flex w-full items-center gap-2 rounded-sm px-3 py-2 text-sm text-text hover:bg-surface-2 disabled:opacity-60"
+                    >
+                      {t("common.save")}
+                    </button>
+                    <button
+                      type="button"
+                      role="menuitem"
+                      onClick={() => {
+                        setMenuOpen(false);
+                        const ok = window.confirm(t("detail.discardChanges"));
+                        if (!ok) return;
+                        setEditing(false);
+                        setDraft(data);
+                      }}
+                      className="flex w-full items-center gap-2 rounded-sm px-3 py-2 text-sm text-text hover:bg-surface-2"
+                    >
+                      {t("common.cancel")}
+                    </button>
+                  </div>
+                </>
+              ) : null}
+            </div>
           </div>
         ) : (
           <div className="relative shrink-0">

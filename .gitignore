@@ -8,6 +8,7 @@ dev-dist/
 .env
 .env.*
 !.env.example
+!.env.prod.example
 
 # Data (runtime)
 data/
@@ -35,3 +36,4 @@ skills-lock.json
 .taste-skill/
 shots/
 .taste-shots/
+deploy.sh

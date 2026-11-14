@@ -1,7 +1,7 @@
 import type { UpdateWorkoutInput, Workout, WorkoutSet } from "@reph/contracts";
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useRouter } from "@tanstack/react-router";
+import { useRouter, useSearch } from "@tanstack/react-router";
 import {
   useDeleteWorkout,
   useExercise,
@@ -79,6 +79,8 @@ function StatCell({ label, value }: { label: string; value: string }) {
 export function WorkoutDetailScreen({ id }: { id: string }) {
   const { t } = useTranslation();
   const router = useRouter();
+  const search = useSearch({ from: "/workouts/$id" });
+  const backTo = search.from === "home" ? "/" : "/history";
   const workout = useWorkout(id);
   const settings = useSettings();
   const update = useUpdateWorkout(id);
@@ -111,7 +113,7 @@ export function WorkoutDetailScreen({ id }: { id: string }) {
         <p className="text-sm text-text-muted">
           {workout.error instanceof Error ? workout.error.message : t("common.loading")}
         </p>
-        <Button variant="secondary" onClick={() => void router.navigate({ to: "/history" })}>
+        <Button variant="secondary" onClick={() => void router.navigate({ to: backTo })}>
           {t("detail.backToHistory")}
         </Button>
       </div>
@@ -209,7 +211,7 @@ export function WorkoutDetailScreen({ id }: { id: string }) {
               setEditing(false);
               setDraft(data);
             }
-            void router.navigate({ to: "/history" });
+            void router.navigate({ to: backTo });
           }}
           className="flex h-9 w-9 shrink-0 items-center justify-center rounded-sm text-text-muted hover:bg-surface-2 hover:text-text"
         >
@@ -355,9 +357,7 @@ export function WorkoutDetailScreen({ id }: { id: string }) {
         />
       ))}
 
-      {data.notes !== "" ? (
-        <Card className="p-4 text-sm text-text-muted">{data.notes}</Card>
-      ) : null}
+      {data.notes !== "" ? <Card className="p-4 text-sm text-text-muted">{data.notes}</Card> : null}
 
       {(photos.data ?? []).length > 0 ? (
         <div>
@@ -426,7 +426,7 @@ export function WorkoutDetailScreen({ id }: { id: string }) {
               onClick={() => {
                 void deleteWorkout
                   .mutateAsync(data.id)
-                  .then(() => void router.navigate({ to: "/history" }));
+                  .then(() => void router.navigate({ to: backTo }));
               }}
             >
               {t("common.delete")}

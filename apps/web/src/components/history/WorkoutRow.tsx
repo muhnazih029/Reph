@@ -25,6 +25,7 @@ export function WorkoutRow({ workout, showPhotos = true }: { workout: Workout; s
     <Link
       to="/workouts/$id"
       params={{ id: workout.id }}
+      search={{ from: "history" }}
       className="flex min-h-14 flex-col gap-1 px-4 py-3 active:bg-surface-2"
     >
       <div className="flex items-center justify-between gap-3">

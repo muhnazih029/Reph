@@ -1,4 +1,10 @@
-import { createRootRoute, createRoute, createRouter, redirect, useParams } from "@tanstack/react-router";
+import {
+  createRootRoute,
+  createRoute,
+  createRouter,
+  redirect,
+  useParams,
+} from "@tanstack/react-router";
 import { AppShell } from "./components/layout/AppShell";
 import { ActiveWorkoutScreen } from "./screens/ActiveWorkoutScreen";
 import { ExerciseDetailScreen } from "./screens/ExerciseDetailScreen";
@@ -87,6 +93,9 @@ const workoutDetailRoute = createRoute({
     if (!id) throw new Error("missing :id route param");
     return <WorkoutDetailScreen id={id} />;
   },
+  validateSearch: (search): { from?: "home" | "history" } => ({
+    from: search.from === "home" ? "home" : search.from === "history" ? "history" : undefined,
+  }),
 });
 
 // Routines live inside the Workout tab, so /routines only redirects there.
@@ -127,7 +136,8 @@ const workoutRoute = createRoute({
   // `?tab=exercises` keeps the library segment active, so back-navigation
   // from an exercise detail lands on Exercises, not on Routines.
   validateSearch: (search): { tab?: "routines" | "exercises" } => ({
-    tab: search.tab === "exercises" ? "exercises" : search.tab === "routines" ? "routines" : undefined,
+    tab:
+      search.tab === "exercises" ? "exercises" : search.tab === "routines" ? "routines" : undefined,
   }),
 });
 

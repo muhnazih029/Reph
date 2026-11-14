@@ -68,6 +68,7 @@ export function FeedCard({
       <Link
         to="/workouts/$id"
         params={{ id: workout.id }}
+        search={{ from: "home" }}
         className="flex flex-col overflow-hidden rounded-radius border border-border transition-colors hover:border-accent/50"
       >
         {image}
@@ -81,6 +82,7 @@ export function FeedCard({
       <Link
         to="/workouts/$id"
         params={{ id: workout.id }}
+        search={{ from: "home" }}
         className="flex items-center gap-3 p-3 transition-colors hover:bg-surface-2/40"
       >
         <div className="min-w-0 flex-1">{caption}</div>

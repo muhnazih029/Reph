@@ -6,6 +6,7 @@ import { muscleGroupSchema, equipmentSchema } from "@reph/contracts";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
 import { EmptyState } from "../components/ui/EmptyState";
+import { exerciseImagePath } from "../lib/exerciseImage";
 import { ErrorState } from "../components/ui/ErrorState";
 import { Input } from "../components/ui/Input";
 import { SegmentedControl } from "../components/ui/SegmentedControl";
@@ -201,7 +202,6 @@ function CreateExerciseSheet({
   const nameError = draft.name.trim().length === 0;
   const nameTooLong = draft.name.length > 60;
   const canSubmit = !nameError && !nameTooLong;
-  const canSubmit = !nameError;
 
   const submit = () => {
     if (!canSubmit) return;
@@ -253,6 +253,20 @@ function CreateExerciseSheet({
             </p>
           ) : null}
         </div>
+
+        {draft.name.trim() !== "" ? (
+          <div className="grid grid-cols-2 gap-2">
+            {[0, 1].map((idx) => (
+              <img
+                key={idx}
+                src={exerciseImagePath(draft.name.trim(), idx as 0 | 1)}
+                alt={`${draft.name} ${idx + 1}`}
+                className="aspect-[354/300] w-full rounded-radius bg-surface-2 object-cover"
+                loading="lazy"
+              />
+            ))}
+          </div>
+        ) : null}
 
         <SegmentedControl<ExerciseType>
           label={t("exerciseType.title")}

@@ -1,62 +1,66 @@
 # Reph
 
-A self-hosted workout tracker for personal training — log sessions with sets,
-reps, and RPE, browse a full exercise library, and follow your progression
-through PRs, volume trends, and private progress photos. Your data lives on
-your own server.
+A self-hosted workout tracking web app. Log workouts, track exercises, body weight, progress photos, and personal records — all on your own server.
 
-Status: pre-release (`0.x`). Product spec is at draft `0.1-draft`.
+## Features
 
-## Stack
+- **Workout logging** — sets, reps, weight, RPE, rest timer, supersets, notes
+- **Exercise library** — seeded library + custom exercises with muscle group & equipment filters
+- **Routines / templates** — reusable workout templates
+- **History & insights** — monthly grouping, weight trend charts, volume by muscle group, strength trends, calendar streaks, year-in-review
+- **Progress photos** — upload & compare
+- **Body weight tracking** — chart + delta
+- **Personal records** — Epley-based 1RM tracking
+- **PWA** — installable, offline-capable
+- **i18n** — English & Indonesian
+- **Self-hosted** — single owner account per instance
 
-- Runtime: Bun 1.4 (monorepo workspaces `apps/*`, `packages/*`)
-- Web: React 19 + Vite PWA (`apps/web`)
-- API: Hono + Drizzle (`apps/api`)
-- Infra: PostgreSQL 16 (Docker)
-- Shared: Zod contracts (`packages/contracts`)
-- Lint/format: oxlint + oxfmt · Tests: `bun test`
+## Tech stack
 
-## Quickstart
+- **Web:** React 19, TanStack Router, Vite, Tailwind v4, react-i18next
+- **API:** Hono, Drizzle ORM, PostgreSQL
+- **Shared:** Zod contracts (`@reph/contracts`)
+- **Runtime:** Bun
 
-Prerequisites: Bun 1.4, Git, and a container runtime (Docker or Podman).
+## Quick start (local dev)
 
 ```bash
-cp .env.example .env
-docker compose up -d
+# 1. Install deps
 bun install
+
+# 2. Start Postgres
+docker compose up -d
+
+# 3. Migrate + seed
 bun run db:migrate
+bun run db:seed
+
+# 4. Run dev servers
 bun run dev
 ```
 
-URLs (dev):
+Web: http://localhost:3000 · API: http://localhost:8787
 
-- Web: <http://localhost:3000>
-- API: <http://localhost:3001/health>
+## Environment
 
-## Repo map
+Copy `.env.example` to `.env` and fill in:
 
-```text
-.
-├── apps/
-│   ├── web/              # React PWA (Vite, TanStack Router/Query)
-│   └── api/              # Hono REST API (Drizzle → PostgreSQL)
-├── packages/
-│   └── contracts/        # Zod schemas — single source of truth for API shapes
-├── docs/                 # PRD, specs, ADRs, plans, guides
-├── docker-compose.yml    # PostgreSQL 16
-└── package.json          # Bun workspaces
+```
+DATABASE_URL=postgres://...
 ```
 
-## Documentation
+## Deploy to your server
 
-Everything lives in [`docs/`](docs/README.md) — start at the
-[docs index](docs/README.md). Key entry points:
+See [docs/guides/DEVELOPMENT.md](docs/guides/DEVELOPMENT.md) for production build & deployment notes. In short:
 
-- [PRD](docs/specs/PRD.md) — product vision, feature set, roadmap
-- [db-schema](docs/data/db-schema.md) — canonical data model
-- [DEVELOPMENT](docs/guides/DEVELOPMENT.md) — dev loop and conventions
-- [Plans](docs/plans/) — phased implementation plans
+```bash
+bun run build          # builds web + api
+# serve apps/web/dist as static files
+# run apps/api (bun) behind a reverse proxy (nginx/caddy)
+```
+
+Set `WEB_PORT` / `DATABASE_URL` and run migrations against the production DB before starting.
 
 ## License
 
-MIT
+Private — all rights reserved.

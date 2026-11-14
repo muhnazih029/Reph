@@ -25,7 +25,7 @@ import { Icon } from "../ui/Icon";
 // columns take fixed widths so the table does not stretch across a wide
 // desktop card.
 const SET_GRID =
-  "grid-cols-[2.5rem_minmax(0,1fr)_minmax(0,1fr)_3.5rem_2.25rem] md:grid-cols-[2.5rem_minmax(0,1fr)_9rem_5rem_2.5rem]";
+  "grid-cols-[2.5rem_minmax(0,1fr)_minmax(0,1fr)_3.5rem_2.25rem] md:grid-cols-[2.5rem_7.5rem_8.375rem_8.375rem_2rem]";
 const CARDIO_GRID =
   "grid-cols-[2.5rem_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_3.5rem_2.25rem] md:grid-cols-[2.5rem_minmax(0,1fr)_7rem_7rem_3.5rem_2.5rem]";
 
@@ -84,16 +84,19 @@ export function SetRow({
     const grid = exerciseType === "strength" ? SET_GRID : CARDIO_GRID;
     return (
       <div
-        className={`grid ${grid} items-center gap-2 px-4 py-2 text-sm ${
+        className={`grid ${grid} items-center gap-2 px-4 py-[7px] text-sm md:gap-2.5 md:px-[18px] md:py-2 ${
           done ? "bg-success/10" : ""
         }`}
       >
-        <span className="numeric text-text-muted">{index}</span>
+        <span className="numeric text-xs text-text-muted md:text-[13px]">{index}</span>
         {exerciseType === "strength" ? (
           <>
-            <span className="numeric text-text-muted">{previousLabel}</span>
-            <span className="numeric col-span-2 text-center">
-              {displayWeight(set.weightKg, weightUnit)} × {set.reps ?? "–"}
+            <span className="numeric text-xs text-text-muted md:text-[13px]">{previousLabel}</span>
+            <span className="numeric text-center text-[13px] md:text-sm">
+              {displayWeight(set.weightKg, weightUnit)}
+            </span>
+            <span className="numeric text-center text-[13px] md:text-sm">
+              {set.reps ?? "–"}
             </span>
             <span className="flex justify-center text-accent">
               <Icon name="check" size={16} className={done ? "" : "opacity-40"} />
@@ -118,13 +121,16 @@ export function SetRow({
   const grid = exerciseType === "strength" ? SET_GRID : CARDIO_GRID;
   return (
     <div
-      className={`grid ${grid} items-center gap-2 px-4 py-2 ${
+      className={`grid ${grid} items-center gap-2 px-4 py-[7px] md:gap-2.5 md:px-[18px] md:py-2 ${
         done ? "bg-success/10" : ""
       } ${set.type !== "normal" ? "border-l-2 border-accent" : ""}`}
     >
-      <span className="numeric text-sm text-text-muted">{index}</span>
+      <span className="numeric text-xs text-text-muted md:text-[13px]">{index}</span>
 
-      <span className="numeric truncate text-sm text-text-muted" title={previousLabel}>
+      <span
+        className="numeric truncate text-xs text-text-muted md:text-[13px]"
+        title={previousLabel}
+      >
         {previousLabel}
       </span>
 
@@ -215,13 +221,13 @@ export function SetRow({
             patch({ done: next });
             if (next) useRestTimerStore.getState().start();
           }}
-          className={`flex h-9 w-9 items-center justify-center rounded-full border transition-colors ${
+          className={`flex h-[18px] w-[18px] items-center justify-center rounded-full border transition-colors md:h-5 md:w-5 ${
             done
               ? "border-accent bg-accent text-accent-contrast"
               : "border-border bg-surface-2 text-text-muted"
           }`}
         >
-          <Icon name="check" size={16} />
+          <Icon name="check" size={12} />
         </button>
       ) : null}
 
@@ -252,7 +258,7 @@ export function ColumnHeader({
   const grid = exerciseType === "strength" ? SET_GRID : CARDIO_GRID;
   return (
     <div
-      className={`grid ${grid} items-center gap-2 border-b border-border bg-surface-2/50 px-4 py-1 text-[0.65rem] font-medium uppercase tracking-wide text-text-muted`}
+      className={`grid ${grid} items-center gap-2 border-b border-border bg-surface-2/50 px-4 py-1.5 text-[10px] font-medium uppercase tracking-wide text-text-muted md:gap-2.5 md:px-[18px] md:py-[7px] md:text-[11px]`}
       aria-hidden="true"
     >
       <span>SET</span>
@@ -300,7 +306,7 @@ function NumberCell({
       aria-label={label}
       numeric
       disabled={disabled}
-      className={`h-9 min-w-0 px-1 text-center ${className}`}
+      className={`h-[30px] min-w-0 rounded-[6px] px-1 text-center md:h-9 ${className}`}
       value={shownValue}
       onChange={(event) => setDraft(event.target.value)}
       onBlur={commit}

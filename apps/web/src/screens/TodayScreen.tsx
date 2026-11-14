@@ -108,10 +108,10 @@ export function TodayScreen() {
   const unit = settings.data?.weightUnit ?? "kg";
 
   return (
-    <section aria-labelledby="today-title" className="flex flex-col gap-5">
-      <header className="flex flex-wrap items-center gap-3">
+    <section aria-labelledby="today-title" className="flex flex-col gap-5 md:gap-7">
+      <header className="flex flex-wrap items-center gap-3 md:gap-6">
         <div className="min-w-0 flex-1">
-          <h2 id="today-title" className="text-2xl font-semibold tracking-tight">
+          <h2 id="today-title" className="text-xl font-semibold">
             {t("today.greeting")}
           </h2>
           <p className="text-sm text-text-muted">{format(Date.now(), "EEEE, d MMMM")}</p>
@@ -120,7 +120,7 @@ export function TodayScreen() {
         <AccountMenu variant="avatar" />
 
         <Button
-          className="order-last min-h-13 w-full text-base md:order-none md:w-auto md:min-h-11 md:rounded-full md:px-6 md:text-sm"
+          className="order-last min-h-11 w-full rounded-full px-5 text-base md:order-none md:w-auto"
           disabled={starting || workouts.isPending || active.isPending}
           onClick={() => void start()}
         >
@@ -136,27 +136,27 @@ export function TodayScreen() {
       ) : completed.length === 0 && !active.data ? (
         <EmptyState title={t("history.empty")} body={t("today.firstRunBody")} />
       ) : (
-        <div className="flex flex-col gap-5">
-          <Card className="flex flex-col gap-4 p-4 md:flex-row md:items-center md:gap-8">
-            <div className="flex items-center justify-between gap-6 md:shrink-0 md:gap-12">
-              <div className="flex flex-col gap-1">
-                <p className="whitespace-nowrap text-[11px] font-medium uppercase tracking-wider text-text-muted">
+        <div className="flex flex-col gap-5 md:gap-6">
+          <Card className="flex flex-col gap-4 rounded-[16px] px-6 py-5 md:flex-row md:items-center md:gap-10">
+            <div className="grid grid-cols-3 items-center gap-4 md:shrink-0 md:gap-12">
+              <div className="flex flex-col items-center gap-1">
+                <p className="whitespace-nowrap text-[11px] font-medium uppercase tracking-[0.5px] text-text-muted">
                   {t("today.weekWorkouts")}
                 </p>
                 <p className="numeric whitespace-nowrap text-2xl font-semibold">
                   {thisWeek.length}
                 </p>
               </div>
-              <div className="flex flex-col gap-1">
-                <p className="whitespace-nowrap text-[11px] font-medium uppercase tracking-wider text-text-muted">
+              <div className="flex flex-col items-center gap-1">
+                <p className="whitespace-nowrap text-[11px] font-medium uppercase tracking-[0.5px] text-text-muted">
                   {t("today.weekVolumeUnit", { unit: unit === "lbs" ? "lb" : "kg" })}
                 </p>
                 <p className="numeric whitespace-nowrap text-2xl font-semibold">
                   {displayWeight(Math.round(week?.volumeKg ?? 0), unit)}
                 </p>
               </div>
-              <div className="flex flex-col gap-1">
-                <p className="whitespace-nowrap text-[11px] font-medium uppercase tracking-wider text-text-muted">
+              <div className="flex flex-col items-center gap-1">
+                <p className="whitespace-nowrap text-[11px] font-medium uppercase tracking-[0.5px] text-text-muted">
                   {t("today.weekSets")}
                 </p>
                 <p className="numeric whitespace-nowrap text-2xl font-semibold">{weekSets}</p>
@@ -165,7 +165,7 @@ export function TodayScreen() {
 
             <div aria-hidden="true" className="hidden h-14 w-px bg-border md:block" />
 
-            <div className="flex flex-col gap-1.5 md:min-w-0 md:flex-1">
+            <div className="flex flex-col gap-2 md:min-w-0 md:flex-1">
               <div className="flex items-center justify-between gap-3 text-xs text-text-muted">
                 <span>{t("today.weeklyGoal")}</span>
                 <span className="numeric whitespace-nowrap">
@@ -180,15 +180,15 @@ export function TodayScreen() {
 
           {prs.length > 0 ? (
             <div className="flex flex-col gap-2.5">
-              <h3 className="text-sm font-semibold">{t("today.recentPrs")}</h3>
-              <div className="grid gap-2 md:grid-cols-3">
+              <h3 className="text-[15px] font-semibold">{t("today.recentPrs")}</h3>
+              <div className="grid gap-4 md:grid-cols-3">
                 {prs.map((pr) => (
-                  <Card key={pr.exerciseId} className="flex items-center gap-2.5 p-3">
+                  <Card key={pr.exerciseId} className="flex items-center gap-2.5 px-3.5 py-[10px]">
                     <Icon name="award" size={18} className="shrink-0 text-accent" />
-                    <span className="min-w-0 flex-1 truncate text-sm">
+                    <span className="min-w-0 flex-1 truncate text-[13px]">
                       {exerciseName(pr.exerciseId)}
                     </span>
-                    <span className="numeric shrink-0 text-sm font-semibold">
+                    <span className="numeric shrink-0 text-[13px] font-semibold">
                       {displayWeight(pr.weightKg, unit)} × {pr.reps}
                     </span>
                   </Card>

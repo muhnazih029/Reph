@@ -34,7 +34,7 @@ jobs:
           file: Dockerfile.api
           platforms: linux/arm64
           push: true
-          tags: ghcr.io/${{ github.repository }}/api:latest
+          tags: ghcr.io/muhnazih029/reph/api:latest
 
       - name: Build and push Web image
         uses: docker/build-push-action@v6
@@ -43,4 +43,4 @@ jobs:
           file: Dockerfile.web
           platforms: linux/arm64
           push: true
-          tags: ghcr.io/${{ github.repository }}/web:latest
+          tags: ghcr.io/muhnazih029/reph/web:latest

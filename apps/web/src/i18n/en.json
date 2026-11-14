@@ -43,7 +43,9 @@
     "secondsShort": "s",
     "set": "set",
     "back": "Back",
-    "moreActions": "More actions"
+    "moreActions": "More actions",
+    "previous": "Previous",
+    "next": "Next"
   },
   "restTimer": {
     "label": "Rest timer",
@@ -57,6 +59,7 @@
   "workout": {
     "title": "Workout title",
     "titlePlaceholder": "Untitled workout",
+    "recent": "Recent",
     "finish": "Finish",
     "menu": "Workout menu",
     "discard": "Discard workout",
@@ -106,9 +109,11 @@
     "setShort": "SET",
     "weightShort": "KG",
     "inProgress": "In progress",
-    "resume": "Resume workout"
+    "resume": "Resume workout",
+    "finishNeedsSets": "Log at least one set to finish"
   },
   "muscleGroups": {
+    "title": "Muscle group",
     "chest": "Chest",
     "back": "Back",
     "shoulders": "Shoulders",
@@ -171,6 +176,19 @@
     "insightLast30": "last 30 days",
     "insightRecapMeta": "{{sets}} sets · {{minutes}} min",
     "insightWeightEmpty": "No weigh-ins yet",
+    "insightStatsLast30": "Last 30 days",
+    "insightWeightMeta": "{{count}} weigh-ins · {{min}}–{{max}}",
+    "insightWeightDelta": "{{delta}} vs {{month}}",
+    "insightPrThisMonth": "PR this month",
+    "insightPrEmpty": "No PR yet",
+    "metricVolume": "Volume ({{unit}})",
+    "metricSets": "Sets",
+    "metricReps": "Reps",
+    "metricWorkouts": "Workouts",
+    "metricMinutes": "Minutes",
+    "metricVolumeKg": "Volume",
+    "showPhotos": "Show photos",
+    "hidePhotos": "Hide photos",
     "view": "View"
   },
   "detail": {
@@ -214,12 +232,13 @@
     "themeDark": "Dark",
     "units": "Units",
     "weightUnit": "Weight unit",
-    "kg": "Kilograms (kg)",
-    "lbs": "Pounds (lb)",
+    "kg": "kg",
+    "lbs": "lb",
     "distanceUnit": "Distance unit",
-    "km": "Kilometres (km)",
-    "mi": "Miles (mi)",
-    "restTimer": "Rest timer (seconds)",
+    "km": "km",
+    "mi": "mi",
+    "restTimer": "Rest timer",
+    "workout": "Workout",
     "language": "Language",
     "about": "About",
     "ownershipNote": "Self-hosted — your training data lives on your own server.",
@@ -252,19 +271,33 @@
   },
   "photos": {
     "title": "Progress photos",
-    "upload": "Upload photo",
+    "upload": "Upload",
     "uploading": "Uploading...",
     "empty": "No photos yet",
     "emptyBody": "Upload your first progress photo.",
     "photo": "Photo",
     "delete": "Delete",
     "loadMore": "Load more",
-    "deleteConfirm": "Delete this photo?"
+    "deleteConfirm": "Delete this photo?",
+    "chooseFile": "Choose file",
+    "dropHint": "Progress photo · JPG or PNG",
+    "edit": "Edit",
+    "remove": "Remove",
+    "editTitle": "Edit photo",
+    "cropHint": "1:1 crop · drag to reposition",
+    "rotateLeft": "Rotate left",
+    "rotateRight": "Rotate right",
+    "zoom": "Zoom",
+    "usePhoto": "Use photo"
   },
   "calendar": {
     "title": "Calendar",
     "currentStreak": "Current streak",
     "longestStreak": "Longest streak",
+    "workoutsThisMonth": "Workouts this month",
+    "legendWorkoutDay": "Workout day",
+    "legendToday": "Today",
+    "legendNoWorkout": "No workout",
     "empty": "No workouts",
     "emptyBody": "Completed workouts appear here."
   },
@@ -321,14 +354,12 @@
   "auth": {
     "title": "Sign in",
     "createTitle": "Create your account",
-    "subtitle": "Your data stays on your server.",
     "name": "Name",
     "email": "Email",
     "password": "Password",
     "passwordHint": "At least 8 characters.",
     "signIn": "Sign in",
     "createAccount": "Create account",
-    "noAccountYet": "This instance has no account yet — create the first one.",
     "backToApp": "Back to the app"
   }
 }

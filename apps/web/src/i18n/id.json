@@ -43,7 +43,9 @@
     "secondsShort": "dtk",
     "set": "set",
     "back": "Kembali",
-    "moreActions": "Tindakan lainnya"
+    "moreActions": "Tindakan lainnya",
+    "previous": "Sebelumnya",
+    "next": "Berikutnya"
   },
   "restTimer": {
     "label": "Timer istirahat",
@@ -57,6 +59,7 @@
   "workout": {
     "title": "Judul latihan",
     "titlePlaceholder": "Latihan tanpa judul",
+    "recent": "Terbaru",
     "finish": "Selesai",
     "menu": "Menu latihan",
     "discard": "Buang latihan",
@@ -106,9 +109,11 @@
     "setShort": "SET",
     "weightShort": "KG",
     "inProgress": "Berjalan",
-    "resume": "Lanjutkan latihan"
+    "resume": "Lanjutkan latihan",
+    "finishNeedsSets": "Catat minimal satu set untuk menyelesaikan"
   },
   "muscleGroups": {
+    "title": "Grup otot",
     "chest": "Dada",
     "back": "Punggung",
     "shoulders": "Bahu",
@@ -171,6 +176,19 @@
     "insightLast30": "30 hari terakhir",
     "insightRecapMeta": "{{sets}} set · {{minutes}} mnt",
     "insightWeightEmpty": "Belum ada catatan berat",
+    "insightStatsLast30": "30 hari terakhir",
+    "insightWeightMeta": "{{count}} catatan · {{min}}–{{max}}",
+    "insightWeightDelta": "{{delta}} vs {{month}}",
+    "insightPrThisMonth": "PR bulan ini",
+    "insightPrEmpty": "Belum ada PR",
+    "metricVolume": "Volume ({{unit}})",
+    "metricSets": "Set",
+    "metricReps": "Reps",
+    "metricWorkouts": "Latihan",
+    "metricMinutes": "Menit",
+    "metricVolumeKg": "Volume",
+    "showPhotos": "Tampilkan foto",
+    "hidePhotos": "Sembunyikan foto",
     "view": "Tampilan"
   },
   "detail": {
@@ -214,18 +232,19 @@
     "themeDark": "Gelap",
     "units": "Satuan",
     "weightUnit": "Satuan berat",
-    "kg": "Kilogram (kg)",
-    "lbs": "Pound (lb)",
+    "kg": "kg",
+    "lbs": "lb",
     "distanceUnit": "Satuan jarak",
-    "km": "Kilometer (km)",
-    "mi": "Mil (mi)",
-    "restTimer": "Timer istirahat (detik)",
+    "km": "km",
+    "mi": "mi",
+    "restTimer": "Timer istirahat",
     "language": "Bahasa",
     "about": "Tentang",
     "ownershipNote": "Self-hosted — data latihanmu tersimpan di servermu sendiri.",
     "themeSystem": "Ikuti sistem",
     "weeklyGoal": "Target mingguan",
-    "weeklyGoalHint": "Jumlah workout per minggu (0 = mati)"
+    "weeklyGoalHint": "Jumlah workout per minggu (0 = mati)",
+    "workout": "Workout"
   },
   "routines": {
     "title": "Rutinitas",
@@ -252,19 +271,33 @@
   },
   "photos": {
     "title": "Foto progres",
-    "upload": "Unggah foto",
+    "upload": "Unggah",
     "uploading": "Mengunggah...",
     "empty": "Belum ada foto",
     "emptyBody": "Unggah foto progres pertama Anda.",
     "photo": "Foto",
     "delete": "Hapus",
     "loadMore": "Muat lagi",
-    "deleteConfirm": "Hapus foto ini?"
+    "deleteConfirm": "Hapus foto ini?",
+    "chooseFile": "Pilih file",
+    "dropHint": "Foto progres · JPG atau PNG",
+    "edit": "Ubah",
+    "remove": "Hapus",
+    "editTitle": "Ubah foto",
+    "cropHint": "Potongan 1:1 · geser untuk memposisikan",
+    "rotateLeft": "Putar kiri",
+    "rotateRight": "Putar kanan",
+    "zoom": "Perbesar",
+    "usePhoto": "Pakai foto"
   },
   "calendar": {
     "title": "Kalender",
     "currentStreak": "Streak saat ini",
     "longestStreak": "Streak terpanjang",
+    "workoutsThisMonth": "Latihan bulan ini",
+    "legendWorkoutDay": "Hari latihan",
+    "legendToday": "Hari ini",
+    "legendNoWorkout": "Tanpa latihan",
     "empty": "Belum ada latihan",
     "emptyBody": "Latihan selesai akan muncul di sini."
   },
@@ -321,14 +354,12 @@
   "auth": {
     "title": "Masuk",
     "createTitle": "Buat akun kamu",
-    "subtitle": "Data kamu tetap tinggal di server kamu.",
     "name": "Nama",
     "email": "Email",
     "password": "Kata sandi",
     "passwordHint": "Minimal 8 karakter.",
     "signIn": "Masuk",
     "createAccount": "Buat akun",
-    "noAccountYet": "Instance ini belum punya akun — buat yang pertama.",
     "backToApp": "Kembali ke aplikasi"
   }
 }

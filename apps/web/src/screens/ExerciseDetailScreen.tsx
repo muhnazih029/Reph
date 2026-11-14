@@ -106,7 +106,10 @@ export function ExerciseDetailScreen({ id }: { id: string }) {
         {[0, 1].map((idx) => (
           <img
             key={idx}
-            src={exerciseImagePath(data.name, idx as 0 | 1)}
+            src={
+              data.imageData?.[idx] ??
+              exerciseImagePath(data.name, idx as 0 | 1)
+            }
             alt={`${data.name} ${idx + 1}`}
             loading="lazy"
             draggable={false}

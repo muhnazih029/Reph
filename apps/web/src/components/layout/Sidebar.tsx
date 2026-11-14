@@ -24,10 +24,10 @@ export function Sidebar() {
   if (pathname === "/workout/active") return null;
 
   return (
-    <aside className="sticky top-0 hidden h-screen shrink-0 flex-col gap-6 border-r border-border bg-surface p-4 md:flex md:w-60">
-      <Link to="/" className="flex items-center gap-2.5 px-2 pt-1">
+    <aside className="sticky top-0 hidden h-screen shrink-0 flex-col gap-6 border-r border-border bg-surface px-4 py-6 md:flex md:w-60">
+      <Link to="/" className="flex items-center gap-2.5 px-2 py-1">
         <Icon name="dumbbell" size={22} className="text-accent" />
-        <span className="text-xl font-semibold tracking-tight">{t("account.appName")}</span>
+        <span className="text-xl font-semibold">{t("account.appName")}</span>
       </Link>
 
       <nav aria-label={t("app.primaryNav")} className="flex flex-col gap-1">
@@ -38,7 +38,7 @@ export function Sidebar() {
               key={item.path}
               to={item.path}
               aria-current={active ? "page" : undefined}
-              className={`flex min-h-11 items-center gap-3 rounded-radius px-3 py-2 text-sm transition-colors ${
+              className={`flex min-h-11 items-center gap-3 rounded-radius px-3 py-2.5 text-sm font-medium transition-colors ${
                 active ? "bg-accent/15 font-semibold text-accent" : "text-text hover:bg-surface-2"
               }`}
             >

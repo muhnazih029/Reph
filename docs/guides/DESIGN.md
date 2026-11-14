@@ -5,13 +5,13 @@ tags:
   - reph
   - guide
   - design
-status: draft
-updated: 2026-10-29
+status: shipped
+updated: 2026-11-13
 ---
 
 # Design Guide
 
-**Status:** Draft
+**Status:** Shipped
 **Related:** [PRD-FE](../specs/PRD-FE.md) · [DEVELOPMENT](./DEVELOPMENT.md)
 
 The contract for how Reph looks and behaves. Source of truth for tokens
@@ -47,8 +47,14 @@ Defined once in `app.css` as CSS variables + Tailwind v4 `@theme`:
 
 Rules:
 
+- Dark is AMOLED true black: `background` `#000000`, `surface`
+  `#0e0e10`, `surface-2` `#17171a`, `border` `#25252b`. Light is off-white:
+  `background` `#f4f4f1` with white cards (`surface` `#ffffff`).
 - Weights/times render with `font-variant-numeric: tabular-nums`
   (class `numeric`).
+- Tailwind's `font-semibold` is remapped to **650** in `@theme`, so the
+  utility matches the canvas instead of the framework's default 600.
+  `font-medium` stays 500; there is no 600 in the system.
 - Exactly **one** accent color is used for interactive emphasis; green
   scale for "done"/positive deltas, red for destructive only.
 - Elevation = `border` + subtle surface shift — **no drop shadows**
@@ -111,9 +117,12 @@ The header's avatar (initial on an `accent/15` circle) opens a **popover**
 anchored under it — **not** a bottom sheet. The popover carries:
 
 - identity block: avatar + name + email;
-- a **Sign out** row on a `danger/10` tint with **neutral text** (the tint
-  carries the destructive semantics; the text stays readable on dark).
+- a **Sign out** row on an `accent/10` tint with an **accent icon** and
+  neutral text. Accent — not danger — carries the emphasis: signing out is
+  reversible (sign back in), so it reads as an action, not a destruction.
+  Danger red stays reserved for actions that delete data.
 
 Desktop has no avatar in the header: the sidebar's bottom chip opens the
 same menu as a dropdown (`Account · Settings · Sign out`). Sign out is the
-only destructive action in the menu and uses the same danger-tint row.
+only action in the menu with a tinted background and uses the same
+accent-tint row.

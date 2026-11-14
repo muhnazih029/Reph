@@ -7,7 +7,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #fafafa;
+  --background: #f4f4f1;
   --surface: #ffffff;
   --surface-2: #f1f1f3;
   --border: #e2e2e6;
@@ -21,10 +21,10 @@
 }
 
 :root.dark {
-  --background: #0a0a0b;
-  --surface: #131316;
-  --surface-2: #1b1b1f;
-  --border: #2a2a30;
+  --background: #000000;
+  --surface: #0e0e10;
+  --surface-2: #17171a;
+  --border: #25252b;
   --text: #f2f2f4;
   --text-muted: #9b9ba4;
   --accent: #2fe08e;
@@ -52,6 +52,11 @@
   --radius-lg: 20px;
 
   --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  /* DESIGN §2: only 400/500/650 exist. The Pen canvas uses 650 for every
+     "semibold" label, so map the utility onto the real token instead of
+     sprinkling arbitrary values. */
+  --font-weight-semibold: 650;
 }
 
 @layer base {
@@ -91,6 +96,7 @@
 
 @media (min-width: 768px) {
   .feed-grid {
+    gap: 1rem;
     grid-template-columns: repeat(var(--feed-columns, 3), minmax(0, 1fr));
   }
 }

@@ -22,7 +22,7 @@ export function AccountIdentity({ user }: { user?: AccountUser | null }) {
         {initial}
       </span>
       <span className="min-w-0">
-        <span className="block truncate text-[15px] font-semibold">{name}</span>
+        <span className="block truncate text-[15px] font-medium">{name}</span>
         <span className="block truncate text-xs text-text-muted">{subtitle}</span>
       </span>
     </div>

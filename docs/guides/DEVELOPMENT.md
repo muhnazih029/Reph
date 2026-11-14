@@ -87,6 +87,7 @@ bun run db:seed            # idempotent exercise library upsert
 | `REPH_API_TOKEN` | prod yes / dev optional | bearer token; empty = auth disabled (local dev only)         |
 | `REPH_DATA_DIR`  | Phase 2                 | directory for photo files (default `./data`)                 |
 | `PORT`           | no                      | API port, default `3001`                                     |
+| `WEB_PORT`       | no                      | Vite dev-server port, default `3000` (Vite's own default 5173 is not used) |
 
 ## 5. Conventions
 
@@ -129,6 +130,6 @@ bun run db:seed            # idempotent exercise library upsert
 | ----------------------------- | ------------------------------------------------------------------------------------------------------------- |
 | `ECONNREFUSED 5432`           | `docker compose up -d`, check `docker compose ps`                                                             |
 | Migration drift errors        | `bun run db:generate` then `bun run db:migrate`; never edit generated SQL                                     |
-| Port 3000/3001 busy           | export `PORT`, or stop the other process                                                                      |
+| Port 3000/3001 busy           | set `WEB_PORT` / `PORT` in `.env` (Vite runs `strictPort`, so it errors instead of switching to 5173), or stop the other process |
 | Web tests hang on fetch       | queries not mocked — wrap with `QueryClientProvider({ queries: { retry: false } })` and mock `src/api/client` |
 | Stale PWA assets after deploy | hard-reload; service worker is `autoUpdate`                                                                   |

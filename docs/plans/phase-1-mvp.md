@@ -408,7 +408,7 @@ placeholder screens (Today/History/Exercises/Settings), `public/icons/*`,
 **Core Interfaces**; UI components per [DESIGN §3](../guides/DESIGN.md).
 
 - [ ] Vite config: `@vitejs/plugin-react`, `tailwindcss` plugin,
-      `vite-plugin-pwa` (`manifest`: name "Reph", `theme_color #0a0a0b`,
+      `vite-plugin-pwa` (`manifest`: name "Reph", `theme_color #000000`,
       categories `["health","fitness"]`, shortcut **Log Workout** →
       `/workout/active`, icons 192/512/maskable — generate simple SVG-based
       PNGs now), dev proxy `/api` → `http://localhost:3001`.

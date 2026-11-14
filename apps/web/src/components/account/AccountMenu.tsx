@@ -65,9 +65,9 @@ export function AccountMenu({ variant = "chip" }: { variant?: Variant }) {
             setOpen(false);
             void router.navigate({ to: "/settings" });
           }}
-          className="flex min-h-11 items-center gap-3 rounded-sm px-3 py-2 text-left text-sm font-medium transition-colors hover:bg-surface-2"
+          className="flex min-h-11 items-center gap-2.5 rounded-sm px-3 py-2 text-left text-sm font-medium transition-colors hover:bg-surface-2"
         >
-          <Icon name="settings" size={16} className="shrink-0 text-text-muted" />
+          <Icon name="settings" size={16} className="shrink-0" />
           {t("account.settings")}
         </button>
       ) : null}
@@ -78,7 +78,7 @@ export function AccountMenu({ variant = "chip" }: { variant?: Variant }) {
           role="menuitem"
           onClick={signOut}
           disabled={logout.isPending}
-          className="flex min-h-11 items-center gap-3 rounded-sm bg-accent/10 px-3 py-2 text-left text-sm font-medium transition-colors hover:bg-accent/20 disabled:opacity-60"
+          className="flex min-h-11 items-center gap-2.5 rounded-sm bg-accent/10 px-3 py-2 text-left text-sm font-medium transition-colors hover:bg-accent/20 disabled:opacity-60"
         >
           <Icon name="log-out" size={16} className="shrink-0 text-accent" />
           {t("account.signOut")}
@@ -91,9 +91,9 @@ export function AccountMenu({ variant = "chip" }: { variant?: Variant }) {
             setOpen(false);
             void router.navigate({ to: "/login" });
           }}
-          className="flex min-h-11 items-center gap-3 rounded-sm px-3 py-2 text-left text-sm font-medium transition-colors hover:bg-surface-2"
+          className="flex min-h-11 items-center gap-2.5 rounded-sm px-3 py-2 text-left text-sm font-medium transition-colors hover:bg-surface-2"
         >
-          <Icon name="user" size={16} className="shrink-0 text-text-muted" />
+          <Icon name="user" size={16} className="shrink-0" />
           {t("account.signIn")}
         </button>
       )}
@@ -125,7 +125,7 @@ export function AccountMenu({ variant = "chip" }: { variant?: Variant }) {
         aria-expanded={open}
         aria-haspopup="menu"
         onClick={() => setOpen((value) => !value)}
-        className="flex min-h-12 w-full items-center gap-3 rounded-radius border border-border bg-surface-2 px-3 py-2 text-left transition-colors hover:bg-surface-2/70"
+        className="flex min-h-12 w-full items-center gap-2.5 rounded-[10px] bg-surface-2 p-2 text-left transition-colors hover:bg-surface-2/70"
       >
         <span
           aria-hidden="true"
@@ -134,8 +134,8 @@ export function AccountMenu({ variant = "chip" }: { variant?: Variant }) {
           {initial}
         </span>
         <span className="min-w-0 flex-1">
-          <span className="block truncate text-sm font-medium">{name}</span>
-          <span className="block truncate text-xs text-text-muted">{status}</span>
+          <span className="block truncate text-[13px] font-medium">{name}</span>
+          <span className="block truncate text-[11px] text-text-muted">{status}</span>
         </span>
         <Icon name="chevron-up" size={14} className="shrink-0 text-text-muted" />
       </button>

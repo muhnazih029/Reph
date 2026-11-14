@@ -199,6 +199,8 @@ function CreateExerciseSheet({
   });
 
   const nameError = draft.name.trim().length === 0;
+  const nameTooLong = draft.name.length > 60;
+  const canSubmit = !nameError && !nameTooLong;
   const canSubmit = !nameError;
 
   const submit = () => {
@@ -236,14 +238,21 @@ function CreateExerciseSheet({
             aria-label={t("exercises.name")}
             placeholder={t("exercises.namePlaceholder")}
             value={draft.name}
+            maxLength={60}
             onChange={(event) => setDraft({ ...draft, name: event.target.value })}
           />
         </label>
-        {nameError ? (
-          <p role="alert" className="text-xs text-danger">
-            {t("exercises.nameRequired")}
-          </p>
-        ) : null}
+        <div className="min-h-[1rem]">
+          {nameError ? (
+            <p role="alert" className="text-xs text-danger">
+              {t("exercises.nameRequired")}
+            </p>
+          ) : nameTooLong ? (
+            <p role="alert" className="text-xs text-danger">
+              {t("exercises.nameTooLong")}
+            </p>
+          ) : null}
+        </div>
 
         <SegmentedControl<ExerciseType>
           label={t("exerciseType.title")}

@@ -212,6 +212,7 @@
     "create": "Latihan baru",
     "name": "Nama",
     "nameRequired": "Nama wajib diisi",
+    "nameTooLong": "Nama terlalu panjang (maks 60 karakter)",
     "muscleGroup": "Kelompok otot",
     "equipment": "Peralatan",
     "custom": "Kustom",

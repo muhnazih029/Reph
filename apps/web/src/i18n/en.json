@@ -212,6 +212,7 @@
     "create": "New exercise",
     "name": "Name",
     "nameRequired": "Name is required",
+    "nameTooLong": "Name is too long (max 60 characters)",
     "muscleGroup": "Muscle group",
     "equipment": "Equipment",
     "custom": "Custom",
